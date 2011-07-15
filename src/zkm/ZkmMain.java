@@ -56,17 +56,6 @@ public class ZkmMain implements FunctionalityMockupParser {
         zkmMain.mainLoop();
     }
 
-    private void receiveMockup() {
-
-        Order<FunctionalityMockupParser> order;
-        order = sc.getOrdersQueue().poll();
-
-        if (order != null) {
-            order.execute(this);
-        }
-
-    }
-
     public void mainLoop() {
         sc.establishConnection(host, port);
 
@@ -100,6 +89,17 @@ public class ZkmMain implements FunctionalityMockupParser {
         mockup = fresh;
     }
 
+    private void receiveMockup() {
+
+        Order<FunctionalityMockupParser> order;
+        order = sc.getOrdersQueue().poll();
+
+        if (order != null) {
+            order.execute(this);
+        }
+
+    }
+
     private boolean endLoop() {
         try {
             if (System.in.available() != 0) {
@@ -113,6 +113,7 @@ public class ZkmMain implements FunctionalityMockupParser {
     }
 
     private void makeDecision(int freeSeatsNr, int peopleWaitingNr) {
+        //TODO pozmieniać Ordery na zmianę częstotliwości jeżdżenia autobusów.
         if (freeSeatsNr == 0) {
             if (peopleWaitingNr == 0) {
                 sc.send(new OrderTrapBus());
