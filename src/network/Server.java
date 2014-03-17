@@ -10,6 +10,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -17,41 +19,25 @@ import network.Message;
 
 public class Server 
 {
-	private final int guiPort;
-	private final int passangersPort;
-	private final int managementPort;
-	private ServerSocket guiServerSocket;
-	private ServerSocket passangersServerSocket;
-	private ServerSocket managementServerSocket;
-	private Socket guiSocket;
-	private Socket passengersSocket;
-	private Socket managementSocket;
+	private ModuleNetwork gui;
+	private ModuleNetwork passengers;
+	private ModuleNetwork management;
+	
 	private ExecutorService executor;
 	
 	public Server()
 	{
-		guiPort = 8700;
-		passangersPort = 8701;
-		managementPort = 8702;
+		gui = new ModuleNetwork(8700);
+		passengers = new ModuleNetwork(8701);
+		management = new ModuleNetwork(8702);
 		executor = Executors.newCachedThreadPool();
 	}
 	
 	public void createServer()
 	{
-		try 
-		{
-			guiServerSocket = new ServerSocket(guiPort);
-			passangersServerSocket = new ServerSocket(passangersPort);
-			managementServerSocket = new ServerSocket(managementPort);
-		} 
-		catch (IOException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		connectGUI();
-		connectPassengersModule();
-		connectManagementModule();
+		gui.connect();
+		passengers.connect();
+		management.connect();
 	}
 	
 	/**
@@ -103,126 +89,74 @@ public class Server
 		return "127.0.0.1";
 	}
 	
-	
-	private void connectGUI()
+	private class ModuleNetwork
 	{
-		closeConnection(guiSocket);
-		Runnable connecting = new Runnable()
+		private Socket socket;
+		private ServerSocket serverSocket;
+		private final int port;
+		
+		ModuleNetwork(final int port)
 		{
-			@Override
-			public void run()
+			this.port = port;
+			try 
 			{
-				try 
-				{
-					guiSocket = guiServerSocket.accept();
-					executor.execute(listenGUI);
-				} 
-				catch (IOException e) 
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				this.serverSocket = new ServerSocket(port);
 			}
-		};
-		executor.execute(connecting);
-	}
-
-	private void connectPassengersModule()
-	{
-		closeConnection(passengersSocket);
-		Runnable connecting = new Runnable()
+			catch (IOException e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		public Socket getSocket()
 		{
-			@Override
-			public void run()
-			{
-				try 
-				{
-					passengersSocket = passangersServerSocket.accept();
-					executor.execute(listenPassengersModule);
-				} 
-				catch (IOException e) 
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		};
-		executor.execute(connecting);
-	}
-
-	private void connectManagementModule()
-	{
-		closeConnection(managementSocket);
-		Runnable connecting = new Runnable()
+			return socket;
+		}
+		
+		public void connect()
 		{
-			@Override
-			public void run()
+			final ModuleNetwork module = this;
+			Runnable connecting = new Runnable()
 			{
-				try 
+				@Override
+				public void run()
 				{
-					managementSocket = managementServerSocket.accept();
-					executor.execute(listenManagementModule);
-				} 
-				catch (IOException e) 
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					try 
+					{
+						socket = serverSocket.accept();
+						executor.execute(new Listener(module));
+					} 
+					catch (IOException e) 
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
-		};
-		executor.execute(connecting);
+			};
+			executor.execute(connecting);
+		}
 	}
 	
-	private Runnable listenGUI = new Runnable()
+	private class Listener implements Runnable
 	{
+		private ModuleNetwork module;
+		
+		public Listener(final ModuleNetwork module)
+		{
+			this.module = module;
+		}
+		
 		@Override
 		public void run()
 		{
 			ObjectInputStream ois;
 			
-			while ( isConnected(guiSocket) )
+			while (isConnected(module.getSocket()))
 			{
 				try
 				{
-					ois = new ObjectInputStream(guiSocket.getInputStream());
-					Object object = ois.readObject();
-					
-					if( object instanceof Message )
-					{
-						Message message = (Message)object;
-						switch(((Message)object).getDestination())
-						{
-							case PASSENGERS_MODULE:
-								send(message, passengersSocket);
-								break;
-							case MANAGEMENT_MODULE:
-								send(message, managementSocket);
-								break;
-							default:
-								break;
-						}
-					}
-				}
-				catch ( Exception ex ) 
-				{
-					connectGUI();
-					break;
-				}
-			}
-		}
-	};
-
-	private Runnable listenPassengersModule = new Runnable()
-	{
-		@Override
-		public void run()
-		{
-			ObjectInputStream ois;
-			while ( isConnected(passengersSocket) )
-			{
-				try
-				{
-					ois = new ObjectInputStream(passengersSocket.getInputStream());
+					ois = new ObjectInputStream(module.getSocket().getInputStream());
 					Object object = ois.readObject();
 					
 					if( object instanceof Message )
@@ -231,49 +165,13 @@ public class Server
 						switch(((Message)object).getDestination())
 						{
 							case GUI:
-								send(message, guiSocket);
+								send(message, gui.getSocket());
 								break;
-							case MANAGEMENT_MODULE:
-								send(message, managementSocket);
+							case PASSENGERS:
+								send(message, passengers.getSocket());
 								break;
-							default:
-								break;
-						}
-					}
-				}
-				catch ( Exception ex ) 
-				{
-					connectPassengersModule();
-					break;
-				}
-			}
-		}
-	};
-
-	private Runnable listenManagementModule = new Runnable()
-	{
-		@Override
-		public void run()
-		{
-			ObjectInputStream ois;
-			
-			while ( isConnected(managementSocket) )
-			{
-				try
-				{
-					ois = new ObjectInputStream(managementSocket.getInputStream());
-					Object object = ois.readObject();
-					
-					if( object instanceof Message )
-					{
-						Message message = (Message)object;
-						switch(((Message)object).getDestination())
-						{
-							case GUI:
-								send(message, guiSocket);
-								break;
-							case PASSENGERS_MODULE:
-								send(message, passengersSocket);
+							case MANAGEMENT:
+								send(message, management.getSocket());
 								break;
 							default:
 								break;
@@ -282,12 +180,12 @@ public class Server
 				}
 				catch ( Exception ex ) 
 				{
-					connectManagementModule();
+					module.connect();
 					break;
 				}
 			}
 		}
-	};
+	}
 
 	public boolean send(final Message message, final Socket socket)
 	{
@@ -324,6 +222,7 @@ public class Server
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void closeConnection(Socket socket)
 	{
 		if(isConnected(socket))

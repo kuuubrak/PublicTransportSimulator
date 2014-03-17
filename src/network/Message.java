@@ -7,7 +7,7 @@ public class Message implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	/** Mozliwe moduly docelowe dla pakietu */
-	public enum DESTINATIONS { GUI, PASSENGERS_MODULE, MANAGEMENT_MODULE }
+	public enum DESTINATIONS { GUI, PASSENGERS, MANAGEMENT }
 	/** Modul docelowy pakietu */
 	private final DESTINATIONS destination;
 	/** Lista przesylanych obiektow */
