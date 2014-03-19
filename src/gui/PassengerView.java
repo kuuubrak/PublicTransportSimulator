@@ -3,42 +3,51 @@ package gui;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.util.Random;
 
 public class PassengerView{
 
-	private int x = 100;
-	private int y = 100;
-	private int id = 41323;
-	private int waitingSteps = 242;
-	private boolean showCloud = true;
+	private int x;
+	private int y;
+	private int id;
+	private int waitingSteps;
+	private boolean showCloud = false;
 	private TextCloud textCloud;
+	private Random random = new Random();;
 	
 	
 	public PassengerView(int x, int y){
 		this.x = x;
 		this.y = y;
 		textCloud = createCloud();
+		id = random.nextInt(5000);
+		waitingSteps = random.nextInt(300);
 	}
 	
+	public PassengerView(){
+		this(0, 0);
+	}
+	
+	public void setColudVisable(boolean visable){
+		showCloud = visable;
+	}
 	
 	public void paint(Graphics2D g2) {
 		g2.setColor(new Color((50 + id*37)%256, (20 + id*67)%256, (100 + id*17)%256));
 		g2.fillOval(x, y, 20, 20);
 		g2.setColor(Color.LIGHT_GRAY);
 		g2.drawOval(x, y, 20, 20);
-		if(showCloud) textCloud.paint(g2);
+		if(showCloud) 
+			textCloud.paint(g2);
 		g2.setColor(Color.RED);
 		if(waitingSteps > 200) g2.drawString("!", x+20, y+5);
 		
 	}
 	
-	public void setId(int id){
-		this.id = id;
-	}
-	
 	public void setXY(int x, int y){
 		this.x = x;
 		this.y = y;
+		textCloud = createCloud();
 	}
 	
 	private TextCloud createCloud(){

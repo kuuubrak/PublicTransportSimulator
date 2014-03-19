@@ -16,6 +16,10 @@ import java.awt.event.ComponentListener;
 
 public class MainWindow extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3543647902381142115L;
 	private JPanel contentPane;
 	private Canvas worldCanvas;
 	private Canvas detailCanvas;
