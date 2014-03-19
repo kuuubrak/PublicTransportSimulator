@@ -90,7 +90,6 @@ public class MainWindow extends JFrame {
 			
 			@Override
 			public void componentShown(ComponentEvent arg0) {
-				// TODO Auto-generated method stub
 				
 			}
 			
