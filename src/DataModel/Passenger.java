@@ -5,50 +5,50 @@ package DataModel;
  * <b>Passenger</b><br>
  * Podróżny, pojawia się losowo na <b>Przystankach</b> z losowym <b>Przystankiem</b> docelowym.<br>
  * Na <b>Przystanku</b> tworzy kolejkę FIFO.
+ * Moment pojawienia się <b>Pasażera</b> na przystanku oznaczany jako <b>TimeStamp</b>.
+ * 
  */
 public class Passenger
 {
     /** <b>Passengers'</b> designated <b>BusStop</b>. */
     private BusStop destination;
     /** Unique Number/Color */
-    private int id;
-//    /** Location. Either in which <b>Bus</b> or <b>BusStop</b>. */
-//    private Location location;
+    private final int ID;
+    /** On which step the <b>Passenger</b> appeared at the <b>BusStop</b> */
+    private final int TIMESTAMP;
     
     /**
      * 
-     * @param location Wymagane
-     * @param destionation Wymagane, niekoniecznie typu BusStop.
+     * @param destination Wymagane.
      */
-    public Passenger( BusStop destionation )
+    public Passenger( final BusStop destination, final int timeStamp, final int id )
     {
         this.destination = destination;
+        this.TIMESTAMP = timeStamp;
+        this.ID = id;
     }
-    
+
     /**
-     * <b>waitForTheBus</b><br>
-     * Joins this <b>Passegner</b> to the <b>Queue</b> on the <b>BusStop</b> on which this <b>Passenger</b> is located.<br>
+     * @return the ID
      */
-    public void waitForTheBus()
+    public final int getID()
     {
-        
+        return ID;
     }
-    
+
     /**
-     * <b>enter</b><br>
-     * Enters the <b>Bus</b>.
+     * @return the tIMESTAMP
      */
-    public void enter()
+    public final int getTIMESTAMP()
     {
-        // TODO Może zwracać aktualną Lokację.
+        return TIMESTAMP;
     }
-    
+
     /**
-     * <b>leave</b><br>
-     * Leaves the <b>Bus</b>.
+     * @return the destination
      */
-    public void leave()
+    public final BusStop getDestination()
     {
-        // TODO Może zwracać aktualną Lokację.
+        return destination;
     }
 }
