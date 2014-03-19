@@ -1,6 +1,7 @@
 
 package DataModel;
 
+import java.util.LinkedList;
 import java.util.Queue;
 
 /**
@@ -16,24 +17,27 @@ import java.util.Queue;
 public final class BusStop
 {
     /** Queue of <b>Passengers</b> waiting for a place in the <b>Bus</b>. */
-    private Queue<Passenger> passengerQueue; // TODO zmienić nazwę
-    /** Name of the <b>BusStation</b>. */
-    private String NAME;
-    /** Direction in which the <b>Passengers</b> want to go. */
-    private Direction DIRECTION;
+    private Queue<Passenger> passengerQueue;
+    /** Name of the <b>BusStop</b>. */
+    private final String NAME;
+    /** <b>Distance</b> in steps required to reach */
+    private int distance;
 
-    public BusStop( final String name, final Direction direction )
+    public BusStop( final String name, final int distance )
     {
         this.NAME = name;
-        this.DIRECTION = direction;
+        this.passengerQueue = new LinkedList<Passenger>();
+        this.distance = distance;
     }
-
+    
     /**
-     * @return the DIRECTION
+     * <b>getDistance</b><br>
+     * 
+     * @return distance - required to reach this <b>BusStop</b>.
      */
-    public final Direction getDIRECTION()
+    public final int getDistance()
     {
-        return DIRECTION;
+        return distance;
     }
     
     /**
@@ -54,10 +58,25 @@ public final class BusStop
     }
     
     /**
-     * TODO Przemyśleć. Zmienić nazwę, budowę.
+     * <b>takerAPassenger</b><br>
+     * Transfers <b>One Passenger</b> from the <b>BusStop</b>.<br>
+     * <br>
+     * Takes <b>One Passenger</b> from the head of the <b>PassengerQueue</b>
+     * 
+     * @return <b>One Passenger</b> from the <b>BusStop</b>
      */
-    public final Passenger leave()
+    public final Passenger takeAPassenger()
     {
-        return passengerQueue.remove();
+        return passengerQueue.poll();
+    }
+    
+    /**
+     * <b>isEmpty</b><br>
+     * 
+     * @return true if <b>BusStop</b> has no <b>Passengers</b> in the <b>PassengerQueue</b>.
+     */
+    public final boolean isEmpty()
+    {
+        return passengerQueue.isEmpty();
     }
 }
