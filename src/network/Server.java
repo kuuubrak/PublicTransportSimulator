@@ -3,117 +3,113 @@ package network;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import network.Message;
-
+/**
+ * Klasa serwera.
+ * Zajmuje sie rozsylaniem otrzymanych obiektow do odpowiednich modulow.
+ * 
+ * @author Maciej Korpalski
+ */
 public class Server 
 {
+	/** Obiekt reprezentujacy modul GUI */
 	private ModuleNetwork gui;
+	/** Obiekt reprezentujacy modul obslugi pasazerow */
 	private ModuleNetwork passengers;
+	/** Obiekt reprezentujacy modul zarzadzania komunikacja miejska */
 	private ModuleNetwork management;
 	
 	private ExecutorService executor;
 	
-	public Server()
+	/** 
+	 * Tworzy moduly i przypisuje im odpowiednie porty sieciowe. 
+	 * @throws IOException 
+	 */
+	public Server(int guiPort, int passengersPort, int managementPort) throws IOException
 	{
-		gui = new ModuleNetwork(8700);
-		passengers = new ModuleNetwork(8701);
-		management = new ModuleNetwork(8702);
+		try 
+		{
+			gui = new ModuleNetwork(guiPort);
+			passengers = new ModuleNetwork(passengersPort);
+			management = new ModuleNetwork(managementPort);
+		} 
+		catch(IOException e) 
+		{
+			throw e;
+		}
+		
 		executor = Executors.newCachedThreadPool();
 	}
 	
+	/**
+	 * Otwiera polaczenia dla wszystkich modulow,
+	 * przypisuje kazdemu modulowi odpowiadajacych mu odbiorcow.
+	 */
 	public void createServer()
 	{
 		gui.connect();
 		passengers.connect();
 		management.connect();
+		
+		gui.addReceiver(passengers);
+		passengers.addReceiver(gui);
+		passengers.addReceiver(management);
+		management.addReceiver(passengers);
 	}
 	
 	/**
-	 * Zwraca lokalny adres IP serwera
+	 * Klasa reprezentujaca wlasciwosci sieciowe pojedynczego modulu
 	 */
-	public String getLocalAddress()
-	{
-		Enumeration< NetworkInterface > interfaces = null;
-		try 
-		{
-			interfaces = NetworkInterface.getNetworkInterfaces();
-		} 
-		catch ( SocketException e ) 
-		{
-			e.printStackTrace();
-		}
-		
-		// Odczytanie adresu IP z pierwszego znalezionego interfejsu,
-		// ktory jest podlaczony do sieci
-		while ( interfaces.hasMoreElements() )
-		{
-		    NetworkInterface current = interfaces.nextElement();
-		    try 
-		    {
-				if (!current.isUp() || current.isLoopback() || current.isVirtual()) 
-					continue;
-			} catch (SocketException e) 
-			{
-				e.printStackTrace();
-			}
-		    
-		    Enumeration< InetAddress > addresses = current.getInetAddresses();
-		    
-		    while ( addresses.hasMoreElements() )
-		    {
-		        InetAddress current_addr = addresses.nextElement();
-		        if ( current_addr.isLoopbackAddress() ) 
-		        	continue;
-
-		        if ( current_addr instanceof Inet4Address )
-		        {
-			    	return current_addr.getHostAddress();
-		        }
-		    }
-		    
-		}
-		// W przypadku braku interfejsu podlaczonego do sieci 
-		// funkcja zwraca adres lokalny komputera.
-		return "127.0.0.1";
-	}
-	
 	private class ModuleNetwork
 	{
+		/** Socket klienta */
 		private Socket socket;
+		/** Socket serwera */
 		private ServerSocket serverSocket;
-		private final int port;
+		/** Lista odbiorcow, ktorym nalezy przekazywac pakiety */
+		private List<ModuleNetwork> receivers;
+		/** Strumien wyjsciowy dla tego modulu */
+		private ObjectOutputStream oos;
 		
-		ModuleNetwork(final int port)
+		ModuleNetwork(final int port) throws IOException
 		{
-			this.port = port;
+			oos = null;
+			receivers = new ArrayList<ModuleNetwork>();
 			try 
 			{
 				this.serverSocket = new ServerSocket(port);
 			}
-			catch (IOException e) 
+			catch(IOException e) 
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw e;
 			}
 		}
-		
+				
 		public Socket getSocket()
 		{
 			return socket;
 		}
 		
+		public List<ModuleNetwork> getReceivers()
+		{
+			return receivers;
+		}
+		
+		public ObjectOutputStream getObjectOutputStream()
+		{
+			return oos;
+		}
+		
+		/**
+		 * Otwiera polaczenie i oczekuje na klienta.
+		 * Po ustanowieniu polaczenia uruchamia dla tego modulu watek odbierajacy pakiety.
+		 */
 		public void connect()
 		{
 			final ModuleNetwork module = this;
@@ -124,92 +120,109 @@ public class Server
 				{
 					try 
 					{
+						closeConnection(socket);
 						socket = serverSocket.accept();
+						oos = new ObjectOutputStream(socket.getOutputStream());
 						executor.execute(new Listener(module));
 					} 
-					catch (IOException e) 
+					catch(IOException e) 
 					{
-						// TODO Auto-generated catch block
 						e.printStackTrace();
+						throw new RuntimeException();
 					}
 				}
 			};
 			executor.execute(connecting);
 		}
+		
+		/**
+		 * Dodaje nowego odbiorce dla tego modulu.
+		 * @param module
+		 */
+		public void addReceiver(final ModuleNetwork module)
+		{
+			receivers.add(module);
+		}
 	}
-	
+
+	/**
+	 * Klasa reprezentujaca watek odbierajacy pakiety i przekazujacy je do odpowiednich modulow.
+	 */
 	private class Listener implements Runnable
 	{
 		private ModuleNetwork module;
+		private ObjectInputStream ois;
 		
 		public Listener(final ModuleNetwork module)
 		{
+			try 
+			{
+				ois = new ObjectInputStream(module.getSocket().getInputStream());
+			} 
+			catch(IOException e) 
+			{
+				e.printStackTrace();
+				throw new RuntimeException();
+			}
 			this.module = module;
 		}
 		
 		@Override
 		public void run()
 		{
-			ObjectInputStream ois;
-			
-			while (isConnected(module.getSocket()))
+			while(isConnected(module.getSocket()))
 			{
 				try
 				{
-					ois = new ObjectInputStream(module.getSocket().getInputStream());
 					Object object = ois.readObject();
-					
-					if( object instanceof Message )
+					System.out.println("Serwer: " + (String)object);
+					// Rozsyla obiekt do wszystkich odbiorcow danego modulu.
+					for(ModuleNetwork receiver : module.getReceivers())
 					{
-						Message message = (Message)object;
-						switch(((Message)object).getDestination())
-						{
-							case GUI:
-								send(message, gui.getSocket());
-								break;
-							case PASSENGERS:
-								send(message, passengers.getSocket());
-								break;
-							case MANAGEMENT:
-								send(message, management.getSocket());
-								break;
-							default:
-								break;
-						}
+						send(object, receiver);
 					}
 				}
-				catch ( Exception ex ) 
+				catch(IOException e) 
 				{
 					module.connect();
 					break;
+				}
+				catch(ClassNotFoundException e)
+				{
+					// Nierozpoznane klasy sa ignorowane
+					e.printStackTrace();
 				}
 			}
 		}
 	}
 
-	public boolean send(final Message message, final Socket socket)
+	/**
+	 * Wysyla obiekt do konkretnego socketa
+	 * @param object
+	 * @param socket
+	 * @return true if sent successfully, false if not
+	 * @throws IOException 
+	 */
+	private synchronized void send(final Object object, ModuleNetwork receiver) throws IOException
 	{
-		if(isConnected(socket))
+		if(isConnected(receiver.getSocket()))
 		{
-			ObjectOutputStream oos;
 			try 
 			{
-				oos = new ObjectOutputStream(socket.getOutputStream());
-				oos.writeObject(message);
-				return true;
+				receiver.getObjectOutputStream().writeObject(object);
 			} 
-			catch( Exception e ) 
+			catch( IOException e ) 
 			{
-				//TODO
-				e.printStackTrace();
+				throw e;
 			}
 		}
-		return false;
 	}
-	
-	//TODO?
-	private void echo(){}
-	
+
+	/**
+	 * Informuje czy z socketem jest polaczony jakis klient.
+	 * @param socket
+	 * @return
+	 */
 	private boolean isConnected(final Socket socket)
 	{
 		if(socket == null)
@@ -222,7 +235,10 @@ public class Server
 		}
 	}
 
-	@SuppressWarnings("unused")
+	/**
+	 * Rozlacza klienta z konkretnego socketa.
+	 * @param socket
+	 */
 	private void closeConnection(Socket socket)
 	{
 		if(isConnected(socket))
@@ -231,12 +247,11 @@ public class Server
 			{
 				socket.close();
 			} 
-			catch (IOException e) 
+			catch(IOException e) 
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				throw new RuntimeException();
 			}
 		}
 	}
-	
 }
