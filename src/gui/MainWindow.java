@@ -20,6 +20,7 @@ public class MainWindow extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = -3543647902381142115L;
+	private static final int minWindowWidth = 1200;
 	private JPanel contentPane;
 	private Canvas worldCanvas;
 	private Canvas detailCanvas;
@@ -46,7 +47,7 @@ public class MainWindow extends JFrame {
 	 */
 	public MainWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(0, 0, 1200, 650);
+		setBounds(0, 0, minWindowWidth, minWindowWidth/2);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -60,8 +61,7 @@ public class MainWindow extends JFrame {
 		};
 		contentPane.add(worldCanvas);
 		
-		detailCanvas = new DetailViewender();
-		detailCanvas.setBounds(820, 10, 360, 300);
+		detailCanvas = new DetailViewender(820, 10, 360, 300);
 		contentPane.add(detailCanvas);
 		
 		buttonsPanel = new JPanel();
@@ -115,11 +115,16 @@ public class MainWindow extends JFrame {
 	
 	public void resize(){
 		
-		if(getWidth() < 2*getHeight()) setSize(getWidth(), (int)(0.5*getWidth()));
-		else{
-		worldCanvas.setBounds(10, 10, (int)(1.2*getHeight()), (int)(0.9*getHeight()));
-		detailCanvas.setBounds(worldCanvas.getWidth() + 20, 10, (int)(0.64*getHeight()), (int)(0.48*getHeight()));
-		buttonsPanel.setBounds(worldCanvas.getWidth() + 20, detailCanvas.getHeight() + 40, buttonsPanel.getWidth(), buttonsPanel.getHeight());
+		if(getWidth() < minWindowWidth){
+			setSize(minWindowWidth, minWindowWidth/2);
+		}else if(getHeight() < getWidth()/2) {
+			setSize(getWidth(),getWidth()/2);
+		}else{
+			worldCanvas.setBounds(10, 10, (int)(0.6*getWidth()), (int)(0.45*getWidth()));
+			remove(detailCanvas);
+			detailCanvas = new DetailViewender(worldCanvas.getWidth() + 20, 10, (int)(0.64*getHeight()), (int)(0.48*getHeight()));
+			add(detailCanvas);
+			buttonsPanel.setBounds(worldCanvas.getWidth() + 20, detailCanvas.getHeight() + 40, buttonsPanel.getWidth(), buttonsPanel.getHeight());
 		}
 	}
 

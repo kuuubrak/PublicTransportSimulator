@@ -10,38 +10,43 @@ public class PassengerView{
 	private int x;
 	private int y;
 	private int id;
+	private int passengerSize;
 	private int waitingSteps;
-	private boolean showCloud = false;
 	private TextCloud textCloud;
-	private Random random = new Random();;
+	private static final int textCloudWdiht = 100;
+	private static final int textCloudHeigth = 70;
+	private Random random = new Random();
 	
 	
-	public PassengerView(int x, int y){
+	public PassengerView(int x, int y, int passengerSize){
 		this.x = x;
 		this.y = y;
+		this.passengerSize = passengerSize;
 		textCloud = createCloud();
 		id = random.nextInt(5000);
 		waitingSteps = random.nextInt(300);
 	}
 	
-	public PassengerView(){
-		this(0, 0);
+	public PassengerView(int passengerSize){
+		this(0, 0, passengerSize);
 	}
 	
-	public void setColudVisable(boolean visable){
-		showCloud = visable;
+	private Color convertIdToColor(int id){
+		return new Color((50 + id*37)%256, (20 + id*67)%256, (100 + id*17)%256);
 	}
 	
 	public void paint(Graphics2D g2) {
-		g2.setColor(new Color((50 + id*37)%256, (20 + id*67)%256, (100 + id*17)%256));
-		g2.fillOval(x, y, 20, 20);
+		g2.setColor(convertIdToColor(id));
+		g2.fillOval(x, y, passengerSize, passengerSize);
 		g2.setColor(Color.LIGHT_GRAY);
-		g2.drawOval(x, y, 20, 20);
-		if(showCloud) 
-			textCloud.paint(g2);
+		g2.drawOval(x, y, passengerSize, passengerSize);
 		g2.setColor(Color.RED);
-		if(waitingSteps > 200) g2.drawString("!", x+20, y+5);
+		if(waitingSteps > 200) g2.drawString("!", x+passengerSize, y+passengerSize/4);
 		
+	}
+	
+	public void paintCloud(Graphics2D g2){
+		textCloud.paint(g2);
 	}
 	
 	public void setXY(int x, int y){
@@ -51,7 +56,7 @@ public class PassengerView{
 	}
 	
 	private TextCloud createCloud(){
-		return new TextCloud(x - 40, y - 70, 100, 60){
+		return new TextCloud(x - textCloudWdiht/2 + passengerSize/2, y - (int)(1.2*textCloudHeigth), textCloudWdiht, textCloudHeigth){
 			@Override
 			public void paint(Graphics2D g2){
 				super.paint(g2);
