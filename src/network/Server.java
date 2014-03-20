@@ -5,7 +5,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -30,12 +29,21 @@ public class Server
 	
 	/** 
 	 * Tworzy moduly i przypisuje im odpowiednie porty sieciowe. 
+	 * @throws IOException 
 	 */
-	public Server()
+	public Server(int guiPort, int passengersPort, int managementPort) throws IOException
 	{
-		gui = new ModuleNetwork(8700);
-		passengers = new ModuleNetwork(8701);
-		management = new ModuleNetwork(8702);
+		try 
+		{
+			gui = new ModuleNetwork(guiPort);
+			passengers = new ModuleNetwork(passengersPort);
+			management = new ModuleNetwork(managementPort);
+		} 
+		catch(IOException e) 
+		{
+			throw e;
+		}
+		
 		executor = Executors.newCachedThreadPool();
 	}
 	
@@ -69,7 +77,7 @@ public class Server
 		/** Strumien wyjsciowy dla tego modulu */
 		private ObjectOutputStream oos;
 		
-		ModuleNetwork(final int port)
+		ModuleNetwork(final int port) throws IOException
 		{
 			oos = null;
 			receivers = new ArrayList<ModuleNetwork>();
@@ -77,10 +85,9 @@ public class Server
 			{
 				this.serverSocket = new ServerSocket(port);
 			}
-			catch (IOException e) 
+			catch(IOException e) 
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw e;
 			}
 		}
 				
@@ -113,14 +120,15 @@ public class Server
 				{
 					try 
 					{
+						closeConnection(socket);
 						socket = serverSocket.accept();
 						oos = new ObjectOutputStream(socket.getOutputStream());
 						executor.execute(new Listener(module));
 					} 
-					catch (IOException e) 
+					catch(IOException e) 
 					{
-						// TODO Auto-generated catch block
 						e.printStackTrace();
+						throw new RuntimeException();
 					}
 				}
 			};
@@ -151,9 +159,8 @@ public class Server
 			{
 				ois = new ObjectInputStream(module.getSocket().getInputStream());
 			} 
-			catch (IOException e) 
+			catch(IOException e) 
 			{
-				// TODO
 				e.printStackTrace();
 				throw new RuntimeException();
 			}
@@ -163,7 +170,7 @@ public class Server
 		@Override
 		public void run()
 		{
-			while (isConnected(module.getSocket()))
+			while(isConnected(module.getSocket()))
 			{
 				try
 				{
@@ -172,19 +179,18 @@ public class Server
 					// Rozsyla obiekt do wszystkich odbiorcow danego modulu.
 					for(ModuleNetwork receiver : module.getReceivers())
 					{
-						//TODO what if returns false?
 						send(object, receiver);
 					}
 				}
-				catch (SocketException ex) 
+				catch(IOException e) 
 				{
 					module.connect();
 					break;
 				}
-				catch(Exception e)
+				catch(ClassNotFoundException e)
 				{
+					// Nierozpoznane klasy sa ignorowane
 					e.printStackTrace();
-					throw new RuntimeException();
 				}
 			}
 		}
@@ -195,23 +201,21 @@ public class Server
 	 * @param object
 	 * @param socket
 	 * @return true if sent successfully, false if not
+	 * @throws IOException 
 	 */
-	private synchronized boolean send(final Object object, ModuleNetwork receiver)
+	private synchronized void send(final Object object, ModuleNetwork receiver) throws IOException
 	{
 		if(isConnected(receiver.getSocket()))
 		{
 			try 
 			{
 				receiver.getObjectOutputStream().writeObject(object);
-				return true;
 			} 
-			catch( Exception e ) 
+			catch( IOException e ) 
 			{
-				//TODO
-				e.printStackTrace();
+				throw e;
 			}
 		}
-		return false;
 	}
 
 	/**
@@ -235,7 +239,6 @@ public class Server
 	 * Rozlacza klienta z konkretnego socketa.
 	 * @param socket
 	 */
-	@SuppressWarnings("unused")
 	private void closeConnection(Socket socket)
 	{
 		if(isConnected(socket))
@@ -244,10 +247,10 @@ public class Server
 			{
 				socket.close();
 			} 
-			catch (IOException e) 
+			catch(IOException e) 
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				throw new RuntimeException();
 			}
 		}
 	}

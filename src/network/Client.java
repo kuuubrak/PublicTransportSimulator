@@ -12,28 +12,13 @@ import java.net.Socket;
  */
 public class Client
 {
-	/** Port serwera */
-	private final int serverPort;
 	/** Socket dla serwera */
 	private Socket socket;
 	/** Strumien wyjsciowy */
 	private ObjectOutputStream oos;
 	
-	public enum MODULE
+	public Client()
 	{
-		GUI,
-		PASSENGERS,
-		MANAGEMENT;
-		
-		public int getPort()
-		{
-			return ordinal() + 8700;
-		}
-	}
-	
-	public Client(final MODULE module)
-	{
-		serverPort = module.getPort();
 		socket = new Socket();
 	}
 	
@@ -42,17 +27,17 @@ public class Client
 	 * @param address - adres ip serwera
 	 * @return boolean - polaczenie udane/nieudane
 	 */
-	public boolean establishConnection(final String address)
+	public boolean establishConnection(final String address, int serverPort)
 	{
 		try
 		{
-			socket = new Socket();
+			closeConnection();
 			socket.connect(new InetSocketAddress(address, serverPort), 5000);
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			new Thread(receive).start();
 			return true;
 		}
-		catch (Exception e) 
+		catch(Exception e) 
 		{
 			closeConnection();
 			return false;
@@ -68,26 +53,27 @@ public class Client
 	{
 		if(socket.isBound())
 		{
+
 			try 
 			{
 				oos.writeObject(object);
 				return true;
-			} 
-			catch(Exception e) 
+			}
+			catch(IOException e) 
 			{
-				//TODO
-				e.printStackTrace();
+				closeConnection();
+				return false;
 			}
 		}
 		return false;
 	}
 	
 	/**
-	 * Zamkniecie polaczenie z serwerem
+	 * Zamkniecie polaczenia z serwerem
 	 */
 	public void closeConnection()
 	{
-		if(socket.isBound())
+		if(isConnected())
 		{
 			try
 			{
@@ -95,9 +81,29 @@ public class Client
 			}
 			catch(IOException e)
 			{
-				//TODO
-				e.printStackTrace();
+				socket = new Socket();
 			}
+		}
+		else
+		{
+			socket = new Socket();
+		}
+	}
+	
+	/**
+	 * Informuje czy z socketem jest polaczony jakis serwer.
+	 * @param socket
+	 * @return
+	 */
+	private boolean isConnected()
+	{
+		if(socket == null)
+		{
+			return false;
+		}
+		else
+		{
+			return socket.isBound();
 		}
 	}
 	
@@ -114,31 +120,34 @@ public class Client
 			{
 				ois = new ObjectInputStream(socket.getInputStream());
 			}
-			catch (IOException e) 
+			catch(IOException e) 
 			{
-				// TODO
 				e.printStackTrace();
 				throw new RuntimeException();
 			}
-			while (!socket.isClosed() && ois != null)
+			while(!socket.isClosed() && ois != null)
 			{
 				try 
 				{
 					Object object = ois.readObject();
 					if(object instanceof String)
 					{
-						System.out.println(serverPort + ":   " + (String)object);
+						System.out.println(socket.getPort() + ":   " + (String)object);
 					}
 					//if( object instanceof Order )
 					//{
 					//	send order
 					//}
 				} 
-				catch (ClassNotFoundException | IOException e) 
+				catch(IOException e)
 				{
-					//TODO
-					e.printStackTrace();
+					closeConnection();
 					throw new RuntimeException();
+				}
+				catch(ClassNotFoundException e) 
+				{
+					// Nierozpoznane klasy sa ignorowane
+					e.printStackTrace();
 				}	
 			}
 		}
