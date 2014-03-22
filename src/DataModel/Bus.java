@@ -89,6 +89,16 @@ public final class Bus
         if( MAX_SEATS == seatsTaken ) return true;
         return false;
     }
+
+    /**
+     * <b>getNumberOfFreeSeats</b><br>
+     *
+     * @return the number of free seats in the <b>Bus</b>
+     */
+    public final int getNumberOfFreeSeats()
+    {
+        return MAX_SEATS - seatsTaken;
+    }
     
     /**
      * <b>getCurrentBusStop</b><br>

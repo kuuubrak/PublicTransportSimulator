@@ -79,4 +79,14 @@ public final class BusStop
     {
         return passengerQueue.isEmpty();
     }
+
+    /**
+     * <b>getNumberOfPassengersWaiting</b><br>
+     *
+     * @return the number of <b>Passenger</b> foiting for a <b>Bus</b> in the <b>BusStop</b>
+     */
+    public final int getNumberOfPassengersWaiting()
+    {
+        return passengerQueue.size();
+    }
 }

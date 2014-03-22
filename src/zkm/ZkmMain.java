@@ -47,12 +47,12 @@ public class ZkmMain {
 
             for (Bus bus : pair.first)
             {
-                // TODO: zlicz liczbę wolnych miejsc
+                freeSeatsNr += bus.getNumberOfFreeSeats();
             }
 
             for (BusStop busStop: pair.second)
             {
-                // TODO: zliczyć liczbę pasażerów oczekujących
+                peopleWaitingNr += busStop.getNumberOfPassengersWaiting();
             }
 
             // Decision making
