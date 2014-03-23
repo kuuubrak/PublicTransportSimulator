@@ -17,13 +17,13 @@
 
 package OrderExample;
 
-import Order.Order;
+import Order.OrderPrioritableAbstract;
 
 /**
  *
  * @author Maciej Majewski
  */
-public class ExampleOrder_Evil implements Order<ExampleDifferentFunctionality>{
+public class ExampleOrder_Evil extends OrderPrioritableAbstract<ExampleDifferentFunctionality>{
 
     @Override
     public void execute(ExampleDifferentFunctionality subject) {

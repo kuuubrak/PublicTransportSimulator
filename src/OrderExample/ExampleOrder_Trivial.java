@@ -17,12 +17,12 @@
 
 package OrderExample;
 
-import Order.Order;
+import Order.OrderPrioritableAbstract;
 
 /** Przykładowa implementacja prostego rozkazu.
  * @author Maciej Majewski
  */
-public class ExampleOrder_Trivial implements Order<ExampleFunctionality>{
+public class ExampleOrder_Trivial extends OrderPrioritableAbstract<ExampleFunctionality>{
 
     @Override
     public void execute(ExampleFunctionality subject) {

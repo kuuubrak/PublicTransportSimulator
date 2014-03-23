@@ -17,12 +17,12 @@
 
 package OrderExample;
 
-import Order.Order;
+import Order.OrderPrioritableAbstract;
 
 /** Odrobinkę bardziej złożona implementacja rozkazu.
  * @author Maciej Majewski
  */
-public class ExampleOrder_WithArgument implements Order<ExampleFunctionality>{
+public class ExampleOrder_WithArgument extends OrderPrioritableAbstract<ExampleFunctionality>{
     private String msg;
 
     public ExampleOrder_WithArgument(String msg) {
