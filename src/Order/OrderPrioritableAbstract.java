@@ -16,4 +16,9 @@ public abstract class OrderPrioritableAbstract<T> implements    Serializable,
         return Integer.compare(priority(), o.priority());
     }
     
+    @Override
+    public int priority(){
+        return 0;
+    }
+    
 }
