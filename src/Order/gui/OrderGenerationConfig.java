@@ -26,13 +26,6 @@ public class OrderGenerationConfig extends OrderPrioritableAbstract<Functionalit
     @Override
     public void execute(FunctionalitySimulationModule subject) {
        subject.passengerGenerationConfig(min, max);
-    }
-
-    @Override
-    public int priority() {
-        throw new UnsupportedOperationException("Not supported yet."); //Danielu, wstaw istotność do returna i usuń tę linijkę.
-        //return 666;
-    }
-    
+    }    
     
 }
