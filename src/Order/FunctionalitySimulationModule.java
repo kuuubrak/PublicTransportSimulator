@@ -33,6 +33,16 @@ public interface FunctionalitySimulationModule {
      */
     public void newPassenger(String busStopStart, String busStopStop);
     
+    
+    
+    //////////////////////////////////////////////////
+    //////////      THERE ARE, WHO KNOWS    //////////
+    //////////      UNFINISHED CODES        //////////
+    //////////      WHICH LIE BELOW         //////////
+    //////////      AND HATE YOU ALL        //////////
+    //////////////////////////////////////////////////
+    
+    
     /**
      * Polecenie wypuszczenia nowego autobusu z zajezdni [zkm]
      */
