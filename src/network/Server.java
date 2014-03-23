@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 // Logger.getLogger(Server.class .getName()).setLevel(Level.OFF) i już nie widać żadnych komunikatów. Cudny mechanizm, polecam
 // ~maciej168
 // TODO Odfiltrować polecenie z GUI o symulacji awarii i wykonać.
+// TODO? Zmienić nazwę wszystkich Loggerów na wspólną dla całego serwera
 public class Server 
 {
 	/** Obiekt reprezentujacy modul GUI */
@@ -220,7 +221,7 @@ public class Server
 				} 
 				catch(IOException e) 
 				{
-                                        Logger.getLogger(Server.class.getName()).log(Level.FINER, "Ponownie łączenie", e);
+                                        Logger.getLogger(Listener.class.getName()).log(Level.FINER, "Ponownie łączenie", e);
 					module.connect();
 					break;
 				}
