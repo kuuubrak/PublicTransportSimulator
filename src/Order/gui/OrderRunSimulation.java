@@ -14,7 +14,6 @@ public class OrderRunSimulation extends OrderPrioritableAbstract<FunctionalitySi
     
     
     /**
-     * Kontruktor.
      * @param shouldRun false, jeśli symulacja ma się zatrzymać 
      */
     public OrderRunSimulation(boolean shouldRun) {

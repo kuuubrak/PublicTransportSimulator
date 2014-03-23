@@ -13,7 +13,6 @@ public class OrderRunContinuously extends OrderPrioritableAbstract<Functionality
     private boolean contin;
     
     /**
-     * Konstruktor
      * @param shouldRun true, jeśli ma działać ciągle (nie krokowo) 
      */
     public OrderRunContinuously(boolean shouldRun) {

@@ -14,7 +14,6 @@ public class OrderGenerationConfig extends OrderPrioritableAbstract<Functionalit
     private final int max;
 
     /**
-     * Konstrukctor.
      * @param min najmniejsza liczba kroków przed generacją podróżnego
      * @param max największa liczba kroków od generacji podróżnego
      */
