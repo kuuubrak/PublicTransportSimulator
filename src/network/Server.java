@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 // Dorzuciłem Loggery. Czemu? Bo można je zajebiście filtrować. W kodzie używającym tej klasy wystarczy że walniesz
 // Logger.getLogger(Server.class .getName()).setLevel(Level.OFF) i już nie widać żadnych komunikatów. Cudny mechanizm, polecam
 // ~maciej168
-// TODO Odfiltrować polecenie z GUI o symulacji awarii i wykonać.
 // Dodałem obsługę rozkazów
 public class Server implements FunctionalityServer, OrderRecipient<FunctionalityServer>
 {
