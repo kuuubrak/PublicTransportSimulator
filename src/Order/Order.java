@@ -2,6 +2,7 @@ package Order;
 
 /** Szablon interfejsu dla rozkazów.
  *  który zawiera funkcjonalność do udostępnienia.
+ *  Implementacja powinna być serializowalna.
  *  Małe przypomnienie: w Javie szablony działają inaczej niż w C++
  *  Rozszerza Comparable po to, by Pan Daniel mógł sobie szeregować rozkazy
  * (wystarczy je będzie wrzucić w PriorityQueue)
