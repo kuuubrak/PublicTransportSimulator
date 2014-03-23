@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Klasa serwera.
@@ -16,6 +18,12 @@ import java.util.concurrent.Executors;
  * 
  * @author Maciej Korpalski
  */
+// Dodałem symulację awarii ~maciej168
+// Dorzuciłem Loggery. Czemu? Bo można je zajebiście filtrować. W kodzie używającym tej klasy wystarczy że walniesz
+// Logger.getLogger(Server.class .getName()).setLevel(Level.OFF) i już nie widać żadnych komunikatów. Cudny mechanizm, polecam
+// ~maciej168
+// TODO Odfiltrować polecenie z GUI o symulacji awarii i wykonać.
+// TODO? Zmienić nazwę wszystkich Loggerów na wspólną dla całego serwera
 public class Server 
 {
 	/** Obiekt reprezentujacy modul GUI */
@@ -41,6 +49,7 @@ public class Server
 		} 
 		catch(IOException e) 
 		{
+                        Logger.getLogger(ModuleNetwork.class.getName()).log(Level.SEVERE, "Błąd tworzenia Serwera"); // dodałem ~maciej168
 			throw e;
 		}
 		
@@ -76,6 +85,8 @@ public class Server
 		private List<ModuleNetwork> receivers;
 		/** Strumien wyjsciowy dla tego modulu */
 		private ObjectOutputStream oos;
+                /** Handle klasy roboczej. Potrzebny do symulowania awarii ~maciej168 */
+                private Listener currentListener;
 		
 		ModuleNetwork(final int port) throws IOException
 		{
@@ -87,6 +98,7 @@ public class Server
 			}
 			catch(IOException e) 
 			{
+                                Logger.getLogger(ModuleNetwork.class.getName()).log(Level.SEVERE, "Błąd tworzenia ServerSocket'u. Pewnie port jest zajęty."); // dodałem ~maciej168
 				throw e;
 			}
 		}
@@ -123,11 +135,14 @@ public class Server
 						closeConnection(socket);
 						socket = serverSocket.accept();
 						oos = new ObjectOutputStream(socket.getOutputStream());
-						executor.execute(new Listener(module));
+						//executor.execute(new Listener(module)); // zmiana ~maciej168
+                                                currentListener = new Listener(module);
+						executor.execute(currentListener);
 					} 
 					catch(IOException e) 
 					{
-						e.printStackTrace();
+						// e.printStackTrace(); //zmieniłem ~maciej168
+                                                Logger.getLogger(ModuleNetwork.class.getName()).log(Level.WARNING, "Błąd tworzenia Listener'a", e);
 						throw new RuntimeException();
 					}
 				}
@@ -143,6 +158,16 @@ public class Server
 		{
 			receivers.add(module);
 		}
+                
+                /**
+                 * Symulacja awarii modułu sieciowego.
+                 * ~maciej168
+                 */
+                public void clog(boolean makeClogged)
+                {
+                    currentListener.clog(makeClogged);
+                }
+                
 	}
 
 	/**
@@ -152,6 +177,9 @@ public class Server
 	{
 		private ModuleNetwork module;
 		private ObjectInputStream ois;
+                
+                /** Flaga symulowanej awarii ~maciej168 */
+                private boolean clogged = false;
 		
 		public Listener(final ModuleNetwork module)
 		{
@@ -161,7 +189,8 @@ public class Server
 			} 
 			catch(IOException e) 
 			{
-				e.printStackTrace();
+				//e.printStackTrace();//zmieniłem ~maciej168
+                                Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, "Błąd tworzenia strumienia", e);
 				throw new RuntimeException();
 			}
 			this.module = module;
@@ -175,25 +204,44 @@ public class Server
 				try
 				{
 					Object object = ois.readObject();
-					System.out.println("Serwer: " + (String)object);
+					System.out.println("Serwer: " + (String)object); // Nie wiem czy to o reprezentację obiektu Ci Maćku
+                                                                                         // chodziło czy nazwę klasy która przyszła.
+                                                                                         // Jeśli o to drugie to zmień na object.getClass().getName()
+                                                                                         // czy jakieś inne Name. Moja propozycja zakomentowana poniżej. ~maciej168
+                                        //Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Serwer: " + object.getClass().getName());
+                                        
 					// Rozsyla obiekt do wszystkich odbiorcow danego modulu.
-					for(ModuleNetwork receiver : module.getReceivers())
-					{
-						send(object, receiver);
-					}
-				}
+                                        if(!clogged)// Jak nie ma symulowanej awarii. ~maciej168
+                                        {
+                                            for(ModuleNetwork receiver : module.getReceivers())
+                                            {
+                                                    send(object, receiver);
+                                            }
+                                        }
+				} 
 				catch(IOException e) 
 				{
+                                        Logger.getLogger(Listener.class.getName()).log(Level.FINER, "Ponownie łączenie", e);
 					module.connect();
 					break;
 				}
 				catch(ClassNotFoundException e)
 				{
 					// Nierozpoznane klasy sa ignorowane
-					e.printStackTrace();
+					//e.printStackTrace(); //zmieniłem ~maciej168
+                                        Logger.getLogger(Listener.class.getName()).log(Level.WARNING, "Ignorowanie nieznanej klasy", e);
 				}
 			}
 		}
+                
+                /**
+                 * Symuluje awarię (nie przesyła rozkazów/wiadomości do odbiorców)
+                 * ~maciej168
+                 */
+                public void clog(boolean makeClogged)
+                {
+                    clogged = makeClogged;
+                }
 	}
 
 	/**
@@ -213,6 +261,7 @@ public class Server
 			} 
 			catch( IOException e ) 
 			{
+                                Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Błąd wysyłania"); // dodałem ~maciej168
 				throw e;
 			}
 		}
@@ -249,7 +298,8 @@ public class Server
 			} 
 			catch(IOException e) 
 			{
-				e.printStackTrace();
+				//e.printStackTrace(); //zmieniłem ~maciej168
+                                Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Błąd przy zamykaniu połączenia",e);
 				throw new RuntimeException();
 			}
 		}
