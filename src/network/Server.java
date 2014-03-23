@@ -231,6 +231,10 @@ public class Server
 					//e.printStackTrace(); //zmieniłem ~maciej168
                                         Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Ignorowanie nieznanej klasy", e);
 				}
+                                finally
+                                {
+                                    clogged = false; // dodałem ~maciej168
+                                }
 			}
 		}
                 
