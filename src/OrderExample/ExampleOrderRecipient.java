@@ -17,6 +17,9 @@
 
 package OrderExample;
 
+import Order.Order;
+import Order.OrderRecipient;
+
 /** Przykładowa klasa wykonująca przychodzące rozkazy.
  *  Przyuważcie implementację znanej funkcjonalności/interfejsu
  * @author Maciej Majewski

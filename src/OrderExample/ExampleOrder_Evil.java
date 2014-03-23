@@ -17,6 +17,8 @@
 
 package OrderExample;
 
+import Order.Order;
+
 /**
  *
  * @author Maciej Majewski

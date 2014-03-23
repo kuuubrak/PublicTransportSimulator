@@ -17,6 +17,8 @@
 
 package OrderExample;
 
+import Order.Order;
+
 /** Test funkcjonalności.
  *  Rozkazy mogą przychodzić przez net rzecz jasna, czy skądkolwiek indziej.
  * @author Maciej Majewski

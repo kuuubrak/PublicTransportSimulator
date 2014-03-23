@@ -17,6 +17,8 @@
 
 package OrderExample;
 
+import Order.Order;
+
 /** Odrobinkę bardziej złożona implementacja rozkazu.
  * @author Maciej Majewski
  */
