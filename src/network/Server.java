@@ -1,5 +1,9 @@
 package network;
 
+import Order.FunctionalityServer;
+import Order.Order;
+import Order.OrderRecipient;
+import Order.ServerOrder;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -23,8 +27,8 @@ import java.util.logging.Logger;
 // Logger.getLogger(Server.class .getName()).setLevel(Level.OFF) i już nie widać żadnych komunikatów. Cudny mechanizm, polecam
 // ~maciej168
 // TODO Odfiltrować polecenie z GUI o symulacji awarii i wykonać.
-// TODO? Zmienić nazwę wszystkich Loggerów na wspólną dla całego serwera
-public class Server 
+// Dodałem obsługę rozkazów
+public class Server implements FunctionalityServer, OrderRecipient<FunctionalityServer>
 {
 	/** Obiekt reprezentujacy modul GUI */
 	private ModuleNetwork gui;
@@ -71,6 +75,24 @@ public class Server
 		passengers.addReceiver(management);
 		management.addReceiver(passengers);
 	}
+
+        @Override // dodane ~maciej168
+        public void crippleGUI(boolean cripple) {
+            Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Odłączenie GUI");
+            gui.clog(cripple);
+        }
+
+        @Override // dodane ~maciej168
+        public void crippleZKM(boolean cripple) {
+            Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Odłączenie ZKM");
+            management.clog(cripple);
+        }
+
+        @Override // dodane ~maciej168
+        public void executeOrder(Order<FunctionalityServer> toExec) {
+            Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Wykonywanie rozkazu");
+            toExec.execute(this);
+        }
 	
 	/**
 	 * Klasa reprezentujaca wlasciwosci sieciowe pojedynczego modulu
@@ -215,7 +237,14 @@ public class Server
                                         {
                                             for(ModuleNetwork receiver : module.getReceivers())
                                             {
-                                                    send(object, receiver);
+                                                    if(object instanceof ServerOrder)// dodana filtracja rozkazów ~maciej168
+                                                    {
+                                                            Server.this.executeOrder((Order) object);
+                                                    }
+                                                    else
+                                                    {
+                                                            send(object, receiver);
+                                                    }
                                             }
                                         }
 				} 
