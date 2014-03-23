@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 // Logger.getLogger(Server.class .getName()).setLevel(Level.OFF) i już nie widać żadnych komunikatów. Cudny mechanizm, polecam
 // ~maciej168
 // TODO Odfiltrować polecenie z GUI o symulacji awarii i wykonać.
-// TODO? Zmienić nazwę wszystkich Loggerów na wspólną dla całego serwera
 public class Server 
 {
 	/** Obiekt reprezentujacy modul GUI */
@@ -49,7 +48,7 @@ public class Server
 		} 
 		catch(IOException e) 
 		{
-                        Logger.getLogger(ModuleNetwork.class.getName()).log(Level.SEVERE, "Błąd tworzenia Serwera"); // dodałem ~maciej168
+                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, "Błąd tworzenia Serwera"); // dodałem ~maciej168
 			throw e;
 		}
 		
@@ -98,7 +97,7 @@ public class Server
 			}
 			catch(IOException e) 
 			{
-                                Logger.getLogger(ModuleNetwork.class.getName()).log(Level.SEVERE, "Błąd tworzenia ServerSocket'u. Pewnie port jest zajęty."); // dodałem ~maciej168
+                                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, "Błąd tworzenia ServerSocket'u. Pewnie port jest zajęty."); // dodałem ~maciej168
 				throw e;
 			}
 		}
@@ -142,7 +141,7 @@ public class Server
 					catch(IOException e) 
 					{
 						// e.printStackTrace(); //zmieniłem ~maciej168
-                                                Logger.getLogger(ModuleNetwork.class.getName()).log(Level.WARNING, "Błąd tworzenia Listener'a", e);
+                                                Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Błąd tworzenia Listener'a", e);
 						throw new RuntimeException();
 					}
 				}
@@ -190,7 +189,7 @@ public class Server
 			catch(IOException e) 
 			{
 				//e.printStackTrace();//zmieniłem ~maciej168
-                                Logger.getLogger(Listener.class.getName()).log(Level.SEVERE, "Błąd tworzenia strumienia", e);
+                                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, "Błąd tworzenia strumienia", e);
 				throw new RuntimeException();
 			}
 			this.module = module;
@@ -221,7 +220,7 @@ public class Server
 				} 
 				catch(IOException e) 
 				{
-                                        Logger.getLogger(Listener.class.getName()).log(Level.FINER, "Ponownie łączenie", e);
+                                        Logger.getLogger(Server.class.getName()).log(Level.FINER, "Ponownie łączenie", e);
 					module.connect();
 					break;
 				}
@@ -229,7 +228,7 @@ public class Server
 				{
 					// Nierozpoznane klasy sa ignorowane
 					//e.printStackTrace(); //zmieniłem ~maciej168
-                                        Logger.getLogger(Listener.class.getName()).log(Level.WARNING, "Ignorowanie nieznanej klasy", e);
+                                        Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Ignorowanie nieznanej klasy", e);
 				}
 			}
 		}
