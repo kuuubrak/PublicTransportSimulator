@@ -13,7 +13,7 @@ package Order;
  * 'Nie wygrasz z takim, co to myśli że wie wszystko.' ~sentencja na dziś pana M
  * @author Maciej Majewski
  */
-public interface FunctionalityServer extends FunctionalityCommon{
+public interface FunctionalityServer{
     
     /**
      * Polecenie blokowania gui. W sumie samobój, bo pewnie gui właśnie je będzie wydawać :)
