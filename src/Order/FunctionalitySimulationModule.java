@@ -8,19 +8,19 @@ package Order;
 public interface FunctionalitySimulationModule {
     
     /**
-     * Polecenie zatrymania/wznowienia symulacji
+     * Polecenie zatrymania/wznowienia symulacji [gui]
      * @param patataj false jeśli symulacja ma być wstrzymana
      */
     public void runSimulation(boolean patataj);
     
     /**
-     * Zmiana trybu symulacji.
+     * Zmiana trybu symulacji [gui]
      * @param goSlower true, jeśli należy postępować krokowo
      */
     public void stepSimulation(boolean goSlower);
     
     /**
-     * Ustalenie czasów generacji podróżnych
+     * Ustalenie czasów generacji podróżnych [gui]
      * @param minGen najmniejsza liczba kroków przed ponowną generacją podróżnego
      * @param maxGen największa ilość kroków od ostatniej generacji podróżnego
      */
@@ -32,4 +32,24 @@ public interface FunctionalitySimulationModule {
      * @param busStopStop Nazwa przystanku docelowego
      */
     public void newPassenger(String busStopStart, String busStopStop);
+    
+    /**
+     * Polecenie wypuszczenia nowego autobusu z zajezdni [zkm]
+     */
+    // TODO? możliwy brak identyfikatora
+    public void releaseBus();
+    
+    /**
+     * Polecenie zjazdu do zajezdni [zkm]
+     */
+    // TODO brak identyfikatora. Chyba że inaczej jest to realizowane,
+    // tym licznikiem czy coś
+    public void trapBus();
+    
+    /**
+     * Polecenie zmiany rozkładu_jazdy/liczby_okrążeń [zkm]
+     */
+    // TODO tutaj wyrażnie brakuje parametrów (id czy coś)
+    // Można zrezygnować z tej lub tej powyższej funkcji
+    public void updateBus();
 }
