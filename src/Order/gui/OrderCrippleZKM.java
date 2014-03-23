@@ -2,13 +2,13 @@
 package Order.gui;
 
 import Order.FunctionalityServer;
-import Order.OrderPrioritableAbstract;
+import Order.ServerOrderAbstract;
 
 /**
  * Polecenie wydawane przez gui
  * @author Maciej Majewski
  */
-public class OrderCrippleZKM extends OrderPrioritableAbstract<FunctionalityServer>{
+public class OrderCrippleZKM extends ServerOrderAbstract<FunctionalityServer>{
 
     private final boolean cripple;
 
