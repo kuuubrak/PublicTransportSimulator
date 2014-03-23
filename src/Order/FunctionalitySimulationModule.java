@@ -5,7 +5,7 @@ package Order;
  * Funkcjonalność oczekiwana od modułu symulujączego rzeczywistość.
  * @author Maciej Majewski
  */
-public interface FunctionalitySimulationModule extends FunctionalityCommon{
+public interface FunctionalitySimulationModule{
     
     /**
      * Polecenie zatrymania/wznowienia symulacji [gui]
