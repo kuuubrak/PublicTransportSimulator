@@ -8,7 +8,7 @@ import DataModel.Mockup;
  * 'rozumieć' makiety Pana Daniela
  * @author Maciej Majewski
  */
-public interface FunctionalityMockupParser extends FunctionalityCommon{
+public interface FunctionalityMockupParser{
     
     /**
      * Pozostaje przetworzyć otrzymaną makietę.
