@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Klient przesylajacy i odbierajacy obiekty.
@@ -39,8 +41,9 @@ public class Client
 		}
 		catch(Exception e) 
 		{
+                        Logger.getLogger(Client.class.getName()).log(Level.FINE, "Błąd łączenia z serwerem"); // dodałem ~maciej168
 			closeConnection();
-			return false;
+			return false; // buuu, Macieju. buuuuuuuuuuuuu. Toż to aktywne oczekiwanie wyjdzie w użytkowaniu.
 		}
 	}
 	
@@ -61,6 +64,7 @@ public class Client
 			}
 			catch(IOException e) 
 			{
+                                Logger.getLogger(Client.class.getName()).log(Level.WARNING, "Błąd wysyłania do serwera"); // dodałem ~maciej168
 				closeConnection();
 				return false;
 			}
@@ -122,7 +126,8 @@ public class Client
 			}
 			catch(IOException e) 
 			{
-				e.printStackTrace();
+				// e.printStackTrace(); //zmieniłem ~maciej168
+                                Logger.getLogger(Client.class.getName()).log(Level.WARNING, "Błąd tworzenia strumienia do serwera", e);
 				throw new RuntimeException();
 			}
 			while(!socket.isClosed() && ois != null)
@@ -141,13 +146,15 @@ public class Client
 				} 
 				catch(IOException e)
 				{
+                                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Błąd wysyłania do serwera", e); // dodałem ~maciej168
 					closeConnection();
 					throw new RuntimeException();
 				}
 				catch(ClassNotFoundException e) 
 				{
 					// Nierozpoznane klasy sa ignorowane
-					e.printStackTrace();
+					//e.printStackTrace(); //zmieniłem ~maciej168
+                                        Logger.getLogger(Client.class.getName()).log(Level.WARNING, "Ignorowanie nieznanej klasy", e);
 				}	
 			}
 		}
