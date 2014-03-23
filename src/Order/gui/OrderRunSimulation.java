@@ -26,11 +26,5 @@ public class OrderRunSimulation extends OrderPrioritableAbstract<FunctionalitySi
     public void execute(FunctionalitySimulationModule subject) {
         subject.runSimulation(runSim);
     }
-
-    @Override
-    public int priority() {
-        throw new UnsupportedOperationException("Not supported yet."); //Danielu, wstaw istotność do returna i usuń tę linijkę.
-        //return 666;
-    }
     
 }
