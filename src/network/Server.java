@@ -225,11 +225,7 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 				try
 				{
 					Object object = ois.readObject();
-					System.out.println("Serwer: " + (String)object); // Nie wiem czy to o reprezentację obiektu Ci Maćku
-                                                                                         // chodziło czy nazwę klasy która przyszła.
-                                                                                         // Jeśli o to drugie to zmień na object.getClass().getName()
-                                                                                         // czy jakieś inne Name. Moja propozycja zakomentowana poniżej. ~maciej168
-                                        //Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Serwer: " + object.getClass().getName());
+                                 //Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Serwer: " + object.getClass().getName());
                                         
 					// Rozsyla obiekt do wszystkich odbiorcow danego modulu.
                                         if(!clogged)// Jak nie ma symulowanej awarii. ~maciej168
