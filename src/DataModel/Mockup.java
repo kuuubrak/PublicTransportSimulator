@@ -1,5 +1,6 @@
 package DataModel;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
  * Zawiera <b>rozkład jazdy</b> ( listę <b>Przystanków</b> ) oraz listę <b>Autobusów</b>.  
  * 
  */
-public final class Mockup
+public final class Mockup implements Serializable
 {
     private final List<Bus> schedule;
     private final List<BusStop> busStops;

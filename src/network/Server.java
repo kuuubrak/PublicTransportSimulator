@@ -4,6 +4,8 @@ import Order.FunctionalityServer;
 import Order.Order;
 import Order.OrderRecipient;
 import Order.ServerOrder;
+import Order.sim.OrderParseMockup;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -99,19 +101,16 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 	private class ModuleNetwork
 	{
 		/** Socket klienta */
-		private Socket socket;
+		private volatile Socket socket;
 		/** Socket serwera */
 		private ServerSocket serverSocket;
 		/** Lista odbiorcow, ktorym nalezy przekazywac pakiety */
 		private List<ModuleNetwork> receivers;
-		/** Strumien wyjsciowy dla tego modulu */
-		private ObjectOutputStream oos;
                 /** Handle klasy roboczej. Potrzebny do symulowania awarii ~maciej168 */
                 private Listener currentListener;
 
 		ModuleNetwork(final int port) throws IOException
 		{
-			oos = null;
 			receivers = new ArrayList<ModuleNetwork>();
 			try 
 			{
@@ -134,11 +133,6 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 			return receivers;
 		}
 		
-		public ObjectOutputStream getObjectOutputStream()
-		{
-			return oos;
-		}
-		
 		/**
 		 * Otwiera polaczenie i oczekuje na klienta.
 		 * Po ustanowieniu polaczenia uruchamia dla tego modulu watek odbierajacy pakiety.
@@ -146,6 +140,7 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 		public void connect()
 		{
 			final ModuleNetwork module = this;
+			
 			Runnable connecting = new Runnable()
 			{
 				@Override
@@ -155,7 +150,6 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 					{
 						closeConnection(socket);
 						socket = serverSocket.accept();
-						oos = new ObjectOutputStream(socket.getOutputStream());
 						//executor.execute(new Listener(module)); // zmiana ~maciej168
                                                 currentListener = new Listener(module);
 						executor.execute(currentListener);
@@ -205,16 +199,6 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 		
 		public Listener(final ModuleNetwork module)
 		{
-			try 
-			{
-				ois = new ObjectInputStream(module.getSocket().getInputStream());
-			} 
-			catch(IOException e) 
-			{
-				//e.printStackTrace();//zmieniłem ~maciej168
-                                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, "Błąd tworzenia strumienia", e);
-				throw new RuntimeException();
-			}
 			this.module = module;
 		}
 		
@@ -225,9 +209,13 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 			{
 				try
 				{
+					ois = new ObjectInputStream(module.getSocket().getInputStream());
                     System.out.println("Czekam na obiekt");
 					Object object = ois.readObject();
                     System.out.println("Dostalem obiekt: " + object.getClass());
+                    if(object instanceof OrderParseMockup){
+                    	int n = 0;
+                    }
                                  //Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Serwer: " + object.getClass().getName());
                                         
 					// Rozsyla obiekt do wszystkich odbiorcow danego modulu.
@@ -284,16 +272,19 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 	 */
 	private synchronized void send(final Object object, ModuleNetwork receiver) throws IOException
 	{
-		if(isConnected(receiver.getSocket()))
+		if(receiver.getSocket() != null && isConnected(receiver.getSocket()))
 		{
+			ObjectOutputStream oos = null;
 			try 
 			{
-				receiver.getObjectOutputStream().writeObject(object);
+				oos = new ObjectOutputStream(receiver.getSocket().getOutputStream());
+				oos.writeObject(object);
 			} 
 			catch( IOException e ) 
 			{
                                 Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Błąd wysyłania"); // dodałem ~maciej168
-				throw e;
+				e.printStackTrace();
+                                throw e;
 			}
 		}
 	}

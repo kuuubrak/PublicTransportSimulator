@@ -17,7 +17,7 @@ public class OrderParseMockup extends OrderPrioritableAbstract<FunctionalityMock
 
     @Override
     public void execute(FunctionalityMockupParser subject) {
-        subject.newMockup(makieta);
+        //subject.newMockup(makieta);
     }
     
 }

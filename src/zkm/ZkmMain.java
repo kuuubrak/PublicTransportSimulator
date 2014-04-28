@@ -28,14 +28,14 @@ public class ZkmMain implements FunctionalityMockupParser{
 
     public static void main(String[] args)
     {
-        if (args.length != 2)
-        {
-            System.out.println("Wrong number of arguments. Program is stopping.");
-            return;
-        }
+        //if (args.length != 2)
+        //{
+        //    System.out.println("Wrong number of arguments. Program is stopping.");
+        //    return;
+       // }
 
-        Integer lowerBound = Integer.parseInt(args[0]);
-        Integer upperBound = Integer.parseInt(args[1]);
+        Integer lowerBound = 10;//Integer.parseInt(args[0]);
+        Integer upperBound = 20;//Integer.parseInt(args[1]);
         if (lowerBound > upperBound)
         {
             System.out.println("Lower bound (first arg) cannot be higher than upper bound (second argument)\n"
@@ -53,17 +53,15 @@ public class ZkmMain implements FunctionalityMockupParser{
         this.port = port;
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
+        mockup = new Mockup(new ArrayList<Bus>(), new ArrayList<BusStop>()); //Tymczasowo
     }
 
     private void receiveMockup()
     {
 
         Order<FunctionalityMockupParser> order = null;
-        try {
-            order = sc.getOrdersQueue().take();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        order = sc.getOrdersQueue().poll();
+
         if(order != null){
                 order.execute(this);
             }

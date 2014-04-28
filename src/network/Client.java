@@ -20,8 +20,6 @@ public class Client
 {
 	/** Socket dla serwera */
 	private Socket socket;
-	/** Strumien wyjsciowy */
-	private ObjectOutputStream oos;
 
     private BlockingQueue<Order> ordersQueue;
 	
@@ -42,7 +40,6 @@ public class Client
 		{
 			closeConnection();
 			socket.connect(new InetSocketAddress(address, serverPort), 5000);
-			oos = new ObjectOutputStream(socket.getOutputStream());
 			new Thread(receive).start();
 			return true;
 		}
@@ -63,16 +60,18 @@ public class Client
 	{
 		if(socket.isBound())
 		{
-
+			ObjectOutputStream oos = null;
 			try 
 			{
+				oos = new ObjectOutputStream(socket.getOutputStream());
 				oos.writeObject(object);
 				return true;
 			}
 			catch(IOException e) 
 			{
                 Logger.getLogger(Client.class.getName()).log(Level.WARNING, "Błąd wysyłania do serwera"); // dodałem ~maciej168
-				closeConnection();
+				e.printStackTrace();
+                closeConnection();
 				return false;
 			}
 		}
@@ -127,24 +126,14 @@ public class Client
 		public void run()
 		{
 			ObjectInputStream ois = null;
-			try 
-			{
-				ois = new ObjectInputStream(socket.getInputStream());
-			}
-			catch(IOException e) 
-			{
-				// e.printStackTrace(); //zmieniłem ~maciej168
-                                Logger.getLogger(Client.class.getName()).log(Level.WARNING, "Błąd tworzenia strumienia do serwera", e);
-				throw new RuntimeException();
-			}
 			while(!socket.isClosed() && ois != null)
 			{
 				try 
 				{
-                    System.out.println("K1.5 " +  socket.getPort() + "   " + socket.isBound());
+					ois = new ObjectInputStream(socket.getInputStream());
 					Object object = ois.readObject();
 
-
+					System.out.println("Dostalem: " + object.getClass());
 					if(object instanceof String)
 					{
                         ordersQueue.add((Order)object);

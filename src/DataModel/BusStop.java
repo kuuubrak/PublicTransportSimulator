@@ -1,6 +1,7 @@
 
 package DataModel;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -14,7 +15,7 @@ import java.util.Queue;
  * @author dan.krasniak
  *
  */
-public final class BusStop
+public final class BusStop implements Serializable
 {
     /** Queue of <b>Passengers</b> waiting for a place in the <b>Bus</b>. */
     private Queue<Passenger> passengerQueue;
