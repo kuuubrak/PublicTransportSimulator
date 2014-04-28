@@ -1,9 +1,12 @@
 package Simulator;
 
 import java.util.ArrayList;
+import java.util.List;
+import static java.lang.Math.*;
 
 import DataModel.Bus;
 import DataModel.BusStop;
+import DataModel.Mockup;
 
 /**
  * <b>Simulator</b><br>
@@ -20,7 +23,9 @@ import DataModel.BusStop;
  */
 public final class Simulator
 {
-    private static int time = 0;
+    private int time = 0;
+    private int simulationWait = 1000; // czas oczekiwania pomiędzy kolejnymi krokami symulacji
+    private double passengerGenerationIntensity = 0.5;
 
     public static void main( String[] args )
     {
@@ -37,12 +42,28 @@ public final class Simulator
         ArrayList<Bus> busContainer = new ArrayList<Bus>();
         ArrayList<BusStop> schedule = generateBusStopSchedule();
         
-        // TODO
+        while(true /* ??? */)
         {
-            // receiveMock() pseudokod
-            // BusList.action() || simulateStep() pseudokod
-            sendMock();
+            sendMock(busContainer, schedule);
+            receiveMock();
+
+            generatePassengers(schedule, passengerGenerationIntensity);
+
+            // BusList.action()
+
+            // simulateStep() pseudokod
+            for(Bus bus : busContainer)
+            {
+
+            }
+
             // wait pseudokod
+            try {
+                Thread.sleep(simulationWait);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             ++time;
         }
     }
@@ -51,18 +72,20 @@ public final class Simulator
      * <b>sendMock</b><br>
      * Sends the simulations' state to other <b>Modules</b>.<br>
      */
-    private final void sendMock()
+    private final void sendMock(final List<Bus> schedule, final List<BusStop> busStops)
     {
-        generateMock(); // TODO
+        Mockup mockup = new Mockup(schedule, busStops);
+        // TODO sending by server
     }
-    
+
     /**
-     * <b>generateMock</b><br>
-     * Generates <b>Mockup</b> based on current simulations' state.<br>
+     * <b>receiveMock</b><br>
+     * Receive the list of commands from GUI and ZKM <b>Modules</b>.
      */
-    private final void generateMock()
+    private final void receiveMock()
     {
-        //return new Mock(); // TODO
+        // TODO receiving by server
+
     }
     
     /**
@@ -70,9 +93,22 @@ public final class Simulator
      * 
      * @return number of steps that already passed.
      */
-    public static final int getTime()
+    public final int getTime()
     {
         return time;
+    }
+
+    private final void generatePassengers(final ArrayList<BusStop> schedule, double intensity)
+    {
+        int noOfPassengersToGenerate = (int) (random() * intensity);
+        PassengerModule passengerModule = new PassengerModule();
+        for (int i=0; i < noOfPassengersToGenerate; i++)
+        {
+            passengerModule.setPassenger(
+                    schedule.get((int)(random() * schedule.size())),
+                    schedule.get((int)(random() * schedule.size()))
+            );
+        }
     }
 
     /**
