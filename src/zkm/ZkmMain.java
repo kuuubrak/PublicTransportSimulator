@@ -57,12 +57,17 @@ public class ZkmMain implements FunctionalityMockupParser{
 
     private void receiveMockup()
     {
+
+        Order<FunctionalityMockupParser> order = null;
         try {
-            Order<FunctionalityMockupParser> order = sc.getOrdersQueue().take();
-            order.execute(this);
+            order = sc.getOrdersQueue().take();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        if(order != null){
+                order.execute(this);
+            }
+
     }
 
     public void mainLoop()
@@ -73,8 +78,12 @@ public class ZkmMain implements FunctionalityMockupParser{
         System.out.println("Press enter key to stop.");
         Integer k = 0;
         do {
-            receiveMockup();
 
+            System.out.println("K1");
+            sc.send(new OrderReleaseBus());
+            System.out.println("K2");
+            receiveMockup();
+            System.out.println("K3");
             ArrayList<Bus> buses = (ArrayList<Bus>) mockup.getBuses();
             ArrayList<BusStop> busStops = (ArrayList<BusStop>) mockup.getBusStops();
 

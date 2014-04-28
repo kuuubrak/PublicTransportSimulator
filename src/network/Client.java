@@ -71,7 +71,7 @@ public class Client
 			}
 			catch(IOException e) 
 			{
-                                Logger.getLogger(Client.class.getName()).log(Level.WARNING, "Błąd wysyłania do serwera"); // dodałem ~maciej168
+                Logger.getLogger(Client.class.getName()).log(Level.WARNING, "Błąd wysyłania do serwera"); // dodałem ~maciej168
 				closeConnection();
 				return false;
 			}
@@ -141,6 +141,7 @@ public class Client
 			{
 				try 
 				{
+                    System.out.println("K1.5 " +  socket.getPort() + "   " + socket.isBound());
 					Object object = ois.readObject();
 
 
@@ -156,7 +157,7 @@ public class Client
 				} 
 				catch(IOException e)
 				{
-                                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Błąd wysyłania do serwera", e); // dodałem ~maciej168
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Błąd odbierania z serwera", e); // dodałem ~maciej168
 					closeConnection();
 					throw new RuntimeException();
 				}

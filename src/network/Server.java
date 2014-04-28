@@ -159,7 +159,7 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 						//executor.execute(new Listener(module)); // zmiana ~maciej168
                                                 currentListener = new Listener(module);
 						executor.execute(currentListener);
-                        System.out.println();
+                        System.out.println("Podlaczyl sie klient - port: " + serverSocket.getLocalPort());
 					} 
 					catch(IOException e) 
 					{
@@ -225,7 +225,9 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 			{
 				try
 				{
+                    System.out.println("Czekam na obiekt");
 					Object object = ois.readObject();
+                    System.out.println("Dostalem obiekt: " + object.getClass());
                                  //Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Serwer: " + object.getClass().getName());
                                         
 					// Rozsyla obiekt do wszystkich odbiorcow danego modulu.

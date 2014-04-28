@@ -67,9 +67,35 @@
       <file leaf-file-name="ZkmMain.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/zkm/ZkmMain.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="32" column="32" selection-start="754" selection-end="754" vertical-scroll-proportion="0.0" vertical-offset="442" max-vertical-offset="2465">
+            <state line="65" column="9" selection-start="1766" selection-end="1766" vertical-scroll-proportion="0.0" vertical-offset="891" max-vertical-offset="2618">
               <folding>
                 <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Mockup.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/DataModel/Mockup.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="13" column="32" selection-start="253" selection-end="253" vertical-scroll-proportion="0.0" vertical-offset="24" max-vertical-offset="680">
+              <folding>
+                <element signature="e#535#536#0" expanded="true" />
+                <element signature="e#566#567#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SocketInputStream.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0/src.zip!/java/net/SocketInputStream.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="149" column="0" selection-start="4139" selection-end="4139" vertical-scroll-proportion="0.0" vertical-offset="1836" max-vertical-offset="4199">
+              <folding>
+                <element signature="e#0#7310#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#7063#7064#0" expanded="false" />
+                <element signature="e#7093#7094#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -78,12 +104,11 @@
       <file leaf-file-name="Server.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/network/Server.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="161" column="43" selection-start="4790" selection-end="4790" vertical-scroll-proportion="-1.1443299" vertical-offset="2569" max-vertical-offset="3298">
+            <state line="227" column="57" selection-start="6568" selection-end="6568" vertical-scroll-proportion="1.2268041" vertical-offset="2754" max-vertical-offset="4607">
               <folding>
                 <element signature="method#crippleGUI#0;class#Server#0" expanded="false" />
                 <element signature="method#crippleZKM#0;class#Server#0" expanded="false" />
                 <element signature="method#executeOrder#0;class#Server#0" expanded="false" />
-                <element signature="class#Listener#0;class#Server#0" expanded="false" />
                 <element signature="method#send#0;class#Server#0" expanded="false" />
                 <element signature="method#isConnected#0;class#Server#0" expanded="false" />
                 <element signature="method#closeConnection#0;class#Server#0" expanded="false" />
@@ -104,10 +129,37 @@
       <file leaf-file-name="Simulator.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Simulator/Simulator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="39" column="29" selection-start="1282" selection-end="1282" vertical-scroll-proportion="0.0" vertical-offset="649" max-vertical-offset="3672">
+            <state line="115" column="24" selection-start="3342" selection-end="3342" vertical-scroll-proportion="-6.769231" vertical-offset="1779" max-vertical-offset="3672">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Client.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/network/Client.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="138" column="13" selection-start="2886" selection-end="2886" vertical-scroll-proportion="-63.46154" vertical-offset="237" max-vertical-offset="2703">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="method#closeConnection#0;class#Client#0" expanded="false" />
+                <element signature="method#isConnected#0;class#Client#0" expanded="false" />
+                <element signature="docComment;field#receive#0;class#Client#0" expanded="false" />
+                <element signature="e#2468#3864#0" expanded="true" />
+                <element signature="e#3860#3861#0" expanded="true" />
+                <element signature="e#3927#3928#0" expanded="true" />
+                <element signature="e#3961#3962#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Thread.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="jar://C:/Program Files/Java/jdk1.8.0/src.zip!/java/lang/Thread.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="743" column="0" selection-start="27685" selection-end="27685" vertical-scroll-proportion="0.0" vertical-offset="11869" max-vertical-offset="33983">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -128,14 +180,14 @@
         <option value="$PROJECT_DIR$/src/DataModel/Bus.java" />
         <option value="$PROJECT_DIR$/src/DataModel/BusStop.java" />
         <option value="$PROJECT_DIR$/src/Simulator/PassengerModule.java" />
-        <option value="$PROJECT_DIR$/src/network/Client.java" />
         <option value="$PROJECT_DIR$/src/Simulator/PassengerModuleTest.java" />
         <option value="$PROJECT_DIR$/src/DataModel/BusTest.java" />
         <option value="$PROJECT_DIR$/src/DataModel/Mockup.java" />
         <option value="$PROJECT_DIR$/src/network/Test.java" />
-        <option value="$PROJECT_DIR$/src/Simulator/Simulator.java" />
-        <option value="$PROJECT_DIR$/src/zkm/ZkmMain.java" />
         <option value="$PROJECT_DIR$/src/network/Server.java" />
+        <option value="$PROJECT_DIR$/src/zkm/ZkmMain.java" />
+        <option value="$PROJECT_DIR$/src/Simulator/Simulator.java" />
+        <option value="$PROJECT_DIR$/src/network/Client.java" />
       </list>
     </option>
   </component>
@@ -332,7 +384,13 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="PublicTransportSimulator" />
       <envs />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
@@ -348,7 +406,13 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="PublicTransportSimulator" />
       <envs />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
@@ -364,7 +428,13 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="PublicTransportSimulator" />
       <envs />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
       <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
       <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
@@ -502,8 +572,8 @@
     </list>
     <recent_temporary>
       <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Application.ZkmMain" />
-        <item index="1" class="java.lang.String" itemvalue="Application.Simulator" />
+        <item index="0" class="java.lang.String" itemvalue="Application.Simulator" />
+        <item index="1" class="java.lang.String" itemvalue="Application.ZkmMain" />
         <item index="2" class="java.lang.String" itemvalue="Application.Test" />
       </list>
     </recent_temporary>
@@ -539,7 +609,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -548,7 +618,7 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3987441" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32967034" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -559,7 +629,7 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2489019" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32967034" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32967034" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -761,35 +831,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/DataModel/Mockup.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="20" selection-start="241" selection-end="241" vertical-scroll-proportion="0.0" vertical-offset="57" max-vertical-offset="629">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Order/zkm/OrderTrapBus.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="10" column="13" selection-start="249" selection-end="249" vertical-scroll-proportion="0.39130434" vertical-offset="0" max-vertical-offset="391">
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/network/Client.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="143" column="53" selection-start="3005" selection-end="3005" vertical-scroll-proportion="2.5670104" vertical-offset="1367" max-vertical-offset="3009">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Simulator/Simulator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="29" selection-start="1282" selection-end="1282" vertical-scroll-proportion="0.0" vertical-offset="649" max-vertical-offset="3672">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -800,23 +845,76 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0/src.zip!/java/net/SocketInputStream.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="149" column="0" selection-start="4139" selection-end="4139" vertical-scroll-proportion="0.0" vertical-offset="1836" max-vertical-offset="4199">
+          <folding>
+            <element signature="e#0#7310#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#7063#7064#0" expanded="false" />
+            <element signature="e#7093#7094#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DataModel/Mockup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="32" selection-start="253" selection-end="253" vertical-scroll-proportion="0.0" vertical-offset="24" max-vertical-offset="680">
+          <folding>
+            <element signature="e#535#536#0" expanded="true" />
+            <element signature="e#566#567#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/zkm/ZkmMain.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="32" selection-start="754" selection-end="754" vertical-scroll-proportion="0.0" vertical-offset="442" max-vertical-offset="2465">
+        <state line="65" column="9" selection-start="1766" selection-end="1766" vertical-scroll-proportion="0.0" vertical-offset="891" max-vertical-offset="2618">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Simulator/Simulator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="115" column="24" selection-start="3342" selection-end="3342" vertical-scroll-proportion="-6.769231" vertical-offset="1779" max-vertical-offset="3672">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0/src.zip!/java/lang/Thread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="743" column="0" selection-start="27685" selection-end="27685" vertical-scroll-proportion="0.0" vertical-offset="11883" max-vertical-offset="33983">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/network/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="138" column="13" selection-start="2886" selection-end="2886" vertical-scroll-proportion="-63.46154" vertical-offset="237" max-vertical-offset="2703">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#closeConnection#0;class#Client#0" expanded="false" />
+            <element signature="method#isConnected#0;class#Client#0" expanded="false" />
+            <element signature="docComment;field#receive#0;class#Client#0" expanded="false" />
+            <element signature="e#2468#3864#0" expanded="true" />
+            <element signature="e#3860#3861#0" expanded="true" />
+            <element signature="e#3927#3928#0" expanded="true" />
+            <element signature="e#3961#3962#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/network/Server.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="161" column="43" selection-start="4790" selection-end="4790" vertical-scroll-proportion="-1.1443299" vertical-offset="2569" max-vertical-offset="3298">
+        <state line="227" column="57" selection-start="6568" selection-end="6568" vertical-scroll-proportion="1.2268041" vertical-offset="2754" max-vertical-offset="4607">
           <folding>
             <element signature="method#crippleGUI#0;class#Server#0" expanded="false" />
             <element signature="method#crippleZKM#0;class#Server#0" expanded="false" />
             <element signature="method#executeOrder#0;class#Server#0" expanded="false" />
-            <element signature="class#Listener#0;class#Server#0" expanded="false" />
             <element signature="method#send#0;class#Server#0" expanded="false" />
             <element signature="method#isConnected#0;class#Server#0" expanded="false" />
             <element signature="method#closeConnection#0;class#Server#0" expanded="false" />

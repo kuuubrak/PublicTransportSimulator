@@ -64,10 +64,10 @@ public final class Simulator implements FunctionalitySimulationModule
         {
             // generating new random Passengers
             generatePassengers(schedule, passengerGenerationIntensity, time);
-
+            System.out.println("K1");
             // sending current Mockup
             sendMock(busContainer, schedule);
-
+            System.out.println("K2");
             //  executing received Orders
             while(!networkClient.getOrdersQueue().isEmpty())
             {
