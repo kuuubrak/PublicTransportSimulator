@@ -7,6 +7,10 @@ import static java.lang.Math.*;
 import DataModel.Bus;
 import DataModel.BusStop;
 import DataModel.Mockup;
+import Order.sim.OrderParseMockup;
+import Order.Order;
+import Order.FunctionalitySimulationModule;
+import network.Client;
 
 /**
  * <b>Simulator</b><br>
@@ -21,11 +25,11 @@ import DataModel.Mockup;
  * 
  * @author dan.krasniak
  */
-public final class Simulator
+public final class Simulator implements FunctionalitySimulationModule
 {
-    private int time = 0;
     private int simulationWait = 1000; // czas oczekiwania pomiędzy kolejnymi krokami symulacji
     private double passengerGenerationIntensity = 0.5;
+    private Client networkClient = new Client();
 
     public static void main( String[] args )
     {
@@ -39,25 +43,35 @@ public final class Simulator
      */
     private final void mainLoop()
     {
+        networkClient.establishConnection(.......);
         ArrayList<Bus> busContainer = new ArrayList<Bus>();
         ArrayList<BusStop> schedule = generateBusStopSchedule();
+        int time = 0;
         
         while(true /* ??? */)
         {
-            sendMock(busContainer, schedule);
-            receiveMock();
+            // generating new random Passengers
+            generatePassengers(schedule, passengerGenerationIntensity, time);
 
-            generatePassengers(schedule, passengerGenerationIntensity);
+            // sending current Mockup
+            sendMock(busContainer, schedule);
+
+            //  executing received Orders
+            ArrayList<Order<FunctionalitySimulationModule>> orders = receiveOrders();
+            for(Order order : orders)
+            {
+                order.execute(this);
+            }
 
             // BusList.action()
 
-            // simulateStep() pseudokod
+            // simulateStep()
             for(Bus bus : busContainer)
             {
 
             }
 
-            // wait pseudokod
+            // wait
             try {
                 Thread.sleep(simulationWait);
             } catch (InterruptedException e) {
@@ -66,6 +80,8 @@ public final class Simulator
 
             ++time;
         }
+
+        networkClient.closeConnection();
     }
     
     /**
@@ -75,17 +91,17 @@ public final class Simulator
     private final void sendMock(final List<Bus> schedule, final List<BusStop> busStops)
     {
         Mockup mockup = new Mockup(schedule, busStops);
-        // TODO sending by server
+        networkClient.send(new OrderParseMockup(mockup));
     }
 
     /**
      * <b>receiveMock</b><br>
      * Receive the list of commands from GUI and ZKM <b>Modules</b>.
      */
-    private final void receiveMock()
+    private final ArrayList<Order<FunctionalitySimulationModule>> receiveOrders()
     {
         // TODO receiving by server
-
+        return new ArrayList<Order<FunctionalitySimulationModule>>();
     }
     
     /**
@@ -93,12 +109,16 @@ public final class Simulator
      * 
      * @return number of steps that already passed.
      */
-    public final int getTime()
+    /*public final int getTime()
     {
         return time;
-    }
+    }*/
 
-    private final void generatePassengers(final ArrayList<BusStop> schedule, double intensity)
+    /**
+     * <b>generatePassengers</b>
+     * Adds new <b>Passengers</b> to the <b>BusStops</b>.
+     */
+    private final void generatePassengers(final ArrayList<BusStop> schedule, final double intensity, final int time)
     {
         int noOfPassengersToGenerate = (int) (random() * intensity);
         PassengerModule passengerModule = new PassengerModule();
@@ -106,7 +126,8 @@ public final class Simulator
         {
             passengerModule.setPassenger(
                     schedule.get((int)(random() * schedule.size())),
-                    schedule.get((int)(random() * schedule.size()))
+                    schedule.get((int)(random() * schedule.size())),
+                    time
             );
         }
     }

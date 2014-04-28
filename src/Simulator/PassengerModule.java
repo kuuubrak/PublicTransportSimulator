@@ -16,18 +16,18 @@ public final class PassengerModule
      * <b>generatePassenger</b><br>
      * Generates a new <b>Passenger</b> with an unique number and given destination.
      */
-    private final Passenger generatePassenger( final BusStop destination )
+    private final Passenger generatePassenger( final BusStop destination, final int time )
     {
-        return new Passenger( destination, Simulator.getTime(), (int)( Math.random() * 10000 ) ); //TODO
+        return new Passenger( destination, time, (int)( Math.random() * 10000 ) ); //TODO
     }
     
     /**
      * <b>setPassenger</b><br>
      * Set newly generated <b>Passenger</b> at a given or random <b>BusStop</b> with a given or random <b>Destination</b>.
      */
-    public final void setPassenger( final BusStop location, final BusStop destination )
+    public final void setPassenger( final BusStop location, final BusStop destination, final int time )
     {
-        location.setInQueue( generatePassenger( destination ) ); // TODO
+        location.setInQueue( generatePassenger( destination, time ) ); // TODO
     }
     
     /**

@@ -67,16 +67,7 @@
       <file leaf-file-name="PassengerModule.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Simulator/PassengerModule.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="4" selection-start="536" selection-end="536" vertical-scroll-proportion="0.0" vertical-offset="426" max-vertical-offset="1343">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PassengerModuleTest.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Simulator/PassengerModuleTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="13" selection-start="179" selection-end="179" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="578">
+            <state line="22" column="4" selection-start="537" selection-end="537" vertical-scroll-proportion="0.0" vertical-offset="102" max-vertical-offset="1343">
               <folding />
             </state>
           </provider>
@@ -85,8 +76,10 @@
       <file leaf-file-name="Simulator.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Simulator/Simulator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="9" selection-start="1198" selection-end="1198" vertical-scroll-proportion="0.3878887" vertical-offset="494" max-vertical-offset="1615">
-              <folding />
+            <state line="62" column="36" selection-start="1942" selection-end="1942" vertical-scroll-proportion="0.7234042" vertical-offset="612" max-vertical-offset="2686">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -107,6 +100,8 @@
         <option value="$PROJECT_DIR$/src/DataModel/Bus.java" />
         <option value="$PROJECT_DIR$/src/DataModel/BusStop.java" />
         <option value="$PROJECT_DIR$/src/zkm/ZkmMain.java" />
+        <option value="$PROJECT_DIR$/src/Simulator/PassengerModule.java" />
+        <option value="$PROJECT_DIR$/src/Simulator/Simulator.java" />
       </list>
     </option>
   </component>
@@ -159,7 +154,6 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -227,6 +221,126 @@
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="OrderExample" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PublicTransportSimulator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PublicTransportSimulator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Order" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PublicTransportSimulator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PublicTransportSimulator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Order" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="zkm" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PublicTransportSimulator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PublicTransportSimulator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Order" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="sim" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PublicTransportSimulator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PublicTransportSimulator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Order" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gui" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PublicTransportSimulator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PublicTransportSimulator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="network" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PublicTransportSimulator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PublicTransportSimulator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -248,6 +362,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -319,19 +434,6 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <method />
-    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -357,6 +459,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -501,6 +616,29 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/Simulator/PassengerModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="4" selection-start="536" selection-end="536" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1377">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Simulator/PassengerModuleTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="13" selection-start="179" selection-end="179" vertical-scroll-proportion="0.0" vertical-offset="187" max-vertical-offset="697">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Simulator/Simulator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="46" column="9" selection-start="1263" selection-end="1263" vertical-scroll-proportion="0.0" vertical-offset="782" max-vertical-offset="2176">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/zkm/ZkmMain.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="81" column="20" selection-start="2389" selection-end="2389" vertical-scroll-proportion="0.0" vertical-offset="398" max-vertical-offset="1870">
@@ -512,28 +650,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/zkm/ServerClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="18" selection-start="289" selection-end="289" vertical-scroll-proportion="0.0" vertical-offset="323" max-vertical-offset="748">
-          <folding />
-        </state>
+        <state line="19" column="18" selection-start="289" selection-end="289" vertical-scroll-proportion="0.0" vertical-offset="323" max-vertical-offset="748" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/zkm/Pair.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="5" selection-start="243" selection-end="243" vertical-scroll-proportion="0.0" vertical-offset="221" max-vertical-offset="357">
-          <folding />
-        </state>
+        <state line="13" column="5" selection-start="243" selection-end="243" vertical-scroll-proportion="0.0" vertical-offset="221" max-vertical-offset="357" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataModel/BusStop.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="85" column="88" selection-start="2295" selection-end="2295" vertical-scroll-proportion="0.0" vertical-offset="881" max-vertical-offset="1547">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DataModel/Bus.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="97" column="43" selection-start="3014" selection-end="3014" vertical-scroll-proportion="2.3645484" vertical-offset="184" max-vertical-offset="3859">
           <folding />
         </state>
       </provider>
@@ -549,28 +676,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/zkm/ServerClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="18" selection-start="289" selection-end="289" vertical-scroll-proportion="0.30441898" vertical-offset="86" max-vertical-offset="697">
-          <folding />
-        </state>
+        <state line="19" column="18" selection-start="289" selection-end="289" vertical-scroll-proportion="0.30441898" vertical-offset="86" max-vertical-offset="697" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/zkm/Pair.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="5" selection-start="243" selection-end="243" vertical-scroll-proportion="0.3617021" vertical-offset="0" max-vertical-offset="611">
-          <folding />
-        </state>
+        <state line="13" column="5" selection-start="243" selection-end="243" vertical-scroll-proportion="0.3617021" vertical-offset="0" max-vertical-offset="611" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DataModel/Passenger.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="13" selection-start="303" selection-end="303" vertical-scroll-proportion="0.027823241" vertical-offset="153" max-vertical-offset="867">
-          <folding />
-        </state>
+        <state line="10" column="13" selection-start="303" selection-end="303" vertical-scroll-proportion="0.027823241" vertical-offset="153" max-vertical-offset="867" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Simulator/PassengerModule.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="4" selection-start="536" selection-end="536" vertical-scroll-proportion="0.0" vertical-offset="426" max-vertical-offset="1343">
+        <state line="22" column="4" selection-start="537" selection-end="537" vertical-scroll-proportion="0.0" vertical-offset="102" max-vertical-offset="1343">
           <folding />
         </state>
       </provider>
@@ -582,10 +703,89 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Order/ServerOrderAbstract.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="22" selection-start="141" selection-end="141" vertical-scroll-proportion="0.19476268" vertical-offset="0" max-vertical-offset="611">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Order/OrderRecipientAbstract.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="22" selection-start="227" selection-end="227" vertical-scroll-proportion="0.2782324" vertical-offset="0" max-vertical-offset="611">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/OrderExample/ExampleOrder_Evil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="13" selection-start="809" selection-end="809" vertical-scroll-proportion="0.2782324" vertical-offset="0" max-vertical-offset="611">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Order/sim/OrderParseMockup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="13" selection-start="209" selection-end="209" vertical-scroll-proportion="0.22258593" vertical-offset="0" max-vertical-offset="611">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Order/OrderRecipient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="17" selection-start="133" selection-end="133" vertical-scroll-proportion="0.16693944" vertical-offset="0" max-vertical-offset="611">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Order/FunctionalityMockupParser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="17" selection-start="188" selection-end="188" vertical-scroll-proportion="0.2782324" vertical-offset="0" max-vertical-offset="611">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Order/FunctionalityServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="32" selection-start="1048" selection-end="1048" vertical-scroll-proportion="0.695581" vertical-offset="0" max-vertical-offset="629">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DataModel/Bus.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="180" column="13" selection-start="5183" selection-end="5220" vertical-scroll-proportion="1.3979933" vertical-offset="2173" max-vertical-offset="3859">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/network/Client.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="52" column="14" selection-start="1306" selection-end="1306" vertical-scroll-proportion="-1.9849498" vertical-offset="1969" max-vertical-offset="2669">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Order/FunctionalitySimulationModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="47" selection-start="353" selection-end="353" vertical-scroll-proportion="-0.5564648" vertical-offset="561" max-vertical-offset="1207">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Order/Order.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="35" selection-start="731" selection-end="731" vertical-scroll-proportion="0.5286416" vertical-offset="0" max-vertical-offset="611">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Simulator/Simulator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="9" selection-start="1198" selection-end="1198" vertical-scroll-proportion="0.3878887" vertical-offset="494" max-vertical-offset="1615">
-          <folding />
+        <state line="62" column="36" selection-start="1942" selection-end="1942" vertical-scroll-proportion="0.7234042" vertical-offset="612" max-vertical-offset="2686">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
