@@ -131,7 +131,7 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 		}
 		else
 		{
-			return socket.isConnected();
+			return !socket.isClosed();
 		}
 	}
 

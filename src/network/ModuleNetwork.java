@@ -26,9 +26,12 @@ class ModuleNetwork
     private Listener currentListener;
     private Server server;
     private ExecutorService executor;
+    
+    private boolean connectingProgress;
 
 	ModuleNetwork(final int port, final Server server) throws IOException
 	{
+		connectingProgress = false;
 		this.server = server;
 		receivers = new ArrayList<ModuleNetwork>();
 		try 
@@ -64,6 +67,7 @@ class ModuleNetwork
 			@Override
 			public void run()
 			{
+				connectingProgress = true;
 				try
 				{
 					server.closeConnection(socket);
@@ -78,6 +82,10 @@ class ModuleNetwork
 					// e.printStackTrace(); //zmieniłem ~maciej168
                                             Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Błąd tworzenia Listener'a", e);
 					throw new RuntimeException();
+				}
+				finally
+				{
+					connectingProgress = false;
 				}
 			}
 		};
@@ -98,7 +106,10 @@ class ModuleNetwork
 	 */
 	public void reportConnectionProblem()
 	{
-		connect();
+		if(!connectingProgress)
+		{
+			connect();
+		}
 	}
 	
     /**

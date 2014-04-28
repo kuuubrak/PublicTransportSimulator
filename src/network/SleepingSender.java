@@ -65,7 +65,7 @@ class SleepingSender
 				{
 					pack = toSend.take();
 					Socket receiverSocket = pack.getReceiver().getSocket();
-					if(receiverSocket != null && server.isConnected(receiverSocket))
+					if(server.isConnected(receiverSocket))
 					{
 						ObjectOutputStream oos = null;
 						try 
