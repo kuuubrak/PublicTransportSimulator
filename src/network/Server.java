@@ -13,8 +13,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,35 +40,46 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 	/** Obiekt reprezentujacy modul zarzadzania komunikacja miejska */
 	private ModuleNetwork management;
 	
+	private SleepingSender sleepingSender;
 	private ExecutorService executor;
+	
+	private int guiPort;
+	private int passengersPort;
+	private int managementPort;
+	
 	
 	/** 
 	 * Tworzy moduly i przypisuje im odpowiednie porty sieciowe. 
 	 * @throws IOException 
 	 */
-	public Server(int guiPort, int passengersPort, int managementPort) throws IOException
+	public Server(int guiPort, int passengersPort, int managementPort)
 	{
-		try 
-		{
-			gui = new ModuleNetwork(guiPort);
-			passengers = new ModuleNetwork(passengersPort);
-			management = new ModuleNetwork(managementPort);
-		} 
-		catch(IOException e) 
-		{
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, "Błąd tworzenia Serwera"); // dodałem ~maciej168
-			throw e;
-		}
-		
+		this.guiPort = guiPort;
+		this.passengersPort = passengersPort;
+		this.managementPort = managementPort;
 		executor = Executors.newCachedThreadPool();
 	}
 	
 	/**
 	 * Otwiera polaczenia dla wszystkich modulow,
 	 * przypisuje kazdemu modulowi odpowiadajacych mu odbiorcow.
+	 * @throws IOException 
 	 */
-	public void createServer()
+	public void createServer() throws IOException
 	{
+		try 
+		{
+			gui = new ModuleNetwork(guiPort, this);
+			passengers = new ModuleNetwork(passengersPort, this);
+			management = new ModuleNetwork(managementPort, this);
+			sleepingSender = new SleepingSender(this);
+		}
+		catch(IOException e) 
+		{
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, "Błąd tworzenia Serwera"); // dodałem ~maciej168
+			throw e;
+		}
+		sleepingSender.startSending();
 		gui.connect();
 		passengers.connect();
 		management.connect();
@@ -77,224 +90,40 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 		management.addReceiver(passengers);
 	}
 
-        @Override // dodane ~maciej168
-        public void crippleGUI(boolean cripple) {
-            Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Odłączenie GUI");
-            gui.clog(cripple);
-        }
+    @Override // dodane ~maciej168
+    public void crippleGUI(boolean cripple) {
+        Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Odłączenie GUI");
+        gui.clog(cripple);
+    }
 
-        @Override // dodane ~maciej168
-        public void crippleZKM(boolean cripple) {
-            Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Odłączenie ZKM");
-            management.clog(cripple);
-        }
+    @Override // dodane ~maciej168
+    public void crippleZKM(boolean cripple) {
+        Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Odłączenie ZKM");
+        management.clog(cripple);
+    }
 
-        @Override // dodane ~maciej168
-        public void executeOrder(Order<FunctionalityServer> toExec) {
-            Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Wykonywanie rozkazu");
-            toExec.execute(this);
-        }
+    @Override // dodane ~maciej168
+    public void executeOrder(Order<FunctionalityServer> toExec) {
+        Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Wykonywanie rozkazu");
+        toExec.execute(this);
+    }
 	
-	/**
-	 * Klasa reprezentujaca wlasciwosci sieciowe pojedynczego modulu
-	 */
-	private class ModuleNetwork
-	{
-		/** Socket klienta */
-		private volatile Socket socket;
-		/** Socket serwera */
-		private ServerSocket serverSocket;
-		/** Lista odbiorcow, ktorym nalezy przekazywac pakiety */
-		private List<ModuleNetwork> receivers;
-                /** Handle klasy roboczej. Potrzebny do symulowania awarii ~maciej168 */
-                private Listener currentListener;
-
-		ModuleNetwork(final int port) throws IOException
-		{
-			receivers = new ArrayList<ModuleNetwork>();
-			try 
-			{
-				this.serverSocket = new ServerSocket(port);
-			}
-			catch(IOException e) 
-			{
-                                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, "Błąd tworzenia ServerSocket'u. Pewnie port jest zajęty."); // dodałem ~maciej168
-				throw e;
-			}
-		}
-				
-		public Socket getSocket()
-		{
-			return socket;
-		}
-		
-		public List<ModuleNetwork> getReceivers()
-		{
-			return receivers;
-		}
-		
-		/**
-		 * Otwiera polaczenie i oczekuje na klienta.
-		 * Po ustanowieniu polaczenia uruchamia dla tego modulu watek odbierajacy pakiety.
-		 */
-		public void connect()
-		{
-			final ModuleNetwork module = this;
-			
-			Runnable connecting = new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					try
-					{
-						closeConnection(socket);
-						socket = serverSocket.accept();
-						//executor.execute(new Listener(module)); // zmiana ~maciej168
-                                                currentListener = new Listener(module);
-						executor.execute(currentListener);
-                        System.out.println("Podlaczyl sie klient - port: " + serverSocket.getLocalPort());
-					} 
-					catch(IOException e) 
-					{
-						// e.printStackTrace(); //zmieniłem ~maciej168
-                                                Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Błąd tworzenia Listener'a", e);
-						throw new RuntimeException();
-					}
-				}
-			};
-			executor.execute(connecting);
-		}
-		
-		/**
-		 * Dodaje nowego odbiorce dla tego modulu.
-		 * @param module
-		 */
-		public void addReceiver(final ModuleNetwork module)
-		{
-			receivers.add(module);
-		}
-                
-                /**
-                 * Symulacja awarii modułu sieciowego.
-                 * ~maciej168
-                 */
-                public void clog(boolean makeClogged)
-                {
-                    currentListener.clog(makeClogged);
-                }
-                
-	}
-
-	/**
-	 * Klasa reprezentujaca watek odbierajacy pakiety i przekazujacy je do odpowiednich modulow.
-	 */
-	private class Listener implements Runnable
-	{
-		private ModuleNetwork module;
-		private ObjectInputStream ois;
-                
-                /** Flaga symulowanej awarii ~maciej168 */
-                private boolean clogged = false;
-		
-		public Listener(final ModuleNetwork module)
-		{
-			this.module = module;
-		}
-		
-		@Override
-		public void run()
-		{
-			while(isConnected(module.getSocket()))
-			{
-				try
-				{
-					ois = new ObjectInputStream(module.getSocket().getInputStream());
-                    System.out.println("Czekam na obiekt");
-					Object object = ois.readObject();
-                    System.out.println("Dostalem obiekt: " + object.getClass());
-                    if(object instanceof OrderParseMockup){
-                    	int n = 0;
-                    }
-                                 //Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Serwer: " + object.getClass().getName());
-                                        
-					// Rozsyla obiekt do wszystkich odbiorcow danego modulu.
-                                        if(!clogged)// Jak nie ma symulowanej awarii. ~maciej168
-                                        {
-                                            for(ModuleNetwork receiver : module.getReceivers())
-                                            {
-                                                    if(object instanceof ServerOrder)// dodana filtracja rozkazów ~maciej168
-                                                    {
-                                                            Server.this.executeOrder((Order) object);
-                                                    }
-                                                    else
-                                                    {
-                                                            send(object, receiver);
-                                                    }
-                                            }
-                                        }
-				} 
-				catch(IOException e) 
-				{
-                                        Logger.getLogger(Listener.class.getName()).log(Level.FINER, "Ponownie łączenie", e);
-					module.connect();
-					break;
-				}
-				catch(ClassNotFoundException e)
-				{
-					// Nierozpoznane klasy sa ignorowane
-					//e.printStackTrace(); //zmieniłem ~maciej168
-                                        Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Ignorowanie nieznanej klasy", e);
-				}
-                                finally
-                                {
-                                    clogged = false; // dodałem ~maciej168
-                                }
-			}
-		}
-                
-                /**
-                 * Symuluje awarię (nie przesyła rozkazów/wiadomości do odbiorców)
-                 * ~maciej168
-                 */
-                public void clog(boolean makeClogged)
-                {
-                    clogged = makeClogged;
-                }
-	}
-
 	/**
 	 * Wysyla obiekt do konkretnego socketa
 	 * @param object
 	 * @param socket
-	 * @return true if sent successfully, false if not
-	 * @throws IOException 
 	 */
-	private synchronized void send(final Object object, ModuleNetwork receiver) throws IOException
+	void send(final Object object, ModuleNetwork receiver)
 	{
-		if(receiver.getSocket() != null && isConnected(receiver.getSocket()))
-		{
-			ObjectOutputStream oos = null;
-			try 
-			{
-				oos = new ObjectOutputStream(receiver.getSocket().getOutputStream());
-				oos.writeObject(object);
-			} 
-			catch( IOException e ) 
-			{
-                                Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Błąd wysyłania"); // dodałem ~maciej168
-				e.printStackTrace();
-                                throw e;
-			}
-		}
+		sleepingSender.send(object, receiver);
 	}
-
+	
 	/**
 	 * Informuje czy z socketem jest polaczony jakis klient.
 	 * @param socket
 	 * @return
 	 */
-	private boolean isConnected(final Socket socket)
+	boolean isConnected(final Socket socket)
 	{
 		if(socket == null)
 		{
@@ -302,7 +131,7 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 		}
 		else
 		{
-			return socket.isBound();
+			return socket.isConnected();
 		}
 	}
 
@@ -310,7 +139,7 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 	 * Rozlacza klienta z konkretnego socketa.
 	 * @param socket
 	 */
-	private void closeConnection(Socket socket)
+	void closeConnection(Socket socket)
 	{
 		if(isConnected(socket))
 		{

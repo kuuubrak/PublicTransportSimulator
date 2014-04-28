@@ -20,7 +20,7 @@ public class Client
 {
 	/** Socket dla serwera */
 	private Socket socket;
-
+	/** Kolejka, do ktorej sa wrzucane otrzymane rozkazy */
     private BlockingQueue<Order> ordersQueue;
 	
 	public Client()
@@ -134,10 +134,9 @@ public class Client
 					Object object = ois.readObject();
 
 					System.out.println("Dostalem: " + object.getClass());
-					if(object instanceof String)
+					if(object instanceof Order)
 					{
                         ordersQueue.add((Order)object);
-					//	System.out.println(socket.getPort() + ":   " + (String)object);
 					}
 					//if( object instanceof Order )
 					//{
@@ -154,7 +153,7 @@ public class Client
 				{
 					// Nierozpoznane klasy sa ignorowane
 					//e.printStackTrace(); //zmieniłem ~maciej168
-                                        Logger.getLogger(Client.class.getName()).log(Level.WARNING, "Ignorowanie nieznanej klasy", e);
+                    Logger.getLogger(Client.class.getName()).log(Level.WARNING, "Ignorowanie nieznanej klasy", e);
 				}	
 			}
 		}
