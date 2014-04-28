@@ -159,6 +159,7 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 						//executor.execute(new Listener(module)); // zmiana ~maciej168
                                                 currentListener = new Listener(module);
 						executor.execute(currentListener);
+                        System.out.println();
 					} 
 					catch(IOException e) 
 					{

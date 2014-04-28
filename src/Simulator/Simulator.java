@@ -35,7 +35,8 @@ public final class Simulator implements FunctionalitySimulationModule
 
     public static void main( String[] args )
     {
-        Simulator simulator = new Simulator(args[0], Integer.valueOf(args[1]));
+        //Simulator simulator = new Simulator(args[0], Integer.valueOf(args[1]));
+        Simulator simulator = new Simulator("127.0.0.1", 8124);
         simulator.mainLoop();
     }
 
