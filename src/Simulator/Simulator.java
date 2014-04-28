@@ -30,20 +30,31 @@ public final class Simulator implements FunctionalitySimulationModule
     private int simulationWait = 1000; // czas oczekiwania pomiędzy kolejnymi krokami symulacji
     private double passengerGenerationIntensity = 0.5;
     private Client networkClient = new Client();
+    private String host;
+    private int port;
 
     public static void main( String[] args )
     {
-        Simulator simulator = new Simulator();
+        Simulator simulator = new Simulator(args[0], Integer.valueOf(args[1]));
         simulator.mainLoop();
     }
-    
+
+    /**
+     * <b>Constructor</b><br>
+     */
+    public Simulator(String host, int port)
+    {
+        this.host = host;
+        this.port = port;
+    }
+
     /**
      * <b>mainLoop</b><br>
      * Simulations' main loop.<br>
      */
     private final void mainLoop()
     {
-        networkClient.establishConnection(.......);
+        networkClient.establishConnection(host, port);
         ArrayList<Bus> busContainer = new ArrayList<Bus>();
         ArrayList<BusStop> schedule = generateBusStopSchedule();
         int time = 0;
@@ -57,10 +68,19 @@ public final class Simulator implements FunctionalitySimulationModule
             sendMock(busContainer, schedule);
 
             //  executing received Orders
-            ArrayList<Order<FunctionalitySimulationModule>> orders = receiveOrders();
-            for(Order order : orders)
+            while(!networkClient.getOrdersQueue().isEmpty())
             {
-                order.execute(this);
+                try
+                {
+                    Order<FunctionalitySimulationModule> order = networkClient.getOrdersQueue().take();
+                    order.execute(this);
+                }
+                catch(InterruptedException e)
+                {
+                    //TODO Generated
+                    e.printStackTrace();
+                    throw new RuntimeException();
+                }
             }
 
             // BusList.action()
@@ -81,7 +101,8 @@ public final class Simulator implements FunctionalitySimulationModule
             ++time;
         }
 
-        networkClient.closeConnection();
+        // TODO
+        //networkClient.closeConnection();
     }
     
     /**
@@ -98,11 +119,12 @@ public final class Simulator implements FunctionalitySimulationModule
      * <b>receiveMock</b><br>
      * Receive the list of commands from GUI and ZKM <b>Modules</b>.
      */
-    private final ArrayList<Order<FunctionalitySimulationModule>> receiveOrders()
+    /*private final ArrayList<Order<FunctionalitySimulationModule>> receiveOrders()
     {
         // TODO receiving by server
+        networkClient.getOrdersQueue();
         return new ArrayList<Order<FunctionalitySimulationModule>>();
-    }
+    }*/
     
     /**
      * <b>getTime</b>
@@ -148,5 +170,40 @@ public final class Simulator implements FunctionalitySimulationModule
         schedule.add( petla );
         
         return schedule;
+    }
+
+    @Override
+    public void runSimulation(boolean patataj) {
+
+    }
+
+    @Override
+    public void stepSimulation(boolean goSlower) {
+
+    }
+
+    @Override
+    public void passengerGenerationConfig(int minGen, int maxGen) {
+
+    }
+
+    @Override
+    public void newPassenger(String busStopStart, String busStopStop) {
+
+    }
+
+    @Override
+    public void releaseBus() {
+
+    }
+
+    @Override
+    public void trapBus() {
+
+    }
+
+    @Override
+    public void updateBus() {
+
     }
 }

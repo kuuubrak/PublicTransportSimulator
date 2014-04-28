@@ -1,10 +1,14 @@
 package network;
 
+import Order.Order;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,10 +22,13 @@ public class Client
 	private Socket socket;
 	/** Strumien wyjsciowy */
 	private ObjectOutputStream oos;
+
+    private BlockingQueue<Order> ordersQueue;
 	
 	public Client()
 	{
 		socket = new Socket();
+        ordersQueue = new LinkedBlockingQueue<Order>();
 	}
 	
 	/**
@@ -135,9 +142,12 @@ public class Client
 				try 
 				{
 					Object object = ois.readObject();
+
+
 					if(object instanceof String)
 					{
-						System.out.println(socket.getPort() + ":   " + (String)object);
+                        ordersQueue.add((Order)object);
+					//	System.out.println(socket.getPort() + ":   " + (String)object);
 					}
 					//if( object instanceof Order )
 					//{
@@ -159,4 +169,11 @@ public class Client
 			}
 		}
 	};
+
+
+    public final BlockingQueue<Order> getOrdersQueue()
+    {
+        return ordersQueue;
+    }
+
 }

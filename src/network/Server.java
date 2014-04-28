@@ -52,7 +52,7 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 		} 
 		catch(IOException e) 
 		{
-                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, "Błąd tworzenia Serwera"); // dodałem ~maciej168
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, "Błąd tworzenia Serwera"); // dodałem ~maciej168
 			throw e;
 		}
 		
@@ -108,7 +108,7 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 		private ObjectOutputStream oos;
                 /** Handle klasy roboczej. Potrzebny do symulowania awarii ~maciej168 */
                 private Listener currentListener;
-		
+
 		ModuleNetwork(final int port) throws IOException
 		{
 			oos = null;
@@ -151,7 +151,7 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 				@Override
 				public void run()
 				{
-					try 
+					try
 					{
 						closeConnection(socket);
 						socket = serverSocket.accept();
