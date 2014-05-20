@@ -5,8 +5,9 @@ import java.util.List;
 import static java.lang.Math.*;
 
 import DataModel.Bus;
-import DataModel.BusStop;
+import DataModel.BusStopBase;
 import DataModel.Mockup;
+import DataModel.Schedule;
 import Order.sim.OrderParseMockup;
 import Order.Order;
 import Order.FunctionalitySimulationModule;
@@ -31,7 +32,7 @@ public final class Simulator implements FunctionalitySimulationModule
     private double passengerGenerationIntensity = SimulatorConstants.simulatorDefaultGenerationIntensity;
     private Client networkClient = new Client();
     private ArrayList<Bus> busContainer;
-    ArrayList<BusStop> schedule;
+    ArrayList<BusStopBase> schedule;
     private String host;
     private int port;
 
@@ -59,9 +60,11 @@ public final class Simulator implements FunctionalitySimulationModule
     {
         networkClient.establishConnection(host, port);
         busContainer = new ArrayList<Bus>();
-        schedule = generateBusStopSchedule();
+        Schedule schedule = new Schedule();
         int time = 0;
 
+        //TODO autobusy nie są tworzone ot tak. Mają być stworzone na początku programu wg settingsów w zajezdni
+        //i wyjeżdżać z niej kiedy jest potrzeba.
         Bus testBus = new Bus(schedule);
         Bus testBus2 = new Bus(schedule);
         Bus testBus3 = new Bus(schedule);
@@ -73,9 +76,9 @@ public final class Simulator implements FunctionalitySimulationModule
         while(true /* ??? */)
         {
             // generating new random Passengers
-            generatePassengers(schedule, passengerGenerationIntensity, time);
+            generatePassengers(schedule.getBusStops(), passengerGenerationIntensity, time);
             // sending current Mockup
-            sendMock(busContainer, schedule);
+            sendMock(busContainer, schedule.getBusStops());
             //  executing received Orders
             while(!networkClient.getOrdersQueue().isEmpty())
             {
@@ -114,9 +117,9 @@ public final class Simulator implements FunctionalitySimulationModule
      * <b>sendMock</b><br>
      * Sends the simulations' state to other <b>Modules</b>.<br>
      */
-    private final void sendMock(final List<Bus> schedule, final List<BusStop> busStops)
+    private final void sendMock(final List<Bus> schedule, final List<BusStopBase> busStopBases)
     {
-        Mockup mockup = new Mockup(schedule, busStops);
+        Mockup mockup = new Mockup(schedule, busStopBases);
         networkClient.send(new OrderParseMockup(mockup));
     }
 
@@ -145,33 +148,16 @@ public final class Simulator implements FunctionalitySimulationModule
      * <b>generatePassengers</b>
      * Adds new <b>Passengers</b> to the <b>BusStops</b>.
      */
-    private final void generatePassengers(final ArrayList<BusStop> schedule, final double intensity, final int time)
+    private final void generatePassengers(final ArrayList<BusStopBase> schedule, final double intensity, final int time)
     {
         int numberOfPassengersToGenerate = (int) (random() * intensity);
         PassengerModule passengerModule = new PassengerModule();
         for (int i=0; i < numberOfPassengersToGenerate; i++)
         {
-            BusStop location = schedule.get((int)(random() * schedule.size()));
-            BusStop destination = schedule.get((int)(random() * schedule.size()));
+            BusStopBase location = schedule.get((int)(random() * schedule.size()));
+            BusStopBase destination = schedule.get((int)(random() * schedule.size()));
             passengerModule.setPassenger(location, destination, time);
         }
-    }
-
-    /**
-     * <b>generateBusStopSchedule</b><br>
-     * 
-     * @return <b>BusStop schedule</b>
-     */
-    private final ArrayList<BusStop> generateBusStopSchedule()
-    {
-        ArrayList<BusStop> schedule = new ArrayList<BusStop>();
-        BusStop busLoop = new BusStop(SimulatorConstants.busLoopName, SimulatorConstants.busLoopDistance );
-        schedule.add( busLoop );
-        schedule.add( new BusStop( SimulatorConstants.firstBusStopName, SimulatorConstants.firstBusStopDistance ) );
-        schedule.add( new BusStop( SimulatorConstants.secondBusStopName, SimulatorConstants.secondBusStopDistance ) );
-        schedule.add( new BusStop( SimulatorConstants.thirdBusStopName, SimulatorConstants.thirdBusStopDistance ) );
-
-        return schedule;
     }
 
     private void simulationStep() {

@@ -1,7 +1,5 @@
 package DataModel;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import java.util.ArrayList;
 
 /**
@@ -26,19 +24,20 @@ public final class Bus
     private int seatsTaken = 0;
     /** A container of currently held <b>Passengers</b> */
     private ArrayList<Passenger> passengerContainer;
-    /** A manager of BusStops. */
-    private BusStopIterator busStopIterator;
+    private BusStopBase currentBusStopBase;
     /** Number of laps already done. */
     private int laps = 0; // TODO
     /** Number of laps to do */
-    private int lapsToDo = 3; // TODO
+    private final int lapsToDo = 3; // TODO
     /** Number of steps to wait after finishing all the laps */
-    private int waitFor = 10; // TODO
+    private final int waitFor = 10; // TODO
+    private Counter counter;
     
-    public Bus( final ArrayList<BusStop> schedule )
+    public Bus(Schedule schedule)
     {
-        setSchedule( schedule );
         this.passengerContainer = new ArrayList<Passenger>();
+        this.currentBusStopBase = schedule.getTerminus();
+        this.counter = new Counter(this.currentBusStopBase.getDistance());
     }
     
     /**
@@ -48,15 +47,7 @@ public final class Bus
     {
         return passengerContainer;
     }
-    
-    /**
-     * @param ArrayList< BusStop > the <b>BusStop Schedule</b>.
-     */
-    private final void setSchedule( final ArrayList<BusStop> schedule )
-    {
-        this.busStopIterator = new BusStopIterator( schedule );
-    }
-    
+
     /**
      * <b>addPassenger</b><br>
      * Adds a <b>Passenger</b> to the <b>PassengerContainer</b>.
@@ -75,9 +66,9 @@ public final class Bus
      */
     public final void takeInPassengers()
     {
-        while( !isFull() && !getCurrentBusStop().isEmpty() ) 
+        while( !isFull() && !getCurrentBusStopBase().isEmpty() )
         {
-            addPassenger( getCurrentBusStop().takeAPassenger() );
+            addPassenger( getCurrentBusStopBase().takePassenger() );
         }
     }
     
@@ -86,11 +77,7 @@ public final class Bus
      * 
      * @return true if the <b>Bus</b> is full.
      */
-    private final boolean isFull()
-    {
-        if( MAX_SEATS == seatsTaken ) return true;
-        return false;
-    }
+    private final boolean isFull() { return ( MAX_SEATS == seatsTaken); }
 
     /**
      * <b>getNumberOfFreeSeats</b><br>
@@ -109,11 +96,14 @@ public final class Bus
      * 
      * @return current <b>BusStop</b>
      */
-    public final BusStop getCurrentBusStop()
-    {
-        return busStopIterator.getCurrent();
+    public BusStopBase getCurrentBusStopBase() {
+        return currentBusStopBase;
     }
-    
+
+    public void setCurrentBusStopBase(BusStopBase currentBusStopBase) {
+        this.currentBusStopBase = currentBusStopBase;
+    }
+
     /**
      * <b>getNextBusStop</b><br>
      * <br>
@@ -122,9 +112,9 @@ public final class Bus
      * @return next <b>BusStop</b>
      * @throws IndexOutOfBoundsException
      */
-    public final BusStop getNextBusStop()
+    public final BusStopBase getNextBusStop()
     {
-        return busStopIterator.getNext();
+        return currentBusStopBase.getRoute().getToBusStopBase();
     }
 
     public final void remove( Passenger passenger )
@@ -138,122 +128,14 @@ public final class Bus
      */
     public final void move()
     {
-        busStopIterator.move();
-    }
-
-    public final int getCurrentStopIndex() { return busStopIterator.getCurrentBusStopIndex(); }
-
-    /**
-     * <b>BusStopIterator</b><br>
-     * Iterator jednokierunkowy po <b>Przystankach</b>.<br>
-     * <br>
-     * Wymaga, przy tworzeniu, podania gotowego <b>rozkładu jazdy</b>.<br>
-     * Zwraca informacje o aktualnym i następnym <b>Przystanku</b>.<br>
-     * 
-     * 
-     * @author dan.krasniak
-     *
-     */
-    private final class BusStopIterator
-    {
-        /** <b>BusStop</b> Container. */
-        private final ArrayList<BusStop> busStopContainer;
-
-        public int getCurrentBusStopIndex() {
-            return currentBusStopIndex;
+        //TODO: throw event if counter drops to 0
+        int count0;
+        count0 = counter.countdown();
+        System.out.println("Obecny: " + currentBusStopBase.getNAME() + ", do następnego: " + counter.getValue());
+        if (count0 == 0) {
+            setCurrentBusStopBase(getNextBusStop());
+            counter.setValue(currentBusStopBase.getDistance());
         }
-
-        /** <b>Index</b> of the current <b>BusStop</b>. */
-        private int currentBusStopIndex;
-        /** <b>Distance</b> passed in steps */
-        private int distancePassed = 0; // TODO
-        
-        public BusStopIterator( final ArrayList<BusStop> busStopContainer )
-        {
-            this.busStopContainer = busStopContainer;
-            this.currentBusStopIndex = 0;
-            
-        }
-        
-        /**
-         * <b>getNext</b><br>
-         * <br>
-         * public BusStop <b>getNext</b>()<br>
-         * <br>
-         * Returns the next <b>BusStop</b>, without changing the <b>CurrentBusStop</b>.
-         * <br>
-         * @return the next <b>BusStop</b>.
-         * @throws IndexOutOfBoundsException
-         */
-        public final BusStop getNext()
-        {
-            int busStopIndex;
-            if (currentBusStopIndex == busStopContainer.size() - 1) {
-                busStopIndex = 0;
-            } else {
-                busStopIndex = currentBusStopIndex + 1;
-            }
-            return get(busStopIndex);
-        }
-        
-        /**
-         * <b>setNext</b><br>
-         * Moves forward in the iteration and changes the value of <b>currentBusStop</b> to the value of next <b>BusStop</b>.
-         * @throws IndexOutOfBoundsException if already at the last <b>BustStop</b>
-         */
-        public final void setNext() throws IndexOutOfBoundsException
-        {
-            if( busStopContainer.size() != currentBusStopIndex + 1 )
-            {
-                ++currentBusStopIndex;
-            }
-            else throw new IndexOutOfBoundsException( "currentBusStopIndex == size()" );
-        }
-        
-        /**
-         * <b>getCurrent</b><br>
-         * <br>
-         * public BusStop <b>get</b>()
-         * 
-         * @return current <b>BusStop</b>.
-         */
-        public final BusStop getCurrent()
-        {
-            return get( currentBusStopIndex );
-        }
-        
-        /**
-         * <b>get</b><br>
-         * <br>
-         * private BusStop <b>get</b>( int index )
-         * 
-         * @return  the <b>BusStop</b> of the given <b>index</b>.
-         */
-        public final BusStop get( final int index )
-        {
-            return busStopContainer.get( index );
-        }
-
-        /**
-         * <b>move</b><br />
-         * <br />
-         * jakas chujnia
-         */
-        public final void move() {
-            distancePassed++;
-            if (isBusStopReached()) {
-                if (currentBusStopIndex == busStopContainer.size() - 1) {
-                    currentBusStopIndex = 0;
-                }
-                else {
-                    currentBusStopIndex++;
-                }
-                distancePassed = 0;
-            }
-
-        }
-
-        public final boolean isBusStopReached() { return (distancePassed == getNext().getDistance()); }
     }
 
 }

@@ -1,7 +1,7 @@
 package Simulator;
 
 import DataModel.Bus;
-import DataModel.BusStop;
+import DataModel.BusStopBase;
 import DataModel.Passenger;
 
 /**
@@ -16,7 +16,7 @@ public final class PassengerModule
      * <b>generatePassenger</b><br>
      * Generates a new <b>Passenger</b> with an unique number and given destination.
      */
-    private final Passenger generatePassenger( final BusStop destination, final int time )
+    private final Passenger generatePassenger( final BusStopBase destination, final int time )
     {
         return new Passenger( destination, time, (int)( Math.random() * 10000 ) ); //TODO
     }
@@ -25,9 +25,9 @@ public final class PassengerModule
      * <b>setPassenger</b><br>
      * Set newly generated <b>Passenger</b> at a given or random <b>BusStop</b> with a given or random <b>Destination</b>.
      */
-    public final void setPassenger( final BusStop location, final BusStop destination, final int time )
+    public final void setPassenger( final BusStopBase location, final BusStopBase destination, final int time )
     {
-        location.setInQueue( generatePassenger( destination, time ) ); // TODO
+        location.queuePush(generatePassenger(destination, time)); // TODO
     }
     
     /**
@@ -52,7 +52,7 @@ public final class PassengerModule
     {
         for( Passenger passenger : bus.getPassengerContainer() )
         {
-            if( isDestination( passenger, bus.getCurrentBusStop() ) )
+            if( isDestination( passenger, bus.getCurrentBusStopBase() ) )
             {
                 bus.remove( passenger );
             }
@@ -67,7 +67,7 @@ public final class PassengerModule
      * @param currentLocation - compares with <b>Passengers'</b> destination.
      * @return true if <b>Passenger</b> is located at his designated <b>BusStop</b>.
      */
-    public final boolean isDestination( Passenger passenger, BusStop currentLocation )
+    public final boolean isDestination( Passenger passenger, BusStopBase currentLocation )
     {
         if( passenger.getDestination() == currentLocation ) return true;
         return false;

@@ -11,7 +11,7 @@ package DataModel;
 public class Passenger
 {
     /** <b>Passengers'</b> designated <b>BusStop</b>. */
-    private BusStop destination;
+    private BusStopBase destination;
     /** Unique Number/Color */
     private final int ID;
     /** On which step the <b>Passenger</b> appeared at the <b>BusStop</b> */
@@ -21,7 +21,7 @@ public class Passenger
      * 
      * @param destination Wymagane.
      */
-    public Passenger( final BusStop destination, final int timeStamp, final int id )
+    public Passenger( final BusStopBase destination, final int timeStamp, final int id )
     {
         this.destination = destination;
         this.TIMESTAMP = timeStamp;
@@ -47,7 +47,7 @@ public class Passenger
     /**
      * @return the destination
      */
-    public final BusStop getDestination()
+    public final BusStopBase getDestination()
     {
         return destination;
     }

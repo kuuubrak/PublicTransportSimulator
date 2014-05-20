@@ -13,12 +13,12 @@ import java.util.List;
 public final class Mockup implements Serializable
 {
     private final List<Bus> schedule;
-    private final List<BusStop> busStops;
+    private final List<BusStopBase> busStopBases;
 
-    public Mockup( final List<Bus> schedule, final List<BusStop> busStops )
+    public Mockup( final List<Bus> schedule, final List<BusStopBase> busStopBases)
     {
         this.schedule = schedule;
-        this.busStops = busStops;
+        this.busStopBases = busStopBases;
     }
 
     /**
@@ -32,8 +32,8 @@ public final class Mockup implements Serializable
     /**
      * @return busStops
      */
-    public List<BusStop> getBusStops()
+    public List<BusStopBase> getBusStopBases()
     {
-        return busStops;
+        return busStopBases;
     }
 }

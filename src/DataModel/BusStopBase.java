@@ -15,30 +15,26 @@ import java.util.Queue;
  * @author dan.krasniak
  *
  */
-public final class BusStop implements Serializable
+public class BusStopBase implements Serializable
 {
     /** Queue of <b>Passengers</b> waiting for a place in the <b>Bus</b>. */
     private Queue<Passenger> passengerQueue;
     /** Name of the <b>BusStop</b>. */
-    private final String NAME;
-    /** <b>Distance</b> in steps required to reach */
-    private int distance;
+    private String NAME;
+    private Route route;
 
-    public BusStop( final String name, final int distance )
+    public BusStopBase()
+    {
+        this.passengerQueue = new LinkedList<Passenger>();
+        this.route = new Route();
+    }
+
+    public BusStopBase(final String name)
     {
         this.NAME = name;
         this.passengerQueue = new LinkedList<Passenger>();
-        this.distance = distance;
-    }
-    
-    /**
-     * <b>getDistance</b><br>
-     * 
-     * @return distance - required to reach this <b>BusStop</b>.
-     */
-    public final int getDistance()
-    {
-        return distance;
+        this.route = new Route();
+
     }
     
     /**
@@ -50,10 +46,10 @@ public final class BusStop implements Serializable
     }
     
     /**
-     * <b>setInQueue</b>.<br>
+     * <b>queuePush</b>.<br>
      * Sets the <b>Passenger</b> in the <b>Queue</b> of other <b>Passenegrs</b> waiting for a place in the <b>Bus</b>.<br>
      */
-    public final void setInQueue( final Passenger passenger )
+    public final void queuePush(final Passenger passenger)
     {
         passengerQueue.add( passenger );
     }
@@ -66,7 +62,7 @@ public final class BusStop implements Serializable
      * 
      * @return <b>One Passenger</b> from the <b>BusStop</b>
      */
-    public final Passenger takeAPassenger()
+    public final Passenger takePassenger()
     {
         return passengerQueue.poll();
     }
@@ -90,4 +86,28 @@ public final class BusStop implements Serializable
     {
         return passengerQueue.size();
     }
+
+    public Route getRoute() {
+        return route;
+    }
+
+    public BusStopBase getNextBusStop() {
+        return route.getToBusStopBase();
+    }
+
+    /**
+     * <b>getDistance</b><br>
+     *
+     * @return distance - required to reach next <b>BusStop</b>.
+     */
+    public final int getDistance()
+    {
+        return route.getLength();
+    }
+
+    public void setRoute(BusStopBase busStopBase, int length) {
+        getRoute().setToBusStopBase(busStopBase);
+        getRoute().setLength(length);
+    }
+
 }
