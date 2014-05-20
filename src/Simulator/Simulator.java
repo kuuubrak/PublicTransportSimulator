@@ -27,16 +27,18 @@ import network.Client;
  */
 public final class Simulator implements FunctionalitySimulationModule
 {
-    private int simulationWait = 1000; // czas oczekiwania pomiędzy kolejnymi krokami symulacji
-    private double passengerGenerationIntensity = 0.5;
+    private int simulationWait = SimulatorConstants.simulatorDefaultWaitTime; // czas oczekiwania pomiędzy kolejnymi krokami symulacji
+    private double passengerGenerationIntensity = SimulatorConstants.simulatorDefaultGenerationIntensity;
     private Client networkClient = new Client();
+    private ArrayList<Bus> busContainer;
+    ArrayList<BusStop> schedule;
     private String host;
     private int port;
 
     public static void main( String[] args )
     {
         //Simulator simulator = new Simulator(args[0], Integer.valueOf(args[1]));
-        Simulator simulator = new Simulator("127.0.0.1", 8124);
+        Simulator simulator = new Simulator(SimulatorConstants.simulatorHostAddress, SimulatorConstants.simulatorPort);
         simulator.mainLoop();
     }
 
@@ -56,18 +58,24 @@ public final class Simulator implements FunctionalitySimulationModule
     private final void mainLoop()
     {
         networkClient.establishConnection(host, port);
-        ArrayList<Bus> busContainer = new ArrayList<Bus>();
-        ArrayList<BusStop> schedule = generateBusStopSchedule();
+        busContainer = new ArrayList<Bus>();
+        schedule = generateBusStopSchedule();
         int time = 0;
-        
+
+        Bus testBus = new Bus(schedule);
+        Bus testBus2 = new Bus(schedule);
+        Bus testBus3 = new Bus(schedule);
+
+        busContainer.add(testBus);
+        busContainer.add(testBus2);
+        busContainer.add(testBus3);
+
         while(true /* ??? */)
         {
             // generating new random Passengers
             generatePassengers(schedule, passengerGenerationIntensity, time);
-            System.out.println("K1");
             // sending current Mockup
             sendMock(busContainer, schedule);
-            System.out.println("K2");
             //  executing received Orders
             while(!networkClient.getOrdersQueue().isEmpty())
             {
@@ -86,11 +94,7 @@ public final class Simulator implements FunctionalitySimulationModule
 
             // BusList.action()
 
-            // simulateStep()
-            for(Bus bus : busContainer)
-            {
-
-            }
+            simulationStep();
 
             // wait
             try {
@@ -143,15 +147,13 @@ public final class Simulator implements FunctionalitySimulationModule
      */
     private final void generatePassengers(final ArrayList<BusStop> schedule, final double intensity, final int time)
     {
-        int noOfPassengersToGenerate = (int) (random() * intensity);
+        int numberOfPassengersToGenerate = (int) (random() * intensity);
         PassengerModule passengerModule = new PassengerModule();
-        for (int i=0; i < noOfPassengersToGenerate; i++)
+        for (int i=0; i < numberOfPassengersToGenerate; i++)
         {
-            passengerModule.setPassenger(
-                    schedule.get((int)(random() * schedule.size())),
-                    schedule.get((int)(random() * schedule.size())),
-                    time
-            );
+            BusStop location = schedule.get((int)(random() * schedule.size()));
+            BusStop destination = schedule.get((int)(random() * schedule.size()));
+            passengerModule.setPassenger(location, destination, time);
         }
     }
 
@@ -163,14 +165,23 @@ public final class Simulator implements FunctionalitySimulationModule
     private final ArrayList<BusStop> generateBusStopSchedule()
     {
         ArrayList<BusStop> schedule = new ArrayList<BusStop>();
-        BusStop petla = new BusStop( "petla", 3 );
-        schedule.add( petla );
-        schedule.add( new BusStop( "Pierwszy", 5 ) );
-        schedule.add( new BusStop( "Drugi", 3 ) );
-        schedule.add( new BusStop( "Trzeci", 2 ) );
-        schedule.add( petla );
-        
+        BusStop busLoop = new BusStop(SimulatorConstants.busLoopName, SimulatorConstants.busLoopDistance );
+        schedule.add( busLoop );
+        schedule.add( new BusStop( SimulatorConstants.firstBusStopName, SimulatorConstants.firstBusStopDistance ) );
+        schedule.add( new BusStop( SimulatorConstants.secondBusStopName, SimulatorConstants.secondBusStopDistance ) );
+        schedule.add( new BusStop( SimulatorConstants.thirdBusStopName, SimulatorConstants.thirdBusStopDistance ) );
+
         return schedule;
+    }
+
+    private void simulationStep() {
+        moveBuses();
+    }
+
+    private void moveBuses() {
+        for (Bus bus : busContainer) {
+            bus.move();
+        }
     }
 
     @Override

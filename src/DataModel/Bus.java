@@ -1,5 +1,7 @@
 package DataModel;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.util.ArrayList;
 
 /**
@@ -136,9 +138,11 @@ public final class Bus
      */
     public final void move()
     {
-        busStopIterator.setNext(); // TODO
+        busStopIterator.move();
     }
-    
+
+    public final int getCurrentStopIndex() { return busStopIterator.getCurrentBusStopIndex(); }
+
     /**
      * <b>BusStopIterator</b><br>
      * Iterator jednokierunkowy po <b>Przystankach</b>.<br>
@@ -154,12 +158,17 @@ public final class Bus
     {
         /** <b>BusStop</b> Container. */
         private final ArrayList<BusStop> busStopContainer;
+
+        public int getCurrentBusStopIndex() {
+            return currentBusStopIndex;
+        }
+
         /** <b>Index</b> of the current <b>BusStop</b>. */
         private int currentBusStopIndex;
         /** <b>Distance</b> passed in steps */
         private int distancePassed = 0; // TODO
         
-        private BusStopIterator( final ArrayList<BusStop> busStopContainer )
+        public BusStopIterator( final ArrayList<BusStop> busStopContainer )
         {
             this.busStopContainer = busStopContainer;
             this.currentBusStopIndex = 0;
@@ -176,9 +185,15 @@ public final class Bus
          * @return the next <b>BusStop</b>.
          * @throws IndexOutOfBoundsException
          */
-        private final BusStop getNext()
+        public final BusStop getNext()
         {
-            return get( currentBusStopIndex + 1 );
+            int busStopIndex;
+            if (currentBusStopIndex == busStopContainer.size() - 1) {
+                busStopIndex = 0;
+            } else {
+                busStopIndex = currentBusStopIndex + 1;
+            }
+            return get(busStopIndex);
         }
         
         /**
@@ -186,7 +201,7 @@ public final class Bus
          * Moves forward in the iteration and changes the value of <b>currentBusStop</b> to the value of next <b>BusStop</b>.
          * @throws IndexOutOfBoundsException if already at the last <b>BustStop</b>
          */
-        private final void setNext() throws IndexOutOfBoundsException
+        public final void setNext() throws IndexOutOfBoundsException
         {
             if( busStopContainer.size() != currentBusStopIndex + 1 )
             {
@@ -202,7 +217,7 @@ public final class Bus
          * 
          * @return current <b>BusStop</b>.
          */
-        private final BusStop getCurrent()
+        public final BusStop getCurrent()
         {
             return get( currentBusStopIndex );
         }
@@ -214,11 +229,31 @@ public final class Bus
          * 
          * @return  the <b>BusStop</b> of the given <b>index</b>.
          */
-        private final BusStop get( final int index )
+        public final BusStop get( final int index )
         {
             return busStopContainer.get( index );
         }
 
+        /**
+         * <b>move</b><br />
+         * <br />
+         * jakas chujnia
+         */
+        public final void move() {
+            distancePassed++;
+            if (isBusStopReached()) {
+                if (currentBusStopIndex == busStopContainer.size() - 1) {
+                    currentBusStopIndex = 0;
+                }
+                else {
+                    currentBusStopIndex++;
+                }
+                distancePassed = 0;
+            }
+
+        }
+
+        public final boolean isBusStopReached() { return (distancePassed == getNext().getDistance()); }
     }
 
 }
