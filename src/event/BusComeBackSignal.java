@@ -5,5 +5,5 @@ import view.BusEvent;
 /**
  * Created by ppeczek on 2014-05-21.
  */
-public class BusWaits extends BusEvent {
+public class BusComeBackSignal extends BusEvent {
 }

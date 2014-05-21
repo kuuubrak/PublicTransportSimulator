@@ -37,7 +37,7 @@ public class Passenger extends TrafficObject
     }
 
     /**
-     * @return the tIMESTAMP
+     * @return the TIMESTAMP
      */
     public final int getTIMESTAMP()
     {

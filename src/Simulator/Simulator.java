@@ -1,129 +1,35 @@
 package simulator;
 
-import mockup.Mockup;
-import model.Bus;
-import model.BusState;
+import controller.Controller;
 import model.BusStop;
-import model.Schedule;
-import network.Client;
 import order.FunctionalitySimulationModule;
-import order.Order;
-import order.sim.OrderParseMockup;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static java.lang.Math.random;
 
 /**
  * <b>simulator</b><br>
- * Silnik emulacji.<br>
- * <br>
- * Zajmuje się symulowaniem kreowanego świata.<br>
- * Czyli:<br>
- *  - Zawiera w sobie główną pętlę.<br>
- *  - Zajmuje się poruszaniem się <b>Autobusów</b> po <b>Trasie</b>.<br>
- *  - Rozsyła <b>Makiety</b> do pozostałych <b>Modułów</b>.<br>
- *  - Wdraża otrzymane <b>Makiety</b> do symulacji. ( np. zmiana rozkładu jazdy <b>Autobusu</b> )<br>
- * 
- * @author dan.krasniak
+ *
  */
 public final class Simulator implements FunctionalitySimulationModule
 {
+    private static Simulator ourInstance = new Simulator();
+
     private int simulationWait = SimulatorConstants.simulatorDefaultWaitTime; // czas oczekiwania pomiędzy kolejnymi krokami symulacji
     private double passengerGenerationIntensity = SimulatorConstants.simulatorDefaultGenerationIntensity;
-    private Client networkClient = new Client();
-    private ArrayList<Bus> busContainer;
-    private String host;
-    private int port;
 
-    public static void main( String[] args )
-    {
-        //simulator simulator = new simulator(args[0], Integer.valueOf(args[1]));
-        Simulator simulator = new Simulator(SimulatorConstants.simulatorHostAddress, SimulatorConstants.simulatorPort);
-        simulator.mainLoop();
+    public static Simulator getInstance() {
+        return ourInstance;
     }
 
-    /**
-     * <b>Constructor</b><br>
-     */
-    public Simulator(String host, int port)
+    public static void main(final String[] args )
     {
-        this.host = host;
-        this.port = port;
+        final Controller controller = Controller.getInstance();
+        controller.setNetData(SimulatorConstants.simulatorHostAddress, SimulatorConstants.simulatorPort);
+        controller.work();
     }
 
-    /**
-     * <b>mainLoop</b><br>
-     * Simulations' main loop.<br>
-     */
-    private final void mainLoop()
-    {
-        networkClient.establishConnection(host, port);
-        busContainer = new ArrayList<Bus>();
-        Schedule schedule = Schedule.getInstance();
-        int time = 0;
-
-        //TODO autobusy nie są tworzone ot tak. Mają być stworzone na początku programu wg settingsów w zajezdni
-        //i wyjeżdżać z niej kiedy jest potrzeba.
-        Bus testBus = new Bus(schedule);
-        testBus.setState(BusState.RUNNING);
-        Bus testBus2 = new Bus(schedule);
-        Bus testBus3 = new Bus(schedule);
-
-        busContainer.add(testBus);
-        busContainer.add(testBus2);
-        busContainer.add(testBus3);
-
-        while(true /* ??? */)
-        {
-            // generating new random Passengers
-            generatePassengers(schedule.getBusStops(), passengerGenerationIntensity, time);
-            // sending current Mockup
-            sendMock(busContainer, schedule.getBusStops());
-            //  executing received Orders
-            while(!networkClient.getOrdersQueue().isEmpty())
-            {
-                try
-                {
-                    Order<FunctionalitySimulationModule> order = networkClient.getOrdersQueue().take();
-                    order.execute(this);
-                }
-                catch(InterruptedException e)
-                {
-                    //TODO Generated
-                    e.printStackTrace();
-                    throw new RuntimeException();
-                }
-            }
-
-            // BusList.action()
-
-            simulationStep();
-
-            // wait
-            try {
-                Thread.sleep(simulationWait);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            ++time;
-        }
-
-        // TODO
-        //networkClient.closeConnection();
-    }
-    
-    /**
-     * <b>sendMock</b><br>
-     * Sends the simulations' state to other <b>Modules</b>.<br>
-     */
-    private final void sendMock(final List<Bus> schedule, final List<BusStop> busStops)
-    {
-        Mockup mockup = new Mockup(schedule, busStops);
-        networkClient.send(new OrderParseMockup(mockup));
-    }
 
     /**
      * <b>receiveMock</b><br>
@@ -150,7 +56,7 @@ public final class Simulator implements FunctionalitySimulationModule
      * <b>generatePassengers</b>
      * Adds new <b>Passengers</b> to the <b>BusStops</b>.
      */
-    private final void generatePassengers(final ArrayList<BusStop> schedule, final double intensity, final int time)
+    public final void generatePassengers(final ArrayList<BusStop> schedule, final double intensity, final int time)
     {
         int numberOfPassengersToGenerate = (int) (random() * intensity);
         PassengerModule passengerModule = new PassengerModule();
@@ -162,14 +68,8 @@ public final class Simulator implements FunctionalitySimulationModule
         }
     }
 
-    private void simulationStep() {
-        moveBuses();
-    }
-
-    private void moveBuses() {
-        for (Bus bus : busContainer) {
-            bus.move();
-        }
+    public double getPassengerGenerationIntensity() {
+        return passengerGenerationIntensity;
     }
 
     @Override

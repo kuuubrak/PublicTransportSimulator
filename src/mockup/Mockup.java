@@ -4,6 +4,7 @@ import model.Bus;
 import model.BusStop;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,10 +16,10 @@ import java.util.List;
  */
 public final class Mockup implements Serializable
 {
-    private final List<Bus> schedule;
-    private final List<BusStop> busStops;
+    private final ArrayList<Bus> schedule;
+    private final ArrayList<BusStop> busStops;
 
-    public Mockup( final List<Bus> schedule, final List<BusStop> busStops)
+    public Mockup( final ArrayList<Bus> schedule, final ArrayList<BusStop> busStops)
     {
         this.schedule = schedule;
         this.busStops = busStops;
