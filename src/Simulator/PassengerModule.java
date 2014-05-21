@@ -1,8 +1,8 @@
-package Simulator;
+package simulator;
 
-import DataModel.Bus;
-import DataModel.BusStop;
-import DataModel.Passenger;
+import model.Bus;
+import model.BusStop;
+import model.Passenger;
 
 /**
  * <b>PassengerModule</b><br>

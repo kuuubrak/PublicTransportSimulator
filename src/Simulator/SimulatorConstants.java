@@ -1,4 +1,4 @@
-package Simulator;
+package simulator;
 
 /**
  * Created by ppeczek on 2014-05-20.
@@ -9,7 +9,7 @@ public final class SimulatorConstants {
     public final static String simulatorHostAddress = "127.0.0.1";
     public final static int simulatorPort = 8124;
     public final static int cooldown = 10;
-    public final static int fromDepotToTerminusDistance = 2;
+    public final static int depotTerminusDistance = 2;
 
     public final static String depotName = "Zajezdnia";
     public final static String terminusName = "Pętla";

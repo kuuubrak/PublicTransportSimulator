@@ -1,4 +1,4 @@
-package Order;
+package order;
 
 /** Wspólny interfejs dla odbiorców rozkazów.
  *  W sumie formalizm.

@@ -1,4 +1,4 @@
-package Order;
+package order;
 
 /**
  * Funkcjonalność serwera.
@@ -16,9 +16,9 @@ package Order;
 public interface FunctionalityServer{
     
     /**
-     * Polecenie blokowania gui. W sumie samobój, bo pewnie gui właśnie je będzie wydawać :)
+     * Polecenie blokowania view. W sumie samobój, bo pewnie view właśnie je będzie wydawać :)
      * Chyba, że będzie zaimplementowane na timerze.
-     * @param cripple true jeśli rozkazy od gui mają być ignorowane.
+     * @param cripple true jeśli rozkazy od view mają być ignorowane.
      */
     public void crippleGUI(boolean cripple);
     

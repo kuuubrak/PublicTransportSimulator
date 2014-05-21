@@ -1,6 +1,6 @@
 package network;
 
-import Order.Order;
+import order.Order;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -138,7 +138,7 @@ public class Client
 					{
                         ordersQueue.add((Order)object);
 					}
-					//if( object instanceof Order )
+					//if( object instanceof order )
 					//{
 					//	send order
 					//}

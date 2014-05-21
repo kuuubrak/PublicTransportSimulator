@@ -1,10 +1,12 @@
 package zkm;
 
-import DataModel.*;
-import Order.FunctionalityMockupParser;
-import Order.Order;
-import Order.zkm.OrderReleaseBus;
-import Order.zkm.OrderTrapBus;
+import mockup.Mockup;
+import model.Bus;
+import model.BusStop;
+import order.FunctionalityMockupParser;
+import order.Order;
+import order.zkm.OrderReleaseBus;
+import order.zkm.OrderTrapBus;
 import network.Client;
 
 import java.io.IOException;

@@ -1,8 +1,8 @@
-package Order.sim;
+package order.sim;
 
-import DataModel.Mockup;
-import Order.FunctionalityMockupParser;
-import Order.OrderPrioritableAbstract;
+import mockup.Mockup;
+import order.FunctionalityMockupParser;
+import order.OrderPrioritableAbstract;
 
 /**
  * Polecenie przetworzenia makiety.

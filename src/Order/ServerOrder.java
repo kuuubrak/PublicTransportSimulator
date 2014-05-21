@@ -1,5 +1,5 @@
 
-package Order;
+package order;
 
 /**
  * Rozkaz do serwera.

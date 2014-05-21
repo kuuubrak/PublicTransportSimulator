@@ -20,4 +20,4 @@
  *  oraz żeby nie męczyć się z drabinkami if'ów czy innymi switch'ami.
  * 
  */
-package OrderExample;
+package orderexample;

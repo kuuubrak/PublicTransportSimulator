@@ -1,17 +1,22 @@
-package Simulator;
+package simulator;
+
+import mockup.Mockup;
+import model.Bus;
+import model.BusState;
+import model.BusStop;
+import model.Schedule;
+import network.Client;
+import order.FunctionalitySimulationModule;
+import order.Order;
+import order.sim.OrderParseMockup;
 
 import java.util.ArrayList;
 import java.util.List;
-import static java.lang.Math.*;
 
-import DataModel.*;
-import Order.sim.OrderParseMockup;
-import Order.Order;
-import Order.FunctionalitySimulationModule;
-import network.Client;
+import static java.lang.Math.random;
 
 /**
- * <b>Simulator</b><br>
+ * <b>simulator</b><br>
  * Silnik emulacji.<br>
  * <br>
  * Zajmuje się symulowaniem kreowanego świata.<br>
@@ -29,13 +34,12 @@ public final class Simulator implements FunctionalitySimulationModule
     private double passengerGenerationIntensity = SimulatorConstants.simulatorDefaultGenerationIntensity;
     private Client networkClient = new Client();
     private ArrayList<Bus> busContainer;
-    ArrayList<BusStop> schedule;
     private String host;
     private int port;
 
     public static void main( String[] args )
     {
-        //Simulator simulator = new Simulator(args[0], Integer.valueOf(args[1]));
+        //simulator simulator = new simulator(args[0], Integer.valueOf(args[1]));
         Simulator simulator = new Simulator(SimulatorConstants.simulatorHostAddress, SimulatorConstants.simulatorPort);
         simulator.mainLoop();
     }
@@ -125,11 +129,11 @@ public final class Simulator implements FunctionalitySimulationModule
      * <b>receiveMock</b><br>
      * Receive the list of commands from GUI and ZKM <b>Modules</b>.
      */
-    /*private final ArrayList<Order<FunctionalitySimulationModule>> receiveOrders()
+    /*private final ArrayList<order<FunctionalitySimulationModule>> receiveOrders()
     {
         // TODO receiving by server
         networkClient.getOrdersQueue();
-        return new ArrayList<Order<FunctionalitySimulationModule>>();
+        return new ArrayList<order<FunctionalitySimulationModule>>();
     }*/
     
     /**

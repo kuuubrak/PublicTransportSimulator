@@ -1,4 +1,4 @@
 /**
  * Pakiet zawierający rozkazy wydawane przez symulację Pana Daniela.
  */
-package Order.sim;
+package order.sim;

@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package OrderExample;
+package orderexample;
 
-import Order.Order;
-import Order.OrderRecipient;
+import order.Order;
+import order.OrderRecipient;
 
 /** Przykładowa klasa wykonująca przychodzące rozkazy.
  *  Przyuważcie implementację znanej funkcjonalności/interfejsu

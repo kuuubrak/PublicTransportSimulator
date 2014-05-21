@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package OrderExample;
+package orderexample;
 
-import Order.Order;
+import order.Order;
 
 /** Test funkcjonalności.
  *  Rozkazy mogą przychodzić przez net rzecz jasna, czy skądkolwiek indziej.

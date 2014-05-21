@@ -1,4 +1,4 @@
 /**
- * Pakiet zawierający rozkazy wydawane przez gui
+ * Pakiet zawierający rozkazy wydawane przez view
  */
-package Order.gui;
+package order.gui;

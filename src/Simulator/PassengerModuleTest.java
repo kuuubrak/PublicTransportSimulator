@@ -1,4 +1,4 @@
-package Simulator;
+package simulator;
 
 /*
 import static org.junit.Assert.assertTrue;
@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import DataModel.Bus;
-import DataModel.BusStop;
+import model.Bus;
+import model.BusStop;
 
 public class PassengerModuleTest
 {

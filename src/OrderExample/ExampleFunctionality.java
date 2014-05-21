@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package OrderExample;
+package orderexample;
 
 /** Przykładowa funkcjonalność klasy wykorzystywana do rozkazywania.
  *  Argumenty to nie problem (patrz implementację rozkazu).

@@ -1,4 +1,4 @@
-package Order;
+package order;
 
 /** Szablon interfejsu dla rozkazów.
  *  który zawiera funkcjonalność do udostępnienia.

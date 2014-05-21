@@ -1,7 +1,7 @@
 
-package Order;
+package order;
 
-import DataModel.Mockup;
+import mockup.Mockup;
 
 /**
  * Zbiór funkconalności oczekiwanych od obiektów mających

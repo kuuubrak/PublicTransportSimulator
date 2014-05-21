@@ -1,6 +1,7 @@
 package zkm;
 
-import DataModel.*;
+import model.Bus;
+import model.BusStop;
 
 import java.util.ArrayList;
 import java.util.List;

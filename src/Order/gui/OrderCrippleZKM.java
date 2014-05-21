@@ -1,11 +1,11 @@
 
-package Order.gui;
+package order.gui;
 
-import Order.FunctionalityServer;
-import Order.ServerOrderAbstract;
+import order.FunctionalityServer;
+import order.ServerOrderAbstract;
 
 /**
- * Polecenie wydawane przez gui
+ * Polecenie wydawane przez view
  * @author Maciej Majewski
  */
 public class OrderCrippleZKM extends ServerOrderAbstract<FunctionalityServer>{

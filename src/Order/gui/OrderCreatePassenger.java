@@ -1,8 +1,8 @@
 
-package Order.gui;
+package order.gui;
 
-import Order.FunctionalitySimulationModule;
-import Order.OrderPrioritableAbstract;
+import order.FunctionalitySimulationModule;
+import order.OrderPrioritableAbstract;
 
 /**
  * Implementacja rozkazu używanego przez GUI.

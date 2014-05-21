@@ -5,8 +5,8 @@ import java.io.ObjectInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import Order.Order;
-import Order.ServerOrder;
+import order.Order;
+import order.ServerOrder;
 
 
 /**

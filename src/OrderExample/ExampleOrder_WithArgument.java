@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package OrderExample;
+package orderexample;
 
-import Order.OrderPrioritableAbstract;
+import order.OrderPrioritableAbstract;
 
 /** Odrobinkę bardziej złożona implementacja rozkazu.
  * @author Maciej Majewski

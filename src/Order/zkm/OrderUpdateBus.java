@@ -1,7 +1,7 @@
-package Order.zkm;
+package order.zkm;
 
-import Order.FunctionalitySimulationModule;
-import Order.OrderPrioritableAbstract;
+import order.FunctionalitySimulationModule;
+import order.OrderPrioritableAbstract;
 
 /**
  * Implementacja rozkazu wydawanego przez zkm.

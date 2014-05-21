@@ -1,5 +1,5 @@
 
-package Order;
+package order;
 
 /**
  * Funkcjonalność oczekiwana od modułu symulujączego rzeczywistość.
@@ -8,19 +8,19 @@ package Order;
 public interface FunctionalitySimulationModule{
     
     /**
-     * Polecenie zatrymania/wznowienia symulacji [gui]
+     * Polecenie zatrymania/wznowienia symulacji [view]
      * @param patataj false jeśli symulacja ma być wstrzymana
      */
     public void runSimulation(boolean patataj);
     
     /**
-     * Zmiana trybu symulacji [gui]
+     * Zmiana trybu symulacji [view]
      * @param goSlower true, jeśli należy postępować krokowo
      */
     public void stepSimulation(boolean goSlower);
     
     /**
-     * Ustalenie czasów generacji podróżnych [gui]
+     * Ustalenie czasów generacji podróżnych [view]
      * @param minGen najmniejsza liczba kroków przed ponowną generacją podróżnego
      * @param maxGen największa ilość kroków od ostatniej generacji podróżnego
      */
