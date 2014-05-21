@@ -8,13 +8,17 @@ public final class SimulatorConstants {
     public final static double simulatorDefaultGenerationIntensity = 0.5;
     public final static String simulatorHostAddress = "127.0.0.1";
     public final static int simulatorPort = 8124;
+    public final static int cooldown = 10;
+    public final static int fromDepotToTerminusDistance = 2;
 
-    public final static String busHomeName = "Petla";
+    public final static String depotName = "Zajezdnia";
+    public final static String terminusName = "Pętla";
+    public final static int loops = 3;
     public final static int busHomeDistance = 3;
-    public final static String firstBusStopName = "Pierwszy";
+    public final static String firstBusStopName = "Ratusz ArsenaL";
     public final static int firstBusStopDistance = 5;
-    public final static String secondBusStopName = "Drugi";
+    public final static String secondBusStopName = "DZendruM, konwinient czendz tu sabulban end longdistanz treinz";
     public final static int secondBusStopDistance = 3;
-    public final static String thirdBusStopName = "Trzeci";
+    public final static String thirdBusStopName = "SGHuj";
     public final static int thirdBusStopDistance = 2;
 }

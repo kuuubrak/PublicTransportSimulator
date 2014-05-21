@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static java.lang.Math.*;
 
-import DataModel.Bus;
-import DataModel.BusStopBase;
-import DataModel.Mockup;
-import DataModel.Schedule;
+import DataModel.*;
 import Order.sim.OrderParseMockup;
 import Order.Order;
 import Order.FunctionalitySimulationModule;
@@ -32,7 +29,7 @@ public final class Simulator implements FunctionalitySimulationModule
     private double passengerGenerationIntensity = SimulatorConstants.simulatorDefaultGenerationIntensity;
     private Client networkClient = new Client();
     private ArrayList<Bus> busContainer;
-    ArrayList<BusStopBase> schedule;
+    ArrayList<BusStop> schedule;
     private String host;
     private int port;
 
@@ -60,12 +57,13 @@ public final class Simulator implements FunctionalitySimulationModule
     {
         networkClient.establishConnection(host, port);
         busContainer = new ArrayList<Bus>();
-        Schedule schedule = new Schedule();
+        Schedule schedule = Schedule.getInstance();
         int time = 0;
 
         //TODO autobusy nie są tworzone ot tak. Mają być stworzone na początku programu wg settingsów w zajezdni
         //i wyjeżdżać z niej kiedy jest potrzeba.
         Bus testBus = new Bus(schedule);
+        testBus.setState(BusState.RUNNING);
         Bus testBus2 = new Bus(schedule);
         Bus testBus3 = new Bus(schedule);
 
@@ -117,9 +115,9 @@ public final class Simulator implements FunctionalitySimulationModule
      * <b>sendMock</b><br>
      * Sends the simulations' state to other <b>Modules</b>.<br>
      */
-    private final void sendMock(final List<Bus> schedule, final List<BusStopBase> busStopBases)
+    private final void sendMock(final List<Bus> schedule, final List<BusStop> busStops)
     {
-        Mockup mockup = new Mockup(schedule, busStopBases);
+        Mockup mockup = new Mockup(schedule, busStops);
         networkClient.send(new OrderParseMockup(mockup));
     }
 
@@ -148,14 +146,14 @@ public final class Simulator implements FunctionalitySimulationModule
      * <b>generatePassengers</b>
      * Adds new <b>Passengers</b> to the <b>BusStops</b>.
      */
-    private final void generatePassengers(final ArrayList<BusStopBase> schedule, final double intensity, final int time)
+    private final void generatePassengers(final ArrayList<BusStop> schedule, final double intensity, final int time)
     {
         int numberOfPassengersToGenerate = (int) (random() * intensity);
         PassengerModule passengerModule = new PassengerModule();
         for (int i=0; i < numberOfPassengersToGenerate; i++)
         {
-            BusStopBase location = schedule.get((int)(random() * schedule.size()));
-            BusStopBase destination = schedule.get((int)(random() * schedule.size()));
+            BusStop location = schedule.get((int)(random() * schedule.size()));
+            BusStop destination = schedule.get((int)(random() * schedule.size()));
             passengerModule.setPassenger(location, destination, time);
         }
     }

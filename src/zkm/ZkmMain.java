@@ -54,7 +54,7 @@ public class ZkmMain implements FunctionalityMockupParser{
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
         this.loopTimeMinute = loopTimeMinute;
-        mockup = new Mockup(new ArrayList<Bus>(), new ArrayList<BusStopBase>()); //Tymczasowo
+        mockup = new Mockup(new ArrayList<Bus>(), new ArrayList<BusStop>()); //Tymczasowo
     }
 
     private void receiveMockup()
@@ -79,7 +79,7 @@ public class ZkmMain implements FunctionalityMockupParser{
         do {
             receiveMockup();
             ArrayList<Bus> buses = (ArrayList<Bus>) mockup.getBuses();
-            ArrayList<BusStopBase> busStopBases = (ArrayList<BusStopBase>) mockup.getBusStopBases();
+            ArrayList<BusStop> busStops = (ArrayList<BusStop>) mockup.getBusStops();
 
             Integer freeSeatsNr = 0;
             Integer peopleWaitingNr = 0;
@@ -89,9 +89,9 @@ public class ZkmMain implements FunctionalityMockupParser{
                 freeSeatsNr += bus.getNumberOfFreeSeats();
             }
 
-            for (BusStopBase busStopBase : busStopBases)
+            for (BusStop busStop : busStops)
             {
-                peopleWaitingNr += busStopBase.getNumberOfPassengersWaiting();
+                peopleWaitingNr += busStop.getNumberOfPassengersWaiting();
             }
 
             makeDecision(freeSeatsNr, peopleWaitingNr);

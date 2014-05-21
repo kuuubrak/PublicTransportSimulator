@@ -4,15 +4,15 @@ package DataModel;
  * Created by ppeczek on 2014-05-20.
  */
 public class Route {
-    private BusStopBase toBusStopBase;
+    private BusStop toBusStop;
     private int length;
 
-    public BusStopBase getToBusStopBase() {
-        return toBusStopBase;
+    public BusStop getToBusStop() {
+        return toBusStop;
     }
 
-    public void setToBusStopBase(BusStopBase toBusStopBase) {
-        this.toBusStopBase = toBusStopBase;
+    public void setToBusStop(BusStop toBusStop) {
+        this.toBusStop = toBusStop;
     }
 
     public int getLength() {

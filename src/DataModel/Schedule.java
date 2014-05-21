@@ -9,44 +9,40 @@ import java.util.ArrayList;
  */
 public class Schedule {
     private static Schedule ourInstance = new Schedule();
-    private static ArrayList<BusStopBase> busStops;
-//    private static final BusDepot busDepot;
+    private static ArrayList<BusStop> busStops;
 
     public static Schedule getInstance() {
         return ourInstance;
     }
 
-    public Schedule() {
-        busStops = new ArrayList<BusStopBase>();
-        BusTerminus busHome = new BusTerminus(SimulatorConstants.busHomeName);
-        BusStopBase stop1 = new BusStopBase(SimulatorConstants.thirdBusStopName);
-        BusStopBase stop2 = new BusStopBase(SimulatorConstants.thirdBusStopName);
-        BusStopBase stop3 = new BusStopBase(SimulatorConstants.thirdBusStopName);
-        busHome.setRoute(stop1, SimulatorConstants.firstBusStopDistance);
+    private Schedule() {
+        busStops = new ArrayList<BusStop>();
+        BusDepot busDepot = BusDepot.getInstance();
+        BusTerminus busTerminus = BusTerminus.getInstance();
+        BusStop stop1 = new BusStop(SimulatorConstants.firstBusStopName);
+        BusStop stop2 = new BusStop(SimulatorConstants.secondBusStopName);
+        BusStop stop3 = new BusStop(SimulatorConstants.thirdBusStopName);
+        busDepot.setRoute(busTerminus, SimulatorConstants.fromDepotToTerminusDistance);
+        busTerminus.setRoute(stop1, SimulatorConstants.firstBusStopDistance);
         stop1.setRoute(stop2, SimulatorConstants.secondBusStopDistance);
         stop2.setRoute(stop3, SimulatorConstants.thirdBusStopDistance);
-        stop3.setRoute(busHome, SimulatorConstants.busHomeDistance);
-        busStops.add( busHome );
+        stop3.setRoute(busTerminus, SimulatorConstants.busHomeDistance);
+        busStops.add(busDepot);
+        busStops.add( busTerminus );
         busStops.add( stop1 );
         busStops.add( stop2 );
         busStops.add( stop3 );
-
     }
 
     public BusTerminus getTerminus() {
-        for (BusStopBase busStop : busStops) {
-            if (busStop instanceof BusTerminus) {
-                return (BusTerminus)busStop;
-            }
-        }
-        return null;
+        return BusTerminus.getInstance();
     }
 
-//    public static BusDepot getBusDepot() {
-//        return busDepot;
-//    }
+    public static BusDepot getBusDepot() {
+        return BusDepot.getInstance();
+    }
 
-    public static ArrayList<BusStopBase> getBusStops() {
+    public static ArrayList<BusStop> getBusStops() {
         return busStops;
     }
 }

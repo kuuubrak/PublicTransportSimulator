@@ -21,14 +21,14 @@ public class ServerClient {
         return false;
     }
 
-    public Pair<List<Bus>, List<BusStopBase>> getMockup()
+    public Pair<List<Bus>, List<BusStop>> getMockup()
     {
         List<Bus> bus = new ArrayList<Bus>();
-        List<BusStopBase> busStopBase = new ArrayList<BusStopBase>();
+        List<BusStop> busStop = new ArrayList<BusStop>();
 
         //TODO
 
-        return new Pair<List<Bus>, List<BusStopBase>>(bus, busStopBase);
+        return new Pair<List<Bus>, List<BusStop>>(bus, busStop);
     }
 
     void sendMessage(/* TODO */)

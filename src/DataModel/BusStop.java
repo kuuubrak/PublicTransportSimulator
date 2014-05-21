@@ -15,21 +15,15 @@ import java.util.Queue;
  * @author dan.krasniak
  *
  */
-public class BusStopBase implements Serializable
+public class BusStop implements Serializable
 {
     /** Queue of <b>Passengers</b> waiting for a place in the <b>Bus</b>. */
     private Queue<Passenger> passengerQueue;
     /** Name of the <b>BusStop</b>. */
-    private String NAME;
+    private final String NAME;
     private Route route;
 
-    public BusStopBase()
-    {
-        this.passengerQueue = new LinkedList<Passenger>();
-        this.route = new Route();
-    }
-
-    public BusStopBase(final String name)
+    public BusStop(final String name)
     {
         this.NAME = name;
         this.passengerQueue = new LinkedList<Passenger>();
@@ -91,8 +85,8 @@ public class BusStopBase implements Serializable
         return route;
     }
 
-    public BusStopBase getNextBusStop() {
-        return route.getToBusStopBase();
+    public BusStop getNextBusStop() {
+        return route.getToBusStop();
     }
 
     /**
@@ -105,8 +99,8 @@ public class BusStopBase implements Serializable
         return route.getLength();
     }
 
-    public void setRoute(BusStopBase busStopBase, int length) {
-        getRoute().setToBusStopBase(busStopBase);
+    public void setRoute(BusStop busStop, int length) {
+        getRoute().setToBusStop(busStop);
         getRoute().setLength(length);
     }
 

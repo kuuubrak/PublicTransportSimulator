@@ -1,5 +1,7 @@
 package DataModel;
 
+import Simulator.SimulatorConstants;
+
 import java.util.ArrayList;
 
 /**
@@ -20,24 +22,25 @@ public final class Bus
 {
     /** How many <b>Passengers</b> can one <b>Bus</b> hold. */
     private static final int MAX_SEATS = 10;
+    /** Number of steps to wait after finishing all the laps */
+    private final int waitFor = 10; // TODO
     /** How many <b>Passengers</b> the <b>Bus</b> is already holding. */
     private int seatsTaken = 0;
     /** A container of currently held <b>Passengers</b> */
     private ArrayList<Passenger> passengerContainer;
-    private BusStopBase currentBusStopBase;
-    /** Number of laps already done. */
-    private int laps = 0; // TODO
-    /** Number of laps to do */
-    private final int lapsToDo = 3; // TODO
-    /** Number of steps to wait after finishing all the laps */
-    private final int waitFor = 10; // TODO
-    private Counter counter;
+    private BusStop currentBusStop;
+    private BusState state;
+    private Counter toNextStop;
+    private Counter loopsToFinish;
+    private Cooldown cooldownAfterLoops;
     
     public Bus(Schedule schedule)
     {
         this.passengerContainer = new ArrayList<Passenger>();
-        this.currentBusStopBase = schedule.getTerminus();
-        this.counter = new Counter(this.currentBusStopBase.getDistance());
+        this.currentBusStop = schedule.getBusDepot();
+        this.state = BusState.IN_DEPOT;
+        this.toNextStop = new Counter(this.currentBusStop.getDistance());
+        this.loopsToFinish = new Counter(SimulatorConstants.loops);
     }
     
     /**
@@ -66,9 +69,9 @@ public final class Bus
      */
     public final void takeInPassengers()
     {
-        while( !isFull() && !getCurrentBusStopBase().isEmpty() )
+        while( !isFull() && !getCurrentBusStop().isEmpty() )
         {
-            addPassenger( getCurrentBusStopBase().takePassenger() );
+            addPassenger( getCurrentBusStop().takePassenger() );
         }
     }
     
@@ -96,12 +99,20 @@ public final class Bus
      * 
      * @return current <b>BusStop</b>
      */
-    public BusStopBase getCurrentBusStopBase() {
-        return currentBusStopBase;
+    public BusStop getCurrentBusStop() {
+        return currentBusStop;
     }
 
-    public void setCurrentBusStopBase(BusStopBase currentBusStopBase) {
-        this.currentBusStopBase = currentBusStopBase;
+    public void setCurrentBusStop(BusStop currentBusStop) {
+        this.currentBusStop = currentBusStop;
+    }
+
+    public BusState getState() {
+        return state;
+    }
+
+    public void setState(BusState state) {
+        this.state = state;
     }
 
     /**
@@ -112,9 +123,9 @@ public final class Bus
      * @return next <b>BusStop</b>
      * @throws IndexOutOfBoundsException
      */
-    public final BusStopBase getNextBusStop()
+    public final BusStop getNextBusStop()
     {
-        return currentBusStopBase.getRoute().getToBusStopBase();
+        return currentBusStop.getRoute().getToBusStop();
     }
 
     public final void remove( Passenger passenger )
@@ -128,13 +139,23 @@ public final class Bus
      */
     public final void move()
     {
-        //TODO: throw event if counter drops to 0
         int count0;
-        count0 = counter.countdown();
-        System.out.println("Obecny: " + currentBusStopBase.getNAME() + ", do następnego: " + counter.getValue());
-        if (count0 == 0) {
-            setCurrentBusStopBase(getNextBusStop());
-            counter.setValue(currentBusStopBase.getDistance());
+        //TODO: implement Strategy Pattern
+        if (getState() == BusState.RUNNING) {
+            //TODO: throw event if toNextStop drops to 0
+            count0 = toNextStop.countdown();
+            System.out.println("Obecny: " + currentBusStop.getNAME() + ", do następnego: " + toNextStop.getValue());
+            if (count0 == 0) {
+                setCurrentBusStop(getNextBusStop());
+                toNextStop.setValue(currentBusStop.getDistance());
+                if (currentBusStop instanceof BusTerminus) {
+                    loopsToFinish.countdown();
+                }
+            }
+        }
+        if (getState() == BusState.COOLDOWN) {
+            //TODO: obsługa eventem
+            cooldownAfterLoops.countdown();
         }
     }
 
