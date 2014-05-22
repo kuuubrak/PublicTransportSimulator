@@ -53,7 +53,7 @@ public class Controller implements ActionListener {
         resultMap.put(BusReadyToGo.class, new BusReadyToGoStrategy());
         resultMap.put(BusReturnedToDepot.class, new BusReturnedToDepotStrategy());
         resultMap.put(BusStartSignal.class, new BusStartSignalStrategy());
-        resultMap.put(BusWaitsBeforeStop.class, new BusWaitsBeforeStopStrategy());
+        resultMap.put(BusWaitsBeforeStop.class, new BusStopOccupiedStrategy());
         return Collections.unmodifiableMap(resultMap);
     }
 
@@ -104,6 +104,12 @@ public class Controller implements ActionListener {
         abstract void execute(Bus bus);
     }
 
+    /**
+     * Obsługa zdarzenia przyjazdu autobusu na przystanek.
+     * Dojazd na przystanek powoduje zmianę stanu autobusu na autobus stojący na przystanku.
+     * Jeśli dojechał do pętli, to sprawdzana jest dokonana liczba kursów. Jeśli został osiągnięty
+     * limit, to autobus wzbudza sam dla siebie sygnał powrotu do zajezdni.
+     */
     private final class BusArrivesToBusStopStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
@@ -125,6 +131,10 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * Strategia sygnału powrotu do pętli.
+     * Dla autobusu zostaje ustawiona trasa powrotna do zajezdni i stan zakończenia kursu.
+     */
     private final class BusComeBackSignalStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
@@ -133,6 +143,10 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * Strategia zdarzenia gotowości do jazdy.
+     * Autobus zmienia stan na gotowy do jazdy.
+     */
     private final class BusReadyToGoStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
@@ -140,6 +154,11 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * Strategia zdarzenia powrotu do zajezdni.
+     * Autobus, który wrócił do zajezdni zmienia obecny przystanek na zajezdnię
+     * i zmienia stan na "przerwa".
+     */
     private final class BusReturnedToDepotStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
@@ -148,6 +167,10 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * Strategia sygnału rozpoczęcia kursu.
+     * Autobus zmienia stan na jadący.
+     */
     private final class BusStartSignalStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
@@ -155,7 +178,11 @@ public class Controller implements ActionListener {
         }
     }
 
-    private final class BusWaitsBeforeStopStrategy extends MyStrategy {
+    /**
+     * Strategia zdarzenia próby wja
+     * chuj, nie wiem co to jest
+     */
+    private final class BusStopOccupiedStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
 
