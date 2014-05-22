@@ -46,8 +46,6 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 
     /**
      * Tworzy moduly i przypisuje im odpowiednie porty sieciowe.
-     *
-     * @throws IOException
      */
     public Server(int guiPort, int passengersPort, int managementPort) {
         this.guiPort = guiPort;
@@ -59,8 +57,6 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
     /**
      * Otwiera polaczenia dla wszystkich modulow,
      * przypisuje kazdemu modulowi odpowiadajacych mu odbiorcow.
-     *
-     * @throws IOException
      */
     public void createServer() throws IOException {
         try {
@@ -103,9 +99,6 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 
     /**
      * Wysyla obiekt do konkretnego socketa
-     *
-     * @param object
-     * @param socket
      */
     void send(final Object object, ModuleNetwork receiver) {
         sleepingSender.send(object, receiver);
@@ -113,9 +106,6 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 
     /**
      * Informuje czy z socketem jest polaczony jakis klient.
-     *
-     * @param socket
-     * @return
      */
     boolean isConnected(final Socket socket) {
         if (socket == null) {
@@ -127,8 +117,6 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
 
     /**
      * Rozlacza klienta z konkretnego socketa.
-     *
-     * @param socket
      */
     void closeConnection(Socket socket) {
         if (isConnected(socket)) {
