@@ -14,7 +14,6 @@ import static java.lang.Math.random;
 public final class Simulator implements FunctionalitySimulationModule {
     private static Simulator ourInstance = new Simulator();
 
-    private int simulationWait = SimulatorConstants.simulatorDefaultWaitTime; // czas oczekiwania pomiędzy kolejnymi krokami symulacji
     private double passengerGenerationIntensity = SimulatorConstants.simulatorDefaultGenerationIntensity;
 
     public static Simulator getInstance() {

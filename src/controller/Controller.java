@@ -38,7 +38,7 @@ public class Controller implements ActionListener {
         this.model = new Model(this.blockingQueue);
         this.mockup = createMockup();
 //        this.view = new View(blockingQueue, mockup);
-        this.timer = new Timer(50, this);
+        this.timer = new Timer(SimulatorConstants.simulationSpeed, this);
         timer.start();
     }
 
