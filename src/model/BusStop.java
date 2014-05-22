@@ -98,4 +98,7 @@ public class BusStop implements Serializable {
         getRoute().setLength(length);
     }
 
+    public Queue<Passenger> getPassengerQueue() {
+        return passengerQueue;
+    }
 }

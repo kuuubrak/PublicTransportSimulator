@@ -1,8 +1,4 @@
-package simulator;
-
-import model.Bus;
-import model.BusStop;
-import model.Passenger;
+package model;
 
 /**
  * <b>PassengerModule</b><br>
@@ -14,16 +10,16 @@ public final class PassengerModule {
      * <b>generatePassenger</b><br>
      * Generates a new <b>Passenger</b> with an unique number and given destination.
      */
-    private final Passenger generatePassenger(final BusStop destination, final int time) {
-        return new Passenger(destination, time, (int) (Math.random() * 10000)); //TODO
+    private final Passenger generatePassenger(final BusStop destination, final float time) {
+        return new Passenger(destination, time);
     }
 
     /**
      * <b>setPassenger</b><br>
      * Set newly generated <b>Passenger</b> at a given or random <b>BusStop</b> with a given or random <b>Destination</b>.
      */
-    public final void setPassenger(final BusStop location, final BusStop destination, final int time) {
-        location.queuePush(generatePassenger(destination, time)); // TODO
+    public final void setPassenger(final BusStop location, final BusStop destination, final float time) {
+        location.queuePush(generatePassenger(destination, time));
     }
 
     /**
@@ -33,7 +29,7 @@ public final class PassengerModule {
      *
      * @param bus
      */
-    public final void transferPassengers(final Bus bus) {
+    public final void transferPassengers(final Bus bus) { //wysiadanie też jest zdarzeniem
         removeFromBus(bus);
         bus.takeInPassengers();
     }
@@ -61,7 +57,6 @@ public final class PassengerModule {
      * @return true if <b>Passenger</b> is located at his designated <b>BusStop</b>.
      */
     public final boolean isDestination(Passenger passenger, BusStop currentLocation) {
-        if (passenger.getDestination() == currentLocation) return true;
-        return false;
+        return (passenger.getDestination().equals(currentLocation));
     }
 }

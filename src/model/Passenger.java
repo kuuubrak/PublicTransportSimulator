@@ -1,6 +1,8 @@
 package model;
 
 
+import java.util.UUID;
+
 /**
  * <b>Passenger</b><br>
  * Podróżny, pojawia się losowo na <b>Przystankach</b> z losowym <b>Przystankiem</b> docelowym.<br>
@@ -11,11 +13,11 @@ public class Passenger {
     /**
      * Unique Number/Color
      */
-    private final int ID;
+    private final UUID ID;
     /**
      * On which step the <b>Passenger</b> appeared at the <b>BusStop</b>
      */
-    private final int TIMESTAMP;
+    private final float TIMESTAMP;
     /**
      * <b>Passengers'</b> designated <b>BusStop</b>.
      */
@@ -24,23 +26,28 @@ public class Passenger {
     /**
      * @param destination Wymagane.
      */
-    public Passenger(final BusStop destination, final int timeStamp, final int id) {
+    public Passenger(final BusStop destination, final float timeStamp) {
         this.destination = destination;
         this.TIMESTAMP = timeStamp;
-        this.ID = id;
+        this.ID = UUID.randomUUID();
+    }
+
+    public final float getWaitingTime()
+    {
+        return System.currentTimeMillis() - TIMESTAMP;
     }
 
     /**
      * @return the ID
      */
-    public final int getID() {
+    public final UUID getID() {
         return ID;
     }
 
     /**
      * @return the TIMESTAMP
      */
-    public final int getTIMESTAMP() {
+    public final float getTIMESTAMP() {
         return TIMESTAMP;
     }
 

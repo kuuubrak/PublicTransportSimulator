@@ -174,6 +174,9 @@ public final class Bus implements EventListener {
         }
     }
 
+    /**
+     * Strategia autobusu czekającego na zajezdni na sygnał. Autobus nic nie robi.
+     */
     private final class BusIdleStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
@@ -181,6 +184,9 @@ public final class Bus implements EventListener {
         }
     }
 
+    /**
+     * Strategia jadącego autobusu. Dopóki autobus nie dojedzie do przystanka, to jest w drodze.
+     */
     private final class BusOnRunStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
@@ -200,9 +206,14 @@ public final class Bus implements EventListener {
         }
     }
 
+    /**
+     * Strategia przejazdu autobusów przez przystanki. Jeśli nikt nie wsiada i nie wysiada,
+     * to autobus nie zatrzymuje się, tylko jedzie dalej. Jeśli ktoś wsiada / wysiada, to należy to obsłużyć tutaj.
+     */
     private final class BusAtBusStopStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
+            //TODO logika zatrzymywania sie autobusow
             try
             {
                 blockingQueue.put(new BusStartSignal(getBus()));
@@ -214,14 +225,22 @@ public final class Bus implements EventListener {
         }
     }
 
+    /**
+     * Strategia autobusu czekającego na zwolnienie się przystanka. Jeśli inny autobus zajmował przystanek,
+     * to ten sprawdza, czy przystanek jest nadal zajęty, jak nie to wjeżdża.
+     *
+     * TODO: jeśli jest kolejkowanie do przystanka, to zaimplementować
+     *
+     */
     private final class BusWaitingForBusStopStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
-            //TODO: sprawdz
-
         }
     }
 
+    /**
+     * Strategia obsługi sygnału powrotu autobusu na zajezdnię. Autobus wraca na zajezdnię.
+     */
     private final class BusReturnSignalStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
@@ -241,10 +260,13 @@ public final class Bus implements EventListener {
         }
     }
 
+    /**
+     * Strategia autobusu odbywającego przerwę po kursie. Autobus odczekuje daną liczbę kroków i w ówczas
+     * staje się dostępny.
+     */
     private final class BusReturnedStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
-            //TODO: obsługa eventem
             cooldownAfterLoops.countdown();
             if (cooldownAfterLoops.isDownCounted()) {
                 try

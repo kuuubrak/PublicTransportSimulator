@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Created by ppeczek on 2014-05-20.
  */
 public final class SimulatorConstants {
-    public final static int simulationSpeed = 50;
+    public final static int simulationSpeed = 500;
     public final static double simulatorDefaultGenerationIntensity = 0.5;
     public final static String simulatorHostAddress = "127.0.0.1";
     public final static int simulatorPort = 8124;

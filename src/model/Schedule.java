@@ -47,4 +47,14 @@ public class Schedule {
     public BusTerminus getTerminus() {
         return BusTerminus.getInstance();
     }
+
+    public ArrayList<BusStop> getPassengersStops() {
+        ArrayList<BusStop> passengersStops = new ArrayList<BusStop>();
+        for (BusStop bs : getBusStops()) {
+            if (!(bs instanceof BusDepot)) {
+                passengersStops.add(bs);
+            }
+        }
+        return passengersStops;
+    }
 }
