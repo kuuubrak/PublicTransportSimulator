@@ -17,12 +17,15 @@
 
 package orderexample;
 
-/** Przykładowa funkcjonalność klasy wykorzystywana do rozkazywania.
- *  Argumenty to nie problem (patrz implementację rozkazu).
- *  Ponieważ rozkaz to rozkaz, sprzeciwić się nie można - czyli nic się tak nie zwróci (zwłaszcza po sieci)
+/**
+ * Przykładowa funkcjonalność klasy wykorzystywana do rozkazywania.
+ * Argumenty to nie problem (patrz implementację rozkazu).
+ * Ponieważ rozkaz to rozkaz, sprzeciwić się nie można - czyli nic się tak nie zwróci (zwłaszcza po sieci)
+ *
  * @author Maciej Majewski
  */
-interface ExampleFunctionality{
+interface ExampleFunctionality {
     void printCrap();
+
     void printTxt(String toPrint);
 }

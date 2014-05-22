@@ -10,10 +10,8 @@ import static java.lang.Math.random;
 
 /**
  * <b>simulator</b><br>
- *
  */
-public final class Simulator implements FunctionalitySimulationModule
-{
+public final class Simulator implements FunctionalitySimulationModule {
     private static Simulator ourInstance = new Simulator();
 
     private int simulationWait = SimulatorConstants.simulatorDefaultWaitTime; // czas oczekiwania pomiędzy kolejnymi krokami symulacji
@@ -23,8 +21,7 @@ public final class Simulator implements FunctionalitySimulationModule
         return ourInstance;
     }
 
-    public static void main(final String[] args )
-    {
+    public static void main(final String[] args) {
         final Controller controller = Controller.getInstance();
         controller.setNetData(SimulatorConstants.simulatorHostAddress, SimulatorConstants.simulatorPort);
         controller.work();
@@ -41,10 +38,10 @@ public final class Simulator implements FunctionalitySimulationModule
         networkClient.getOrdersQueue();
         return new ArrayList<order<FunctionalitySimulationModule>>();
     }*/
-    
+
     /**
      * <b>getTime</b>
-     * 
+     *
      * @return number of steps that already passed.
      */
     /*public final int getTime()
@@ -56,14 +53,12 @@ public final class Simulator implements FunctionalitySimulationModule
      * <b>generatePassengers</b>
      * Adds new <b>Passengers</b> to the <b>BusStops</b>.
      */
-    public final void generatePassengers(final ArrayList<BusStop> schedule, final double intensity, final int time)
-    {
+    public final void generatePassengers(final ArrayList<BusStop> schedule, final double intensity, final int time) {
         int numberOfPassengersToGenerate = (int) (random() * intensity);
         PassengerModule passengerModule = new PassengerModule();
-        for (int i=0; i < numberOfPassengersToGenerate; i++)
-        {
-            BusStop location = schedule.get((int)(random() * schedule.size()));
-            BusStop destination = schedule.get((int)(random() * schedule.size()));
+        for (int i = 0; i < numberOfPassengersToGenerate; i++) {
+            BusStop location = schedule.get((int) (random() * schedule.size()));
+            BusStop destination = schedule.get((int) (random() * schedule.size()));
             passengerModule.setPassenger(location, destination, time);
         }
     }

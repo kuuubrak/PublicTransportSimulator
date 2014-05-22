@@ -1,11 +1,11 @@
-
 package order;
 
 /**
  * Rozkaz do serwera.
- * @author Maciej Majewski
+ *
  * @param <T> interfejs funkcjonalności.
+ * @author Maciej Majewski
  */
-public interface ServerOrder<T> extends Order<T>{
-    
+public interface ServerOrder<T> extends Order<T> {
+
 }

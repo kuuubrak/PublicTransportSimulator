@@ -1,4 +1,3 @@
-
 package order.gui;
 
 import order.FunctionalityServer;
@@ -6,9 +5,10 @@ import order.ServerOrderAbstract;
 
 /**
  * Polecenie wydawane przez view
+ *
  * @author Maciej Majewski
  */
-public class OrderCrippleZKM extends ServerOrderAbstract<FunctionalityServer>{
+public class OrderCrippleZKM extends ServerOrderAbstract<FunctionalityServer> {
 
     private final boolean cripple;
 
@@ -18,12 +18,11 @@ public class OrderCrippleZKM extends ServerOrderAbstract<FunctionalityServer>{
     public OrderCrippleZKM(boolean cripple) {
         this.cripple = cripple;
     }
-    
-    
-    
+
+
     @Override
     public void execute(FunctionalityServer subject) {
         subject.crippleZKM(cripple);
     }
-    
+
 }

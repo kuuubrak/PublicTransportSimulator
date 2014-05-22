@@ -19,14 +19,16 @@ package orderexample;
 
 import order.OrderPrioritableAbstract;
 
-/** Przykładowa implementacja prostego rozkazu.
+/**
+ * Przykładowa implementacja prostego rozkazu.
+ *
  * @author Maciej Majewski
  */
-public class ExampleOrder_Trivial extends OrderPrioritableAbstract<ExampleFunctionality>{
+public class ExampleOrder_Trivial extends OrderPrioritableAbstract<ExampleFunctionality> {
 
     @Override
     public void execute(ExampleFunctionality subject) {
         subject.printCrap();
     }
-    
+
 }

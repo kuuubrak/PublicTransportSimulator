@@ -1,4 +1,3 @@
-
 package order.gui;
 
 import order.FunctionalitySimulationModule;
@@ -6,10 +5,11 @@ import order.OrderPrioritableAbstract;
 
 /**
  * Implementacja rozkazu używanego przez GUI.
+ *
  * @author Maciej Majewski
  */
 public class OrderCreatePassenger extends OrderPrioritableAbstract<FunctionalitySimulationModule> {
-    
+
     private final String from;
     private final String to;
 
@@ -22,5 +22,5 @@ public class OrderCreatePassenger extends OrderPrioritableAbstract<Functionality
     public void execute(FunctionalitySimulationModule subject) {
         subject.newPassenger(from, to);
     }
-    
+
 }

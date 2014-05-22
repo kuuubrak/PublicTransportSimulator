@@ -1,15 +1,18 @@
 package model;
 
-import simulator.SimulatorConstants;
-
 /**
  * Created by ppeczek on 2014-05-21.
  */
 public class Cooldown extends Counter {
-    public final static int max_value = SimulatorConstants.cooldown;
+    public int max_value;
 
-    public Cooldown() {
-        super(max_value);
+    public Cooldown(int value) {
+        super(value);
+        max_value = value;
+    }
+
+    public void reset() {
+        setValue(max_value);
     }
 
     @Override
@@ -17,7 +20,7 @@ public class Cooldown extends Counter {
         //TODO: rzuć event
         super.countdown();
         if (isDownCounted()) {
-            setValue(max_value);
+            reset();
         }
         return getValue();
     }

@@ -18,6 +18,6 @@
 /**
  *  Skąd ten pakiet? Ano stąd, coby nadać konkretną formę mojemu 'niezrozumiałemu' wywodowi,
  *  oraz żeby nie męczyć się z drabinkami if'ów czy innymi switch'ami.
- * 
+ *
  */
 package orderexample;

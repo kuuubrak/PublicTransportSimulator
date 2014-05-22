@@ -1,4 +1,3 @@
-
 package order.gui;
 
 import order.FunctionalitySimulationModule;
@@ -6,10 +5,11 @@ import order.OrderPrioritableAbstract;
 
 /**
  * Implementacja rozkazu używanego przez GUI
+ *
  * @author Maciej Majewski
  */
-public class OrderGenerationConfig extends OrderPrioritableAbstract<FunctionalitySimulationModule>{
-    
+public class OrderGenerationConfig extends OrderPrioritableAbstract<FunctionalitySimulationModule> {
+
     private final int min;
     private final int max;
 
@@ -24,7 +24,7 @@ public class OrderGenerationConfig extends OrderPrioritableAbstract<Functionalit
 
     @Override
     public void execute(FunctionalitySimulationModule subject) {
-       subject.passengerGenerationConfig(min, max);
-    }    
-    
+        subject.passengerGenerationConfig(min, max);
+    }
+
 }

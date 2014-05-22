@@ -1,9 +1,9 @@
 package view;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 
 public interface DetailView {
 
-	public void paint(Graphics2D g2);
+    public void paint(Graphics2D g2);
 
 }

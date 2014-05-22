@@ -10,12 +10,13 @@ import java.util.ArrayList;
 public class BusDepot extends BusStop {
     private static BusDepot ourInstance = new BusDepot();
     private ArrayList<Bus> buses;
-    public static BusDepot getInstance() {
-        return ourInstance;
-    }
 
     private BusDepot() {
         super(SimulatorConstants.depotName);
+    }
+
+    public static BusDepot getInstance() {
+        return ourInstance;
     }
 
     public void setRoute(int length) {

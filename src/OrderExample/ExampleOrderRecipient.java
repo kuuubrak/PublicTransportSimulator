@@ -20,12 +20,14 @@ package orderexample;
 import order.Order;
 import order.OrderRecipient;
 
-/** Przykładowa klasa wykonująca przychodzące rozkazy.
- *  Przyuważcie implementację znanej funkcjonalności/interfejsu
+/**
+ * Przykładowa klasa wykonująca przychodzące rozkazy.
+ * Przyuważcie implementację znanej funkcjonalności/interfejsu
+ *
  * @author Maciej Majewski
  */
 public class ExampleOrderRecipient implements ExampleFunctionality,
-                                              OrderRecipient<ExampleFunctionality> {
+        OrderRecipient<ExampleFunctionality> {
 
     @Override
     public void printCrap() {
@@ -41,6 +43,6 @@ public class ExampleOrderRecipient implements ExampleFunctionality,
     public void executeOrder(Order<ExampleFunctionality> toExec) {
         toExec.execute(this);
     }
-    
-    
+
+
 }

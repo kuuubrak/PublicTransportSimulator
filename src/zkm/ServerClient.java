@@ -11,19 +11,16 @@ import java.util.List;
  */
 public class ServerClient {
 
-    public ServerClient(/* TODO */)
-    {
+    public ServerClient(/* TODO */) {
         // TODO
     }
 
-    public boolean connect(/* TODO */)
-    {
+    public boolean connect(/* TODO */) {
         /* TODO */
         return false;
     }
 
-    public Pair<List<Bus>, List<BusStop>> getMockup()
-    {
+    public Pair<List<Bus>, List<BusStop>> getMockup() {
         List<Bus> bus = new ArrayList<Bus>();
         List<BusStop> busStop = new ArrayList<BusStop>();
 
@@ -32,8 +29,7 @@ public class ServerClient {
         return new Pair<List<Bus>, List<BusStop>>(bus, busStop);
     }
 
-    void sendMessage(/* TODO */)
-    {
+    void sendMessage(/* TODO */) {
 
     }
 }

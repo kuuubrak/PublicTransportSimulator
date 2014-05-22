@@ -2,13 +2,14 @@ package order;
 
 /**
  * Implementacja częściowa.
- * @author Maciej Majewski
+ *
  * @param <T> interfejs funkcjonalności
+ * @author Maciej Majewski
  */
-public abstract class ServerOrderAbstract<T> implements ServerOrder<T>{
-    
+public abstract class ServerOrderAbstract<T> implements ServerOrder<T> {
+
     // w sumie to niepotrzebne tu te funkcje...
-    
+
     @Override
     public int priority() {
         return 0;
@@ -18,5 +19,5 @@ public abstract class ServerOrderAbstract<T> implements ServerOrder<T>{
     public int compareTo(Order<T> o) {
         return 0;
     }
-    
+
 }

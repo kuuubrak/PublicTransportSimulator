@@ -19,32 +19,34 @@ package orderexample;
 
 import order.Order;
 
-/** Test funkcjonalności.
- *  Rozkazy mogą przychodzić przez net rzecz jasna, czy skądkolwiek indziej.
+/**
+ * Test funkcjonalności.
+ * Rozkazy mogą przychodzić przez net rzecz jasna, czy skądkolwiek indziej.
+ *
  * @author Maciej Majewski
  */
 public class ExampleTest {
-    public static void main(String... args){
-        ExampleOrderRecipient soldier=new ExampleOrderRecipient();
+    public static void main(String... args) {
+        ExampleOrderRecipient soldier = new ExampleOrderRecipient();
         
         /* Przychodzące rozkazy wystarczy jedynie zrzutować na typ surowy (postuluję
            obecność na łączu jedynie takich rozkazów) z przychodzącego po ObjectStream'ie
            obiektu. Poniżej symulacja przychodzących właśnie w taki sposób rozkazów
            (nie obchodzą nas konkretne typy).
         */
-        Order uno=new ExampleOrder_Trivial(); //surowy typ
-        Order due=new ExampleOrder_WithArgument("Hende hoch!"); //surowy typ
-        Order tre=new ExampleOrder_Evil(); //surowy typ
+        Order uno = new ExampleOrder_Trivial(); //surowy typ
+        Order due = new ExampleOrder_WithArgument("Hende hoch!"); //surowy typ
+        Order tre = new ExampleOrder_Evil(); //surowy typ
         
         /* Próba wykonania. W faktycznej implementacji serwer nie powinien
            przysyłać do modułu rozkazów nie przeznaczonych dla niego, więc
            ponąć będzie można blok try.
         */
-        try{
+        try {
             soldier.executeOrder(uno);
             soldier.executeOrder(due);
             soldier.executeOrder(tre);
-        }catch(ClassCastException ex){
+        } catch (ClassCastException ex) {
             System.out.println("Me not understandz. Taht ordah be bad.");
         }
     }

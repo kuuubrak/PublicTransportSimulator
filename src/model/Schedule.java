@@ -1,5 +1,6 @@
 package model;
 
+import javafx.util.Pair;
 import simulator.SimulatorConstants;
 
 import java.util.ArrayList;
@@ -11,32 +12,28 @@ public class Schedule {
     private static Schedule ourInstance = new Schedule();
     private static ArrayList<BusStop> busStops;
 
-    public static Schedule getInstance() {
-        return ourInstance;
-    }
-
     private Schedule() {
         busStops = new ArrayList<BusStop>();
+
+        BusStop lastStop, currentStop;
         BusDepot busDepot = BusDepot.getInstance();
         BusTerminus busTerminus = BusTerminus.getInstance();
-        BusStop stop1 = new BusStop(SimulatorConstants.firstBusStopName);
-        BusStop stop2 = new BusStop(SimulatorConstants.secondBusStopName);
-        BusStop stop3 = new BusStop(SimulatorConstants.thirdBusStopName);
+        busStops.add(busDepot);
+        busStops.add(busTerminus);
         busDepot.setRoute(SimulatorConstants.depotTerminusDistance);
         busTerminus.setToDepot(SimulatorConstants.depotTerminusDistance);
-        busTerminus.setRoute(stop1, SimulatorConstants.firstBusStopDistance);
-        stop1.setRoute(stop2, SimulatorConstants.secondBusStopDistance);
-        stop2.setRoute(stop3, SimulatorConstants.thirdBusStopDistance);
-        stop3.setRoute(busTerminus, SimulatorConstants.busHomeDistance);
-        busStops.add(busDepot);
-        busStops.add( busTerminus );
-        busStops.add( stop1 );
-        busStops.add( stop2 );
-        busStops.add( stop3 );
+        lastStop = busTerminus;
+        for (Pair<String, Integer> pair : SimulatorConstants.busStopSettings) {
+            currentStop = new BusStop(pair.getKey());
+            lastStop.setRoute(currentStop, pair.getValue());
+            busStops.add(lastStop);
+            lastStop = currentStop;
+        }
+        lastStop.setRoute(busTerminus, SimulatorConstants.depotTerminusDistance);
     }
 
-    public BusTerminus getTerminus() {
-        return BusTerminus.getInstance();
+    public static Schedule getInstance() {
+        return ourInstance;
     }
 
     public static BusDepot getBusDepot() {
@@ -45,5 +42,9 @@ public class Schedule {
 
     public static ArrayList<BusStop> getBusStops() {
         return busStops;
+    }
+
+    public BusTerminus getTerminus() {
+        return BusTerminus.getInstance();
     }
 }

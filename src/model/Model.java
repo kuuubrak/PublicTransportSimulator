@@ -2,36 +2,32 @@ package model;
 
 import mockup.Mockup;
 import simulator.Simulator;
+import view.BusEvent;
 
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
+
+import static simulator.SimulatorConstants.N;
 
 /**
  * Created by ppeczek on 2014-05-21.
  */
 public class Model {
-    private static Model ourInstance = new Model();
 
     private ArrayList<Bus> busContainer = new ArrayList<Bus>();
     private Schedule schedule = Schedule.getInstance();
 
-    public static Model getInstance() {
-        return ourInstance;
+
+    public Model(BlockingQueue<BusEvent> blockingQueue) {
+        BusDepot busDepot = BusDepot.getInstance();
+        for (int i=0; i<N; ++i) {
+            busContainer.add(new Bus(busDepot, blockingQueue));
+        }
+        //na potrzebe testu
+        busContainer.get(0).setState(BusState.RUNNING);
     }
 
-    private Model() {
-        Schedule schedule = Schedule.getInstance();
-        Bus testBus = new Bus(schedule);
-        testBus.setState(BusState.RUNNING);
-        Bus testBus2 = new Bus(schedule);
-        Bus testBus3 = new Bus(schedule);
-
-        busContainer.add(testBus);
-        busContainer.add(testBus2);
-        busContainer.add(testBus3);
-    }
-
-    public Mockup createMockup()
-    {
+    public Mockup createMockup() {
         final Mockup mockup = new Mockup(getBusContainer(), schedule.getBusStops());
         return mockup;
     }
@@ -40,13 +36,12 @@ public class Model {
         return busContainer;
     }
 
-    public void step()
-    {
+    public void step() {
         for (Bus bus : busContainer) {
             bus.move();
         }
         Simulator simulator = Simulator.getInstance();
-//        simulator.generatePassengers(schedule.getBusStops(), simulator.getPassengerGenerationIntensity());
+//        simulator.generatePassengers(schedule.getBusStops(), simulator.getPassengerGenerationIntensity(), );
 
     }
 }

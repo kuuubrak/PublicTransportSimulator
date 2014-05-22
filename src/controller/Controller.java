@@ -2,9 +2,10 @@ package controller;
 
 import event.*;
 import mockup.Mockup;
-import model.Model;
+import model.*;
 import network.Client;
 import order.sim.OrderParseMockup;
+import simulator.SimulatorConstants;
 import view.BusEvent;
 
 import javax.swing.*;
@@ -22,28 +23,27 @@ public class Controller implements ActionListener {
     private static Controller ourInstance = new Controller();
 
     private final Model model;
-    private Mockup mockup;
     private final Map<Class<? extends BusEvent>, MyStrategy> eventDictionaryMap;
     private final LinkedBlockingQueue<BusEvent> blockingQueue;
     private final Timer timer;
-
+    private Mockup mockup;
     private Client networkClient = new Client();
     private String host;
     private int port;
-
-    public static Controller getInstance() {
-        return ourInstance;
-    }
 
     private Controller() {
         networkClient.establishConnection(host, port);
         this.blockingQueue = new LinkedBlockingQueue<BusEvent>();
         this.eventDictionaryMap = getEventDictionaryMap();
-        this.model = Model.getInstance();
+        this.model = new Model(this.blockingQueue);
         this.mockup = createMockup();
 //        this.view = new View(blockingQueue, mockup);
         this.timer = new Timer(50, this);
         timer.start();
+    }
+
+    public static Controller getInstance() {
+        return ourInstance;
     }
 
     private Map<Class<? extends BusEvent>, MyStrategy> getEventDictionaryMap() {
@@ -57,81 +57,27 @@ public class Controller implements ActionListener {
         return Collections.unmodifiableMap(resultMap);
     }
 
-    abstract private class MyStrategy {
-        abstract void execute();
+    public Mockup createMockup() {
+        return model.createMockup();
     }
 
-    private final class BusArrivesToBusStopStrategy extends MyStrategy {
-        @Override
-        void execute()
-        {
-
-        }
-    }
-
-    private final class BusComeBackSignalStrategy extends MyStrategy {
-        @Override
-        void execute()
-        {
-
-        }
-    }
-
-    private final class BusReadyToGoStrategy extends MyStrategy {
-        @Override
-        void execute() {
-
-        }
-    }
-
-    private final class BusReturnedToDepotStrategy extends MyStrategy {
-        @Override
-        void execute()
-        {
-
-        }
-    }
-
-    private final class BusStartSignalStrategy extends MyStrategy {
-        @Override
-        void execute()
-        {
-
-        }
-    }
-
-    private final class BusWaitsBeforeStopStrategy extends MyStrategy {
-        @Override
-        void execute()
-        {
-
-        }
-    }
-
-    public Mockup createMockup() { return model.createMockup(); }
-
-    public void work()
-    {
+    public void work() {
 //        view.showGUI();
-        while (true)
-        {
+        while (true) {
             BusEvent busEvent = null;
-            try
-            {
+            try {
                 busEvent = blockingQueue.take();
-            } catch (final InterruptedException e)
-            {
+            } catch (final InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
-            myStrategy.execute();
+            myStrategy.execute(busEvent.getBus());
         }
     }
 
     @Override
-    public void actionPerformed(final ActionEvent actionEvent)
-    {
+    public void actionPerformed(final ActionEvent actionEvent) {
         model.step();
         mockup = createMockup();
         networkClient.send(new OrderParseMockup(mockup));
@@ -143,36 +89,76 @@ public class Controller implements ActionListener {
                 setView();
             }
         });
-
-
-//        while(!networkClient.getOrdersQueue().isEmpty())
-//        {
-//            try
-//            {
-//                Order<FunctionalitySimulationModule> order = networkClient.getOrdersQueue().take();
-//                order.execute(this);
-//            }
-//            catch(InterruptedException e)
-//            {
-//                //TODO Generated
-//                e.printStackTrace();
-//                throw new RuntimeException();
-//            }
-//        }
-//        try {
-//            Thread.sleep(simulationWait);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
     }
 
-    public void setView()
-    {
+    public void setView() {
 //        view.repaint();
     }
 
     public void setNetData(String host, int port) {
         this.host = host;
         this.port = port;
+    }
+
+    abstract private class MyStrategy {
+        abstract void execute(Bus bus);
+    }
+
+    private final class BusArrivesToBusStopStrategy extends MyStrategy {
+        @Override
+        void execute(Bus bus) {
+            bus.reachNextStop();
+            if (bus.getCurrentBusStop() instanceof BusTerminus) {
+                bus.getLoopsToFinish().countdown();
+                if (bus.areLoopsFinished()) {
+                    try
+                    {
+                        blockingQueue.put(new BusComeBackSignal(bus));
+                    } catch (final InterruptedException e)
+                    {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+            bus.setState(BusState.ON_STOP);
+        }
+    }
+
+    private final class BusComeBackSignalStrategy extends MyStrategy {
+        @Override
+        void execute(Bus bus) {
+            bus.setValueToNextStop(SimulatorConstants.depotTerminusDistance);
+            bus.setState(BusState.FINISHED);
+        }
+    }
+
+    private final class BusReadyToGoStrategy extends MyStrategy {
+        @Override
+        void execute(Bus bus) {
+            bus.setState(BusState.IN_DEPOT);
+        }
+    }
+
+    private final class BusReturnedToDepotStrategy extends MyStrategy {
+        @Override
+        void execute(Bus bus) {
+            bus.setCurrentBusStop(BusDepot.getInstance());
+            bus.setState(BusState.HAVING_BREAK);
+        }
+    }
+
+    private final class BusStartSignalStrategy extends MyStrategy {
+        @Override
+        void execute(Bus bus) {
+            bus.setState(BusState.RUNNING);
+        }
+    }
+
+    private final class BusWaitsBeforeStopStrategy extends MyStrategy {
+        @Override
+        void execute(Bus bus) {
+
+        }
     }
 }

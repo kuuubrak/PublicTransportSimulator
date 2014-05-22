@@ -9,7 +9,7 @@ public class Counter {
 
     public Counter(int value) {
         this.value = value;
-        this.counted = false;
+        this.counted = true;
     }
 
     public int countdown() {
@@ -20,7 +20,6 @@ public class Counter {
             value--;
         }
         if (value == 0) {
-            System.out.println("Jestem na przystanku. Rzuć event.");
             counted = true;
             return value;
         }
@@ -37,9 +36,5 @@ public class Counter {
 
     public boolean isDownCounted() {
         return counted;
-    }
-
-    public void setCounted(boolean counted) {
-        this.counted = counted;
     }
 }

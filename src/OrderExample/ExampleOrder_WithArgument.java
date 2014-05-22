@@ -19,10 +19,12 @@ package orderexample;
 
 import order.OrderPrioritableAbstract;
 
-/** Odrobinkę bardziej złożona implementacja rozkazu.
+/**
+ * Odrobinkę bardziej złożona implementacja rozkazu.
+ *
  * @author Maciej Majewski
  */
-public class ExampleOrder_WithArgument extends OrderPrioritableAbstract<ExampleFunctionality>{
+public class ExampleOrder_WithArgument extends OrderPrioritableAbstract<ExampleFunctionality> {
     private String msg;
 
     public ExampleOrder_WithArgument(String msg) {
@@ -33,5 +35,5 @@ public class ExampleOrder_WithArgument extends OrderPrioritableAbstract<ExampleF
     public void execute(ExampleFunctionality subject) {
         subject.printTxt(msg);
     }
-    
+
 }

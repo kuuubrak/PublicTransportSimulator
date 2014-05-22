@@ -6,9 +6,10 @@ import order.OrderPrioritableAbstract;
 
 /**
  * Polecenie przetworzenia makiety.
+ *
  * @author Maciej Majewski
  */
-public class OrderParseMockup extends OrderPrioritableAbstract<FunctionalityMockupParser>{
+public class OrderParseMockup extends OrderPrioritableAbstract<FunctionalityMockupParser> {
     private final Mockup makieta;
 
     public OrderParseMockup(Mockup makieta) {
@@ -19,5 +20,5 @@ public class OrderParseMockup extends OrderPrioritableAbstract<FunctionalityMock
     public void execute(FunctionalityMockupParser subject) {
         //subject.newMockup(makieta);
     }
-    
+
 }

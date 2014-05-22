@@ -20,14 +20,13 @@ package orderexample;
 import order.OrderPrioritableAbstract;
 
 /**
- *
  * @author Maciej Majewski
  */
-public class ExampleOrder_Evil extends OrderPrioritableAbstract<ExampleDifferentFunctionality>{
+public class ExampleOrder_Evil extends OrderPrioritableAbstract<ExampleDifferentFunctionality> {
 
     @Override
     public void execute(ExampleDifferentFunctionality subject) {
         subject.doEvillness();
     }
-    
+
 }

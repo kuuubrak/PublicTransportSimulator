@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 /**
  * Klasa serwera.
  * Zajmuje sie rozsylaniem otrzymanych obiektow do odpowiednich modulow.
- * 
+ *
  * @author Maciej Korpalski
  */
 // Dodałem symulację awarii ~maciej168
@@ -22,64 +22,66 @@ import java.util.logging.Logger;
 // Logger.getLogger(Server.class .getName()).setLevel(Level.OFF) i już nie widać żadnych komunikatów. Cudny mechanizm, polecam
 // ~maciej168
 // Dodałem obsługę rozkazów
-public class Server implements FunctionalityServer, OrderRecipient<FunctionalityServer>
-{
-	/** Obiekt reprezentujacy modul GUI */
-	private ModuleNetwork gui;
-	/** Obiekt reprezentujacy modul obslugi pasazerow */
-	private ModuleNetwork passengers;
-	/** Obiekt reprezentujacy modul zarzadzania komunikacja miejska */
-	private ModuleNetwork management;
-	
-	private SleepingSender sleepingSender;
-	private ExecutorService executor;
-	
-	private int guiPort;
-	private int passengersPort;
-	private int managementPort;
-	
-	
-	/** 
-	 * Tworzy moduly i przypisuje im odpowiednie porty sieciowe. 
-	 * @throws IOException 
-	 */
-	public Server(int guiPort, int passengersPort, int managementPort)
-	{
-		this.guiPort = guiPort;
-		this.passengersPort = passengersPort;
-		this.managementPort = managementPort;
-		executor = Executors.newCachedThreadPool();
-	}
-	
-	/**
-	 * Otwiera polaczenia dla wszystkich modulow,
-	 * przypisuje kazdemu modulowi odpowiadajacych mu odbiorcow.
-	 * @throws IOException 
-	 */
-	public void createServer() throws IOException
-	{
-		try 
-		{
-			gui = new ModuleNetwork(guiPort, this);
-			passengers = new ModuleNetwork(passengersPort, this);
-			management = new ModuleNetwork(managementPort, this);
-			sleepingSender = new SleepingSender(this);
-		}
-		catch(IOException e) 
-		{
+public class Server implements FunctionalityServer, OrderRecipient<FunctionalityServer> {
+    /**
+     * Obiekt reprezentujacy modul GUI
+     */
+    private ModuleNetwork gui;
+    /**
+     * Obiekt reprezentujacy modul obslugi pasazerow
+     */
+    private ModuleNetwork passengers;
+    /**
+     * Obiekt reprezentujacy modul zarzadzania komunikacja miejska
+     */
+    private ModuleNetwork management;
+
+    private SleepingSender sleepingSender;
+    private ExecutorService executor;
+
+    private int guiPort;
+    private int passengersPort;
+    private int managementPort;
+
+
+    /**
+     * Tworzy moduly i przypisuje im odpowiednie porty sieciowe.
+     *
+     * @throws IOException
+     */
+    public Server(int guiPort, int passengersPort, int managementPort) {
+        this.guiPort = guiPort;
+        this.passengersPort = passengersPort;
+        this.managementPort = managementPort;
+        executor = Executors.newCachedThreadPool();
+    }
+
+    /**
+     * Otwiera polaczenia dla wszystkich modulow,
+     * przypisuje kazdemu modulowi odpowiadajacych mu odbiorcow.
+     *
+     * @throws IOException
+     */
+    public void createServer() throws IOException {
+        try {
+            gui = new ModuleNetwork(guiPort, this);
+            passengers = new ModuleNetwork(passengersPort, this);
+            management = new ModuleNetwork(managementPort, this);
+            sleepingSender = new SleepingSender(this);
+        } catch (IOException e) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, "Błąd tworzenia Serwera"); // dodałem ~maciej168
-			throw e;
-		}
-		sleepingSender.startSending();
-		gui.connect();
-		passengers.connect();
-		management.connect();
-		
-		gui.addReceiver(passengers);
-		passengers.addReceiver(gui);
-		passengers.addReceiver(management);
-		management.addReceiver(passengers);
-	}
+            throw e;
+        }
+        sleepingSender.startSending();
+        gui.connect();
+        passengers.connect();
+        management.connect();
+
+        gui.addReceiver(passengers);
+        passengers.addReceiver(gui);
+        passengers.addReceiver(management);
+        management.addReceiver(passengers);
+    }
 
     @Override // dodane ~maciej168
     public void crippleGUI(boolean cripple) {
@@ -98,52 +100,45 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
         Logger.getLogger(Server.class.getName()).log(Level.FINEST, "Wykonywanie rozkazu");
         toExec.execute(this);
     }
-	
-	/**
-	 * Wysyla obiekt do konkretnego socketa
-	 * @param object
-	 * @param socket
-	 */
-	void send(final Object object, ModuleNetwork receiver)
-	{
-		sleepingSender.send(object, receiver);
-	}
-	
-	/**
-	 * Informuje czy z socketem jest polaczony jakis klient.
-	 * @param socket
-	 * @return
-	 */
-	boolean isConnected(final Socket socket)
-	{
-		if(socket == null)
-		{
-			return false;
-		}
-		else
-		{
-			return !socket.isClosed();
-		}
-	}
 
-	/**
-	 * Rozlacza klienta z konkretnego socketa.
-	 * @param socket
-	 */
-	void closeConnection(Socket socket)
-	{
-		if(isConnected(socket))
-		{
-			try 
-			{
-				socket.close();
-			} 
-			catch(IOException e) 
-			{
-				//e.printStackTrace(); //zmieniłem ~maciej168
-                                Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Błąd przy zamykaniu połączenia",e);
-				throw new RuntimeException();
-			}
-		}
-	}
+    /**
+     * Wysyla obiekt do konkretnego socketa
+     *
+     * @param object
+     * @param socket
+     */
+    void send(final Object object, ModuleNetwork receiver) {
+        sleepingSender.send(object, receiver);
+    }
+
+    /**
+     * Informuje czy z socketem jest polaczony jakis klient.
+     *
+     * @param socket
+     * @return
+     */
+    boolean isConnected(final Socket socket) {
+        if (socket == null) {
+            return false;
+        } else {
+            return !socket.isClosed();
+        }
+    }
+
+    /**
+     * Rozlacza klienta z konkretnego socketa.
+     *
+     * @param socket
+     */
+    void closeConnection(Socket socket) {
+        if (isConnected(socket)) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                //e.printStackTrace(); //zmieniłem ~maciej168
+                Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Błąd przy zamykaniu połączenia", e);
+                throw new RuntimeException();
+            }
+        }
+    }
 }

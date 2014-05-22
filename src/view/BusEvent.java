@@ -10,7 +10,8 @@ public class BusEvent {
     private Bus bus;
     private BusStop busStop;
 
-    public BusEvent() {}
+    public BusEvent() {
+    }
 
     public BusEvent(Bus bus) {
         this.bus = bus;

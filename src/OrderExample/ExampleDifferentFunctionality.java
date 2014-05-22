@@ -17,7 +17,9 @@
 
 package orderexample;
 
-/** Kontrprzykład.
+/**
+ * Kontrprzykład.
+ *
  * @author Maciej Majewski
  */
 public interface ExampleDifferentFunctionality {
