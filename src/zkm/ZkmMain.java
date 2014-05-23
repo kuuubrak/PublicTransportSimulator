@@ -92,7 +92,7 @@ public class ZkmMain implements FunctionalityMockupParser {
     private void receiveMockup() {
 
         Order<FunctionalityMockupParser> order;
-        order = sc.getOrdersQueue().poll();
+        order = sc.getOrdersBlockingQueue().poll();
 
         if (order != null) {
             order.execute(this);

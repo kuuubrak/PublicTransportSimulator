@@ -1,13 +1,13 @@
 package network;
 
 import order.Order;
+import view.BusEvent;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +25,7 @@ public class Client {
     /**
      * Kolejka, do ktorej sa wrzucane otrzymane rozkazy
      */
-    private BlockingQueue<Order> ordersQueue;
+    private LinkedBlockingQueue<Order> ordersBlockingQueue;
     /**
      * Implementacja watku odbierajacego obiekty od serwera
      */
@@ -39,8 +39,8 @@ public class Client {
                     Object object = ois.readObject();
 
                     System.out.println("Dostalem: " + object.getClass());
-                    if (object instanceof Order) {
-                        ordersQueue.add((Order) object);
+                    if (object instanceof BusEvent) {
+                        ordersBlockingQueue.add((Order) object);
                     }
                     //if( object instanceof order )
                     //{
@@ -61,7 +61,7 @@ public class Client {
 
     public Client() {
         socket = new Socket();
-        ordersQueue = new LinkedBlockingQueue<Order>();
+        ordersBlockingQueue = new LinkedBlockingQueue<Order>();
     }
 
     /**
@@ -86,7 +86,7 @@ public class Client {
     /**
      * Wysyla obiekt do serwera
      *
-     * @param message
+     * @param object
      * @return
      */
     public boolean send(final Object object) {
@@ -124,7 +124,6 @@ public class Client {
     /**
      * Informuje czy z socketem jest polaczony jakis serwer.
      *
-     * @param socket
      * @return
      */
     private boolean isConnected() {
@@ -135,8 +134,7 @@ public class Client {
         }
     }
 
-    public final BlockingQueue<Order> getOrdersQueue() {
-        return ordersQueue;
+    public LinkedBlockingQueue<Order> getOrdersBlockingQueue() {
+        return ordersBlockingQueue;
     }
-
 }

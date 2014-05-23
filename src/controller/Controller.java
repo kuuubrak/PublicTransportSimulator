@@ -2,8 +2,12 @@ package controller;
 
 import event.*;
 import mockup.Mockup;
-import model.*;
+import model.Bus;
+import model.BusState;
+import model.BusTerminus;
+import model.Model;
 import network.Client;
+import order.Order;
 import order.sim.OrderParseMockup;
 import simulator.SimulatorConstants;
 import view.BusEvent;
@@ -24,7 +28,8 @@ public class Controller implements ActionListener {
 
     private final Model model;
     private final Map<Class<? extends BusEvent>, MyStrategy> eventDictionaryMap;
-    private final LinkedBlockingQueue<BusEvent> blockingQueue;
+    private final LinkedBlockingQueue<BusEvent> eventsBlockingQueue;
+    private final LinkedBlockingQueue<Order> ordersBlockingQueue;
     private final Timer timer;
     private Mockup mockup;
     private Client networkClient = new Client();
@@ -33,11 +38,12 @@ public class Controller implements ActionListener {
 
     private Controller() {
         networkClient.establishConnection(host, port);
-        this.blockingQueue = new LinkedBlockingQueue<BusEvent>();
+        this.eventsBlockingQueue = new LinkedBlockingQueue<BusEvent>();
+        this.ordersBlockingQueue = networkClient.getOrdersBlockingQueue();
         this.eventDictionaryMap = getEventDictionaryMap();
-        this.model = new Model(blockingQueue);
+        this.model = new Model(eventsBlockingQueue);
         this.mockup = createMockup();
-//        this.view = new View(blockingQueue, mockup);
+//        this.view = new View(eventsBlockingQueue, mockup);
         this.timer = new Timer(SimulatorConstants.simulationSpeed, this);
         timer.start();
     }
@@ -71,7 +77,7 @@ public class Controller implements ActionListener {
         while (true) {
             BusEvent busEvent = null;
             try {
-                busEvent = blockingQueue.take();
+                busEvent = eventsBlockingQueue.take();
             } catch (final InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -85,7 +91,7 @@ public class Controller implements ActionListener {
 //        while(true) {
 //            BusEvent busEvent = null;
 //            try {
-//                busEvent = networkClient.getOrdersQueue().take();
+//                Order<FunctionalitySimulationModule> order = ordersBlockingQueue.take();
 //            }
 //            catch(InterruptedException e) {
 //                //TODO Generated
@@ -147,7 +153,7 @@ public class Controller implements ActionListener {
                     bus.getLoopsToFinish().countdown();
                     if (bus.areLoopsFinished()) {
                         try {
-                            blockingQueue.put(new BusComeBackSignal(bus));
+                            eventsBlockingQueue.put(new BusComeBackSignal(bus));
                         } catch (final InterruptedException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
