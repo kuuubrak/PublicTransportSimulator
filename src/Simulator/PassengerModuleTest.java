@@ -29,7 +29,7 @@ public class PassengerModuleTest
         passengerModule.transferPassengers( bus );
         
         // Checks if Bus takes in passengers from the BusStop
-        assertTrue( !bus.getPassengerContainer().isEmpty() );
+        assertTrue( !bus.getPassengerMap().isEmpty() );
         //TODO 
     }
 

@@ -1,9 +1,6 @@
 package model;
 
-import event.BusArrivesToBusStop;
-import event.BusReadyToGo;
-import event.BusReturnedToDepot;
-import event.BusStartSignal;
+import event.*;
 import simulator.SimulatorConstants;
 import view.BusEvent;
 
@@ -28,13 +25,9 @@ public final class Bus implements EventListener {
      */
     private static final int MAX_SEATS = 10;
     /**
-     * How many <b>Passengers</b> the <b>Bus</b> is already holding.
-     */
-    private int seatsTaken = 0;
-    /**
      * A container of currently held <b>Passengers</b>
      */
-    private ArrayList<Passenger> passengerContainer;
+    private Map<BusStop, Passenger> passengerMap = new HashMap<BusStop, Passenger>();
     private BusStop currentBusStop;
     private BusState state;
     private Counter toNextStop;
@@ -44,9 +37,8 @@ public final class Bus implements EventListener {
     public BlockingQueue<BusEvent> blockingQueue;
 
     public Bus(BusStop startStation, BlockingQueue<BusEvent> blockingQueue) {
-        this.passengerContainer = new ArrayList<Passenger>();
         this.currentBusStop = startStation;
-        this.state = BusState.IN_DEPOT;
+        this.state = BusState.READY_TO_GO;
         this.toNextStop = new Counter(this.currentBusStop.getDistance());
         this.loopsToFinish = new Cooldown(SimulatorConstants.loops);
         this.cooldownAfterLoops = new Cooldown(SimulatorConstants.cooldownAfterLoops);
@@ -56,51 +48,105 @@ public final class Bus implements EventListener {
 
     private Map<BusState, BusBehaviorStrategy> getBusBehaviorStrategyMap() {
         final Map<BusState, BusBehaviorStrategy> resultMap = new HashMap<BusState, BusBehaviorStrategy>();
-        resultMap.put(BusState.IN_DEPOT, new BusIdleStrategy());
+        resultMap.put(BusState.READY_TO_GO, new BusIdleStrategy());
         resultMap.put(BusState.RUNNING, new BusOnRunStrategy());
-        resultMap.put(BusState.ON_STOP, new BusAtBusStopStrategy());
         resultMap.put(BusState.WAITING, new BusWaitingForBusStopStrategy());
         resultMap.put(BusState.FINISHED, new BusReturningStrategy());
         resultMap.put(BusState.HAVING_BREAK, new BusReturnedStrategy());
+        resultMap.put(BusState.PUT_OUT, new BusPutsOutPassengersStrategy());
+        resultMap.put(BusState.TAKE_IN, new BusTakesInPassengersStrategy());
+        resultMap.put(BusState.PUT_OUT_ALL, new BusPutsOutAllStrategy());
         return Collections.unmodifiableMap(resultMap);
     }
 
     /**
-     * @return the passengerContainer
+     * @return the passengerMap
      */
-    public final ArrayList<Passenger> getPassengerContainer() {
-        return passengerContainer;
+    public final Map<BusStop, Passenger> getPassengerMap() {
+        return passengerMap;
     }
 
-    /**
-     * <b>addPassenger</b><br>
-     * Adds a <b>Passenger</b> to the <b>PassengerContainer</b>.
-     *
-     * @param passenger
-     */
-    private final void addPassenger(final Passenger passenger) {
-        passengerContainer.add(passenger);
-        ++seatsTaken;
-    }
-
-    /**
-     * <b>takeInPassengers</b><br>
-     * Fills the <b>Bus</b> with <b>Passengers</b> until there are no free seats left or the <b>BusStop</b> is empty.
-     */
     public final void takeInPassengers() {
-        while (!isFull() && !getCurrentBusStop().isEmpty()) {
-            addPassenger(getCurrentBusStop().takePassenger());
+        takePassenger(getCurrentBusStop());
+        if (isFull() || getCurrentBusStop().isEmpty()) {
+            try
+            {
+                blockingQueue.put(new BusTookInPassengers(this));
+            } catch (final InterruptedException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 
+    private final void takePassenger(BusStop busStop) {
+//        System.out.println("kolejka: " + busStop.getPassengerQueue().size());
+        Passenger passenger = busStop.takePassenger();
+//        System.out.println("pasażer: " + passenger.getID());
+//        System.out.println("kolejka: " + busStop.getPassengerQueue().size());
+        passengerMap.put(passenger.getDestination(), passenger);
+//        System.out.println("Liczba pasażerów:" + getPassengerMap().size());
+    }
+
+    private final void putOutPassengers() {
+        putOutPassenger(getCurrentBusStop());
+        if (!isGetOffRequestNow()) {
+            try
+            {
+                blockingQueue.put(new BusPutOutPassengers(this));
+            } catch (final InterruptedException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private final Passenger putOutPassenger(BusStop busStop) {
+        Passenger passenger = getPassengerMap().remove(busStop);
+//        System.out.println("Wysiadający pasażer:" + passenger.getID());
+//        System.out.println("Liczba pasażerów:" + getPassengerMap().size());
+        return passenger;
+    }
+
+    private final void putOutAll() {
+        transferPassenger(getCurrentBusStop());
+//        System.out.println("Liczba pasażerów:" + getPassengerMap().size());
+        if (isEmpty()) {
+            try {
+                blockingQueue.put(new BusPutOutAll(this));
+            } catch (final InterruptedException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private final void transferPassenger(BusStop busStop) {
+        Passenger passenger = getPassengerMap().entrySet().iterator().next().getValue();
+        getPassengerMap().remove(passenger.getDestination(), passenger);
+        BusStop busStop1 = getCurrentBusStop();
+        if (!currentBusStop.equals(busStop1)) {
+            busStop1.getPassengerQueue().add(passenger);
+        }
+    }
+
+    public final void comeback() {
+        setValueToNextStop(SimulatorConstants.depotTerminusDistance);
+        setState(BusState.FINISHED);
+    }
     /**
      * <b>isFull</b><br>
      *
      * @return true if the <b>Bus</b> is full.
      */
-    private final boolean isFull() {
-        return (MAX_SEATS == seatsTaken);
+    public final boolean isFull() {
+        return (getPassengerMap().size() == MAX_SEATS);
     }
+
+    public final boolean isEmpty() { return getPassengerMap().isEmpty(); }
 
     /**
      * <b>getNumberOfFreeSeats</b><br>
@@ -108,7 +154,7 @@ public final class Bus implements EventListener {
      * @return the number of free seats in the <b>Bus</b>
      */
     public final int getNumberOfFreeSeats() {
-        return MAX_SEATS - seatsTaken;
+        return MAX_SEATS - getPassengerMap().size();
     }
 
     /**
@@ -151,21 +197,63 @@ public final class Bus implements EventListener {
      * @throws IndexOutOfBoundsException
      */
     public final BusStop getNextBusStop() {
-        return currentBusStop.getRoute().getToBusStop();
-    }
-
-    public final void remove(Passenger passenger) {
-        passengerContainer.remove(passenger);
+        return currentBusStop.getNextBusStop();
     }
 
     /**
      * <b>move</b><br>
-     * Moves to the next location.<br>
      */
     public final void move() {
         final BusBehaviorStrategy behaviorStrategy = busBehaviorStrategyMap.get(getState());
         behaviorStrategy.execute();
     }
+
+
+    public void setValueToNextStop(int length) {
+        getToNextStop().setValue(length);
+    }
+
+    public void reachStop(BusStop busStop)
+    {
+        setCurrentBusStop(busStop);
+        setValueToNextStop(getCurrentBusStop().getDistance());
+    }
+
+    public void reachNextStop() {
+        reachStop(getNextBusStop());
+    }
+
+    public void reachDepot() {
+        reachStop(BusDepot.getInstance());
+    }
+
+    public boolean areLoopsFinished() {
+        return getLoopsToFinish().isDownCounted();
+    }
+    
+    public boolean isGetOffRequest(BusStop busStop) {
+        return !getPassengerMap().isEmpty() && getPassengerMap().containsKey(busStop);
+    }
+
+    public boolean isGetOnRequest(BusStop busStop) {
+        return !isFull() && !busStop.getPassengerQueue().isEmpty();
+    }
+
+    public boolean isGetOffRequestNow() {
+        return isGetOffRequest(getCurrentBusStop());
+    }
+
+    public boolean isGetOnRequestNow() {
+        return isGetOnRequest(getCurrentBusStop());
+    }
+
+    private void occupyBusStop(BusStop busStop) { busStop.setOccupied(true); }
+
+    private void freeBusStop(BusStop busStop) { busStop.setOccupied(false); }
+
+    public void occupyCurrentBusStop() { occupyBusStop(getCurrentBusStop()); }
+
+    public void freeCurrentBusStop() { freeBusStop(getCurrentBusStop()); }
 
     abstract private class BusBehaviorStrategy {
         abstract void execute();
@@ -175,18 +263,18 @@ public final class Bus implements EventListener {
     }
 
     /**
-     * Strategia autobusu czekającego na zajezdni na sygnał.
+     * <b>Strategia autobusu czekającego na zajezdni na sygnał.</b>
      * Autobus nic nie robi.
      */
     private final class BusIdleStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
-            //Do nothing, ew. cooldown
+            //Do nothing
         }
     }
 
     /**
-     * Strategia jadącego autobusu.
+     * <b>Strategia jadącego autobusu.</b>
      * Dopóki autobus nie dojedzie do przystanka, to jest w drodze.
      */
     private final class BusOnRunStrategy extends BusBehaviorStrategy {
@@ -207,27 +295,7 @@ public final class Bus implements EventListener {
     }
 
     /**
-     * Strategia przejazdu autobusów przez przystanki.
-     * Jeśli nikt nie wsiada i nie wysiada, to autobus nie zatrzymuje się,
-     * tylko jedzie dalej. Jeśli ktoś wsiada / wysiada, to należy to obsłużyć tutaj.
-     */
-    private final class BusAtBusStopStrategy extends BusBehaviorStrategy {
-        @Override
-        void execute() {
-            //TODO logika zatrzymywania sie autobusow
-            try
-            {
-                blockingQueue.put(new BusStartSignal(getBus()));
-            } catch (final InterruptedException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Strategia autobusu czekającego na zwolnienie się przystanka.
+     * <b>Strategia autobusu czekającego na zwolnienie się przystanka.</b>
      * Jeśli inny autobus zajmował przystanek,
      * to ten sprawdza, czy przystanek jest nadal zajęty, jak nie to wjeżdża.
      *
@@ -237,36 +305,41 @@ public final class Bus implements EventListener {
     private final class BusWaitingForBusStopStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
+            try
+            {
+                blockingQueue.put(new BusArrivesToBusStop(getBus()));
+            } catch (final InterruptedException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 
     /**
-     * Strategia autobusu wracającego do zajezdni.
-     * Tak jak w przypadku autobusa jadącego, tylko jak dojedzie
-     * na przytanek (zajezdnię), to kończy swoją trasę.
+     * <b>Strategia autobusu wracającego do zajezdni.</b>
+     * Autobus wraca do zajezdni.
      */
     private final class BusReturningStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
             toNextStop.countdown();
             if (toNextStop.isDownCounted()) {
-                if (toNextStop.isDownCounted()) {
-                    try
-                    {
-                        blockingQueue.put(new BusReturnedToDepot(getBus()));
-                    } catch (final InterruptedException e)
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                try
+                {
+                    blockingQueue.put(new BusReturnedToDepot(getBus()));
+                } catch (final InterruptedException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
             }
         }
     }
 
     /**
-     * Strategia autobusu odbywającego przerwę po kursie.
-     * Autobus odczekuje daną liczbę kroków i po niej staje się gotowy do dalszej drogi.
+     * <b>Strategia autobusu odbywającego przerwę po kursie.</b>
+     * Autobus odczekuje i staje się gotowy do dalszej drogi.
      */
     private final class BusReturnedStrategy extends BusBehaviorStrategy {
         @Override
@@ -285,18 +358,33 @@ public final class Bus implements EventListener {
         }
     }
 
-    public void setValueToNextStop(int length) {
-        getToNextStop().setValue(length);
+    /**
+     * Strategia wypuszczania pasażerów.
+     */
+    private final class BusPutsOutPassengersStrategy extends BusBehaviorStrategy {
+        @Override
+        void execute() {
+            getBus().putOutPassengers();
+        }
     }
 
-    public void reachNextStop() {
-        System.out.println("Stacja: " + getCurrentBusStop().getNAME());
-        System.out.println("Następna stacja: " + getNextBusStop().getNAME());
-        setCurrentBusStop(getNextBusStop());
-        getToNextStop().setValue(getCurrentBusStop().getDistance());
+    /**
+     * Strategia zabierania pasażerów.
+     */
+    private final class BusTakesInPassengersStrategy extends BusBehaviorStrategy {
+        @Override
+        void execute() {
+            getBus().takeInPassengers();
+        }
     }
 
-    public boolean areLoopsFinished() {
-        return getLoopsToFinish().isDownCounted();
+    /**
+     * Strategia wypuszczania wszystkich pasażerów
+     */
+    private final class BusPutsOutAllStrategy extends BusBehaviorStrategy {
+        @Override
+        void execute() {
+            getBus().putOutAll();
+        }
     }
 }

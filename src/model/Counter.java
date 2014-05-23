@@ -19,9 +19,8 @@ public class Counter {
         if (value > 0) {
             value--;
         }
-        if (value == 0) {
+        else {
             counted = true;
-            return value;
         }
         return value;
     }

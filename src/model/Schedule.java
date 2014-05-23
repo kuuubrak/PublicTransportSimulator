@@ -26,10 +26,10 @@ public class Schedule {
         for (Pair<String, Integer> pair : SimulatorConstants.busStopSettings) {
             currentStop = new BusStop(pair.getKey());
             lastStop.setRoute(currentStop, pair.getValue());
-            busStops.add(lastStop);
+            busStops.add(currentStop);
             lastStop = currentStop;
         }
-        lastStop.setRoute(busTerminus, SimulatorConstants.depotTerminusDistance);
+        lastStop.setRoute(busTerminus, 3);
     }
 
     public static Schedule getInstance() {

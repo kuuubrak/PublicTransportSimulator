@@ -26,6 +26,7 @@ public class Model {
         for (int i=0; i<N; ++i) {
             busContainer.add(new Bus(busDepot, blockingQueue));
         }
+        busContainer.get(0).setState(BusState.RUNNING);
     }
 
     public Mockup createMockup() {
@@ -42,20 +43,18 @@ public class Model {
             bus.move();
         }
         generatePassengers(getPassengerGenerationIntensity());
-        System.out.println("Stan:");
-        for (BusStop bs : schedule.getPassengersStops()) {
-            System.out.println(bs.getNAME() + ": " + bs.getPassengerQueue().size());
-        }
-        System.out.println();
+//        System.out.println("Zajętość przystanków:");
+//        for (BusStop busStop : schedule.getPassengersStops()) {
+//            System.out.println(busStop.getNAME() + ": " + busStop.getPassengerQueue().size());
+//        }
     }
 
     /**
      * <b>generatePassengers</b>
-     * Adds new <b>Passengers</b> to the <b>BusStops</b>.
+     * Adds new <b>Passengers</b> to <b>BusStops</b>.
      */
     public final void generatePassengers(final double intensity) {
         double numberOfPassengersToGenerate = (double) (random() * intensity);
-        PassengerModule passengerModule = new PassengerModule();
         ArrayList<BusStop> passengersStops = schedule.getPassengersStops();
         for (double i = 0; i < numberOfPassengersToGenerate; i++) {
             Random rand = new Random();
@@ -65,7 +64,7 @@ public class Model {
 
             index = (rand.nextInt(passengersStops.size() - 1) + index)%passengersStops.size();
             BusStop destination = passengersStops.get(index);
-            passengerModule.setPassenger(location, destination, System.currentTimeMillis());
+            location.queuePush(new Passenger(destination, System.currentTimeMillis()));
         }
     }
 

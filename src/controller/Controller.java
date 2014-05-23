@@ -50,10 +50,12 @@ public class Controller implements ActionListener {
         final Map<Class<? extends BusEvent>, MyStrategy> resultMap = new HashMap<Class<? extends BusEvent>, MyStrategy>();
         resultMap.put(BusArrivesToBusStop.class, new BusArrivesToBusStopStrategy());
         resultMap.put(BusComeBackSignal.class, new BusComeBackSignalStrategy());
+        resultMap.put(BusPutOutPassengers.class, new BusPutOutPassengersStrategy());
+        resultMap.put(BusPutOutAll.class, new BusPutOutAllStrategy());
         resultMap.put(BusReadyToGo.class, new BusReadyToGoStrategy());
         resultMap.put(BusReturnedToDepot.class, new BusReturnedToDepotStrategy());
         resultMap.put(BusStartSignal.class, new BusStartSignalStrategy());
-        resultMap.put(BusWaitsBeforeStop.class, new BusStopOccupiedStrategy());
+        resultMap.put(BusTookInPassengers.class, new BusTookInPassengersStrategy());
         return Collections.unmodifiableMap(resultMap);
     }
 
@@ -105,71 +107,120 @@ public class Controller implements ActionListener {
     }
 
     /**
-     * Obsługa zdarzenia przyjazdu autobusu na przystanek.
-     * Dojazd na przystanek powoduje zmianę stanu autobusu na autobus stojący na przystanku.
-     * Jeśli dojechał do pętli, to sprawdzana jest dokonana liczba kursów. Jeśli został osiągnięty
-     * limit, to autobus wzbudza sam dla siebie sygnał powrotu do zajezdni.
+     * <b>Obsługa zdarzenia dojazdu autobusu na przystanek.</b>
+     * Autobus sprawdza, czy przystanek nie jest zajęty.
+     * Jeśli autobus dojechał do pętli, to sprawdza, czy nie kończy kursu.
+     * Jeśli nie dojechał do pętli i są pasażerowie, którzy chcą wysiąść, to wysiadają.
+     * Jeśli takich nie ma, to wsiadają ci, którzy chcą wsiąść.
+     * Jeśli nie ma ani jednych, ani drugich, to autobus jedzie dalej.
      */
     private final class BusArrivesToBusStopStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
-            bus.reachNextStop();
-            if (bus.getCurrentBusStop() instanceof BusTerminus) {
-                bus.getLoopsToFinish().countdown();
-                if (bus.areLoopsFinished()) {
-                    try
-                    {
-                        blockingQueue.put(new BusComeBackSignal(bus));
-                    } catch (final InterruptedException e)
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+            if (bus.getNextBusStop().isOccupied()) {
+                bus.setState(BusState.WAITING);
+            }
+            else {
+                bus.reachNextStop();
+                System.out.println("Przystanek: " + bus.getCurrentBusStop().getNAME());
+                if (bus.getCurrentBusStop() instanceof BusTerminus) {
+                    bus.getLoopsToFinish().countdown();
+                    if (bus.areLoopsFinished()) {
+                        try {
+                            blockingQueue.put(new BusComeBackSignal(bus));
+                        } catch (final InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                     }
                 }
+                if (bus.isGetOffRequestNow()) {
+                    bus.occupyCurrentBusStop();
+                    bus.setState(BusState.PUT_OUT);
+                } else if (bus.isGetOnRequestNow()) {
+                    bus.occupyCurrentBusStop();
+                    bus.setState(BusState.TAKE_IN);
+                }
             }
-            bus.setState(BusState.ON_STOP);
         }
     }
 
     /**
-     * Strategia sygnału powrotu do pętli.
-     * Dla autobusu zostaje ustawiona trasa powrotna do zajezdni i stan zakończenia kursu.
+     * <b>Obsługa sygnału powrotu do zajezdni.</b>
+     * Jeśli autobus ma pasażerów, to ich wszystkich wypuszcza.
+     * W przeciwnym wypadku wraca do zajezdni.
      */
     private final class BusComeBackSignalStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
-            bus.setValueToNextStop(SimulatorConstants.depotTerminusDistance);
-            bus.setState(BusState.FINISHED);
+            if (!bus.isEmpty()) {
+                bus.occupyCurrentBusStop();
+                bus.setState(BusState.PUT_OUT_ALL);
+            }
+            else {
+                bus.comeback();
+            }
         }
     }
 
     /**
-     * Strategia zdarzenia gotowości do jazdy.
-     * Autobus zmienia stan na gotowy do jazdy.
+     * <b>Obsługa zdarzenia zakończenia wysadzania wszystkich pasażerów z autobusu.</b>
+     * Autobus wraca do zajezdni.
+     */
+    private final class BusPutOutAllStrategy extends MyStrategy {
+        @Override
+        void execute(Bus bus) {
+            bus.freeCurrentBusStop();
+            bus.comeback();
+        }
+    }
+
+    /**
+     * <b>Obsługa zdarzenia zakończenia wysadzania pasażerów z autobusu.</b>
+     * Jeśli jacyś pasażerowie chcą wsiąść, to autobus ich zabiera.
+     * W przeciwnym wypadku autobus wyrusza dalej.
+     */
+    private final class BusPutOutPassengersStrategy extends  MyStrategy {
+        @Override
+        void execute(Bus bus) {
+            if (bus.isGetOnRequestNow()) {
+                bus.setState(BusState.TAKE_IN);
+            }
+            else {
+                bus.freeCurrentBusStop();
+                bus.setState(BusState.RUNNING);
+            }
+        }
+    }
+
+    /**
+     * <b>Obsługa zdarzenia gotowości do jazdy.</b>
+     * Autobus jest gotowy do jazdy.
      */
     private final class BusReadyToGoStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
-            bus.setState(BusState.IN_DEPOT);
+            bus.setState(BusState.READY_TO_GO);
         }
     }
 
     /**
-     * Strategia zdarzenia powrotu do zajezdni.
-     * Autobus, który wrócił do zajezdni zmienia obecny przystanek na zajezdnię
-     * i zmienia stan na "przerwa".
+     * <b>Obsługa zdarzenia powrotu do zajezdni.</b>
+     * Autobus, który wrócił do zajezdni ma przerwę.
      */
     private final class BusReturnedToDepotStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
-            bus.setCurrentBusStop(BusDepot.getInstance());
+            bus.reachDepot();
             bus.setState(BusState.HAVING_BREAK);
+            System.out.println("Przystanek: " + bus.getCurrentBusStop().getNAME());
+            System.out.println("Liczba pasażerów:" + bus.getPassengerMap().size());
         }
     }
 
     /**
-     * Strategia sygnału rozpoczęcia kursu.
-     * Autobus zmienia stan na jadący.
+     * <b>Obsługa sygnału rozpoczęcia kursu.</b>
+     * Autobus zaczyna jechać.
      */
     private final class BusStartSignalStrategy extends MyStrategy {
         @Override
@@ -179,13 +230,14 @@ public class Controller implements ActionListener {
     }
 
     /**
-     * Strategia zdarzenia próby wja
-     * chuj, nie wiem co to jest
+     * <b>Obsługa zdarzenia zabrania wszystkich pasażerów z przystanka.</b>
+     * Autobus jedzie dalej.
      */
-    private final class BusStopOccupiedStrategy extends MyStrategy {
+    private final class BusTookInPassengersStrategy extends  MyStrategy {
         @Override
         void execute(Bus bus) {
-
+            bus.freeCurrentBusStop();
+            bus.setState(BusState.RUNNING);
         }
     }
 }

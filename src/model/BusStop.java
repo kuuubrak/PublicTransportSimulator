@@ -3,6 +3,7 @@ package model;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.UUID;
 
 /**
  * <b>BusStop.</b><br>
@@ -14,6 +15,7 @@ import java.util.Queue;
  * @author dan.krasniak
  */
 public class BusStop implements Serializable {
+    private final UUID ID;
     /**
      * Name of the <b>BusStop</b>.
      */
@@ -23,11 +25,14 @@ public class BusStop implements Serializable {
      */
     private Queue<Passenger> passengerQueue;
     private Route route;
+    private boolean occupied;
 
     public BusStop(final String name) {
+        this.ID = UUID.randomUUID();
         this.NAME = name;
         this.passengerQueue = new LinkedList<Passenger>();
         this.route = new Route();
+        this.occupied = false;
 
     }
 
@@ -100,5 +105,11 @@ public class BusStop implements Serializable {
 
     public Queue<Passenger> getPassengerQueue() {
         return passengerQueue;
+    }
+
+    public boolean isOccupied() { return occupied; }
+
+    public void setOccupied(boolean occupied) {
+        this.occupied = occupied;
     }
 }

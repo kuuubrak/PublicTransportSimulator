@@ -11,7 +11,7 @@ import java.util.UUID;
  */
 public class Passenger {
     /**
-     * Unique Number/Color
+     * Unique id
      */
     private final UUID ID;
     /**
