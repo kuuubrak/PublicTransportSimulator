@@ -87,8 +87,6 @@ class ModuleNetwork {
 
     /**
      * Dodaje nowego odbiorce dla tego modulu.
-     *
-     * @param module
      */
     public void addReceiver(final ModuleNetwork module) {
         receivers.add(module);

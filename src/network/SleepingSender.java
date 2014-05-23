@@ -72,9 +72,6 @@ class SleepingSender {
 
     /**
      * Metoda, ktora dodaje obiekt i odbiorce do kolejki
-     *
-     * @param object
-     * @param receiver
      */
     public void send(final Object object, final ModuleNetwork receiver) {
         if (!toSend.offer(new Package(object, receiver))) {
