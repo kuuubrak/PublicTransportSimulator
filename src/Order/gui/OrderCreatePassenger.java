@@ -1,14 +1,14 @@
 package order.gui;
 
 import order.FunctionalitySimulationModule;
-import order.OrderPrioritableAbstract;
+import order.Order;
 
 /**
  * Implementacja rozkazu używanego przez GUI.
  *
  * @author Maciej Majewski
  */
-public class OrderCreatePassenger extends OrderPrioritableAbstract<FunctionalitySimulationModule> {
+public class OrderCreatePassenger implements Order<FunctionalitySimulationModule> {
 
     private final String from;
     private final String to;

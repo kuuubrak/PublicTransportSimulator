@@ -1,14 +1,14 @@
 package order.gui;
 
 import order.FunctionalitySimulationModule;
-import order.OrderPrioritableAbstract;
+import order.Order;
 
 /**
  * Implementacja rozkazu używanego przez GUI
  *
  * @author Maciej Majewski
  */
-public class OrderGenerationConfig extends OrderPrioritableAbstract<FunctionalitySimulationModule> {
+public class OrderGenerationConfig implements Order<FunctionalitySimulationModule> {
 
     private final int min;
     private final int max;

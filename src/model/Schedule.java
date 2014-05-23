@@ -14,7 +14,6 @@ public class Schedule {
 
     private Schedule() {
         busStops = new ArrayList<BusStop>();
-
         BusStop lastStop, currentStop;
         BusDepot busDepot = BusDepot.getInstance();
         BusTerminus busTerminus = BusTerminus.getInstance();

@@ -2,14 +2,14 @@ package order.sim;
 
 import mockup.Mockup;
 import order.FunctionalityMockupParser;
-import order.OrderPrioritableAbstract;
+import order.Order;
 
 /**
  * Polecenie przetworzenia makiety.
  *
  * @author Maciej Majewski
  */
-public class OrderParseMockup extends OrderPrioritableAbstract<FunctionalityMockupParser> {
+public class OrderParseMockup implements Order<FunctionalityMockupParser> {
     private final Mockup makieta;
 
     public OrderParseMockup(Mockup makieta) {

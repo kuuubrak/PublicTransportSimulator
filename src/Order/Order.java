@@ -12,7 +12,7 @@ package order;
  *            udostępnianą przez przyjmującego_rozkaz funkcjonalność.
  * @author Maciej Majewski
  */
-public interface Order<T> extends Comparable<Order<T>> {
+public interface Order<T> {
 
     /**
      * Wykonuje dany rozkaz. Implementacja to zwykle
@@ -22,11 +22,4 @@ public interface Order<T> extends Comparable<Order<T>> {
      */
     public void execute(T subject);
 
-    /**
-     * Powinien zwrócić priorytet danego rozkazu.
-     * Istotne z punktu widzenia symulacji.
-     *
-     * @return
-     */
-    public int priority();
 }

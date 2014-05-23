@@ -1,14 +1,14 @@
 package order.gui;
 
 import order.FunctionalitySimulationModule;
-import order.OrderPrioritableAbstract;
+import order.Order;
 
 /**
  * Implementacja rozkazu używanego przez GUI.
  *
  * @author Maciej Majewski
  */
-public class OrderRunContinuously extends OrderPrioritableAbstract<FunctionalitySimulationModule> {
+public class OrderRunContinuously implements Order<FunctionalitySimulationModule> {
 
     private boolean contin;
 

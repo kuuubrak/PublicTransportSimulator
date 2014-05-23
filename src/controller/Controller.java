@@ -7,6 +7,7 @@ import model.BusState;
 import model.BusTerminus;
 import model.Model;
 import network.Client;
+import order.FunctionalitySimulationModule;
 import order.Order;
 import order.sim.OrderParseMockup;
 import simulator.SimulatorConstants;
@@ -23,7 +24,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by ppeczek on 2014-05-21.
  */
-public class Controller implements ActionListener {
+public class Controller implements ActionListener, FunctionalitySimulationModule {
     private static Controller ourInstance = new Controller();
 
     private final Model model;
@@ -71,37 +72,24 @@ public class Controller implements ActionListener {
 
     public void work() {
 //        view.showGUI();
-        /**
-         * Zwykłe zdarzenia i sygnały
-         */
         while (true) {
-            BusEvent busEvent = null;
-            try {
-                busEvent = eventsBlockingQueue.take();
-            } catch (final InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            /**
+             * Zwykłe zdarzenia i sygnały
+             */
+            while (!eventsBlockingQueue.isEmpty()) {
+                BusEvent busEvent = null;
+                busEvent = eventsBlockingQueue.poll();
+                final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
+                myStrategy.execute(busEvent.getBus());
             }
-            final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
-            myStrategy.execute(busEvent.getBus());
+            /**
+             * Priorytetowe zdarzenia -> rozkazy
+             */
+            while (!ordersBlockingQueue.isEmpty()) {
+                Order<FunctionalitySimulationModule> order = ordersBlockingQueue.poll();
+                order.execute(this);
+            }
         }
-        /**
-         * Priorytetowe zdarzenia -> rozkazy
-         */
-//        while(true) {
-//            BusEvent busEvent = null;
-//            try {
-//                Order<FunctionalitySimulationModule> order = ordersBlockingQueue.take();
-//            }
-//            catch(InterruptedException e) {
-//                //TODO Generated
-//                e.printStackTrace();
-//                throw new RuntimeException();
-//            }
-//            final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
-//            myStrategy.execute(busEvent.getBus());
-//        }
-
     }
 
     @Override
@@ -126,6 +114,41 @@ public class Controller implements ActionListener {
     public void setNetData(String host, int port) {
         this.host = host;
         this.port = port;
+    }
+
+    @Override
+    public void runSimulation(boolean patataj) {
+
+    }
+
+    @Override
+    public void stepSimulation(boolean goSlower) {
+
+    }
+
+    @Override
+    public void passengerGenerationConfig(int minGen, int maxGen) {
+
+    }
+
+    @Override
+    public void newPassenger(String busStopStart, String busStopStop) {
+
+    }
+
+    @Override
+    public void releaseBus() {
+
+    }
+
+    @Override
+    public void trapBus() {
+
+    }
+
+    @Override
+    public void updateBus() {
+
     }
 
     abstract private class MyStrategy {
