@@ -35,7 +35,7 @@ public class Controller implements ActionListener {
         networkClient.establishConnection(host, port);
         this.blockingQueue = new LinkedBlockingQueue<BusEvent>();
         this.eventDictionaryMap = getEventDictionaryMap();
-        this.model = new Model(this.blockingQueue);
+        this.model = new Model(blockingQueue);
         this.mockup = createMockup();
 //        this.view = new View(blockingQueue, mockup);
         this.timer = new Timer(SimulatorConstants.simulationSpeed, this);
@@ -65,6 +65,9 @@ public class Controller implements ActionListener {
 
     public void work() {
 //        view.showGUI();
+        /**
+         * Zwykłe zdarzenia i sygnały
+         */
         while (true) {
             BusEvent busEvent = null;
             try {
@@ -76,6 +79,23 @@ public class Controller implements ActionListener {
             final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
             myStrategy.execute(busEvent.getBus());
         }
+        /**
+         * Priorytetowe zdarzenia -> rozkazy
+         */
+//        while(true) {
+//            BusEvent busEvent = null;
+//            try {
+//                busEvent = networkClient.getOrdersQueue().take();
+//            }
+//            catch(InterruptedException e) {
+//                //TODO Generated
+//                e.printStackTrace();
+//                throw new RuntimeException();
+//            }
+//            final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
+//            myStrategy.execute(busEvent.getBus());
+//        }
+
     }
 
     @Override

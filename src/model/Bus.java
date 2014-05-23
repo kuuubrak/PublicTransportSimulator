@@ -6,6 +6,7 @@ import view.BusEvent;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * <b>Bus</b>.<br>
@@ -36,7 +37,7 @@ public final class Bus implements EventListener {
     private Map<BusState, BusBehaviorStrategy> busBehaviorStrategyMap = new HashMap<BusState, BusBehaviorStrategy>();
     public BlockingQueue<BusEvent> blockingQueue;
 
-    public Bus(BusStop startStation, BlockingQueue<BusEvent> blockingQueue) {
+    public Bus(BusStop startStation, LinkedBlockingQueue<BusEvent> blockingQueue) {
         this.currentBusStop = startStation;
         this.state = BusState.READY_TO_GO;
         this.toNextStop = new Counter(this.currentBusStop.getDistance());
@@ -104,6 +105,7 @@ public final class Bus implements EventListener {
     }
 
     private final Passenger putOutPassenger(BusStop busStop) {
+//        System.out.println("Liczba pasażerów:" + getPassengerMap().size());
         Passenger passenger = getPassengerMap().remove(busStop);
 //        System.out.println("Wysiadający pasażer:" + passenger.getID());
 //        System.out.println("Liczba pasażerów:" + getPassengerMap().size());
@@ -126,6 +128,7 @@ public final class Bus implements EventListener {
 
     private final void transferPassenger(BusStop busStop) {
         Passenger passenger = getPassengerMap().entrySet().iterator().next().getValue();
+        passenger.setTIMESTAMP(System.currentTimeMillis());
         getPassengerMap().remove(passenger.getDestination(), passenger);
         BusStop busStop1 = getCurrentBusStop();
         if (!currentBusStop.equals(busStop1)) {
@@ -225,6 +228,7 @@ public final class Bus implements EventListener {
 
     public void reachDepot() {
         reachStop(BusDepot.getInstance());
+        BusDepot.getInstance().getBusArrayList().add(this);
     }
 
     public boolean areLoopsFinished() {
@@ -257,9 +261,6 @@ public final class Bus implements EventListener {
 
     abstract private class BusBehaviorStrategy {
         abstract void execute();
-        public Bus getBus() {
-            return Bus.this;
-        }
     }
 
     /**
@@ -284,7 +285,7 @@ public final class Bus implements EventListener {
             if (toNextStop.isDownCounted()) {
                 try
                 {
-                    blockingQueue.put(new BusArrivesToBusStop(getBus()));
+                    blockingQueue.put(new BusArrivesToBusStop(Bus.this));
                 } catch (final InterruptedException e)
                 {
                     // TODO Auto-generated catch block
@@ -307,7 +308,7 @@ public final class Bus implements EventListener {
         void execute() {
             try
             {
-                blockingQueue.put(new BusArrivesToBusStop(getBus()));
+                blockingQueue.put(new BusArrivesToBusStop(Bus.this));
             } catch (final InterruptedException e)
             {
                 // TODO Auto-generated catch block
@@ -327,7 +328,7 @@ public final class Bus implements EventListener {
             if (toNextStop.isDownCounted()) {
                 try
                 {
-                    blockingQueue.put(new BusReturnedToDepot(getBus()));
+                    blockingQueue.put(new BusReturnedToDepot(Bus.this));
                 } catch (final InterruptedException e)
                 {
                     // TODO Auto-generated catch block
@@ -348,7 +349,7 @@ public final class Bus implements EventListener {
             if (cooldownAfterLoops.isDownCounted()) {
                 try
                 {
-                    blockingQueue.put(new BusReadyToGo(getBus()));
+                    blockingQueue.put(new BusReadyToGo(Bus.this));
                 } catch (final InterruptedException e)
                 {
                     // TODO Auto-generated catch block
@@ -364,7 +365,7 @@ public final class Bus implements EventListener {
     private final class BusPutsOutPassengersStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
-            getBus().putOutPassengers();
+            Bus.this.putOutPassengers();
         }
     }
 
@@ -374,7 +375,7 @@ public final class Bus implements EventListener {
     private final class BusTakesInPassengersStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
-            getBus().takeInPassengers();
+            Bus.this.takeInPassengers();
         }
     }
 
@@ -384,7 +385,7 @@ public final class Bus implements EventListener {
     private final class BusPutsOutAllStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
-            getBus().putOutAll();
+            Bus.this.putOutAll();
         }
     }
 }

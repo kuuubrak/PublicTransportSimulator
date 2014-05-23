@@ -6,7 +6,7 @@ import view.BusEvent;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static java.lang.Math.random;
 import static simulator.SimulatorConstants.N;
@@ -21,7 +21,7 @@ public class Model {
 
     private double passengerGenerationIntensity = SimulatorConstants.simulatorDefaultGenerationIntensity;
 
-    public Model(BlockingQueue<BusEvent> blockingQueue) {
+    public Model(LinkedBlockingQueue<BusEvent> blockingQueue) {
         BusDepot busDepot = BusDepot.getInstance();
         for (int i=0; i<N; ++i) {
             busContainer.add(new Bus(busDepot, blockingQueue));

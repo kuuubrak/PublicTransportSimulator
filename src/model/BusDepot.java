@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class BusDepot extends BusStop {
     private static BusDepot ourInstance = new BusDepot();
-    private ArrayList<Bus> buses;
+    private ArrayList<Bus> busArrayList = new ArrayList<Bus>();
 
     private BusDepot() {
         super(SimulatorConstants.depotName);
@@ -21,5 +21,9 @@ public class BusDepot extends BusStop {
 
     public void setRoute(int length) {
         setRoute(BusTerminus.getInstance(), length);
+    }
+
+    public ArrayList<Bus> getBusArrayList() {
+        return busArrayList;
     }
 }

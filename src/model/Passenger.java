@@ -17,7 +17,7 @@ public class Passenger {
     /**
      * On which step the <b>Passenger</b> appeared at the <b>BusStop</b>
      */
-    private final float TIMESTAMP;
+    private float TIMESTAMP;
     /**
      * <b>Passengers'</b> designated <b>BusStop</b>.
      */
@@ -49,6 +49,10 @@ public class Passenger {
      */
     public final float getTIMESTAMP() {
         return TIMESTAMP;
+    }
+
+    public void setTIMESTAMP(float TIMESTAMP) {
+        this.TIMESTAMP = TIMESTAMP;
     }
 
     /**
