@@ -267,7 +267,7 @@ public final class Bus implements EventListener {
     public void terminusCheck() {
         if (getCurrentBusStop() instanceof BusTerminus) {
             getLoopsToFinish().countdown();
-            System.out.println("To finish:" + getLoopsToFinish().getValue());
+            System.out.println(this + ": To finish:" + getLoopsToFinish().getValue());
         }
     }
 

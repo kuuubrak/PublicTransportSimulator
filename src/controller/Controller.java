@@ -3,6 +3,7 @@ package controller;
 import event.*;
 import mockup.Mockup;
 import model.Bus;
+import model.BusDepot;
 import model.BusState;
 import model.Model;
 import network.Client;
@@ -216,7 +217,7 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
                         bus.setState(BusState.WAITING);
                     } else {
                         bus.reachNextStop();
-                        System.out.println(bus.getCurrentBusStop().getNAME());
+                        System.out.println(bus + ": " + bus.getCurrentBusStop().getNAME());
                         /**
                          * Po zatrzymaniu się autobusu na przystanku najpierw opuszczają go pasażerowie,
                          * dla których jest to przystanek docelowy, a następnie wsiadają do niego
@@ -303,9 +304,11 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
         @Override
         void execute(Bus bus) {
 //            System.out.println("Wykonuje: BusReturnedToDepot");
+            BusDepot busDepot = BusDepot.getInstance();
+            busDepot.getBusArrayList().add(bus);
             bus.reachDepot();
             bus.setState(BusState.HAVING_BREAK);
-            System.out.println(bus.getCurrentBusStop().getNAME());
+            System.out.println(bus + ": " + bus.getCurrentBusStop().getNAME());
         }
     }
 
@@ -316,6 +319,8 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
     private final class BusStartSignalStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
+            BusDepot busDepot = BusDepot.getInstance();
+            busDepot.getBusArrayList().remove(bus);
 //            System.out.println("Wykonuje: BusStartSignalStrategy");
             bus.setState(BusState.RUNNING);
         }

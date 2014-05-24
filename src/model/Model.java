@@ -1,5 +1,6 @@
 package model;
 
+import event.BusStartSignal;
 import mockup.Mockup;
 import simulator.SimulatorConstants;
 import view.BusEvent;
@@ -26,7 +27,13 @@ public class Model {
         for (int i=0; i<N; ++i) {
             busContainer.add(new Bus(busDepot, blockingQueue));
         }
-        busContainer.get(0).setState(BusState.RUNNING);
+        try {
+            blockingQueue.put(new BusStartSignal(getBusContainer().get(0)));
+//            blockingQueue.put(new BusStartSignal(getBusContainer().get(1)));
+        } catch (final InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public Mockup createMockup() {
