@@ -75,32 +75,32 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
             /**
              * Zwykłe zdarzenia i sygnały
              */
-            while (true)
-            {
-                BusEvent busEvent = null;
-                try
-                {
-                    busEvent = eventsBlockingQueue.take();
-                } catch (final InterruptedException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
-                myStrategy.execute(busEvent.getBus());
-            }
-//            while (!eventsBlockingQueue.isEmpty()) {
-//                BusEvent busEvent = eventsBlockingQueue.poll();
+//            while (true)
+//            {
+//                BusEvent busEvent = null;
+//                try
+//                {
+//                    busEvent = eventsBlockingQueue.take();
+//                } catch (final InterruptedException e)
+//                {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
 //                final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
 //                myStrategy.execute(busEvent.getBus());
 //            }
+            while (!eventsBlockingQueue.isEmpty()) {
+                BusEvent busEvent = eventsBlockingQueue.poll();
+                final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
+                myStrategy.execute(busEvent.getBus());
+            }
             /**
              * Priorytetowe zdarzenia -> rozkazy
              */
-//            while (!ordersBlockingQueue.isEmpty()) {
-//                Order<FunctionalitySimulationModule> order = ordersBlockingQueue.poll();
-//                order.execute(this);
-//            }
+            while (!ordersBlockingQueue.isEmpty()) {
+                Order<FunctionalitySimulationModule> order = ordersBlockingQueue.poll();
+                order.execute(this);
+            }
         }
     }
 
