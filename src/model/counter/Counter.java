@@ -16,16 +16,20 @@ abstract public class Counter {
 
     public Counter(LinkedBlockingQueue<BusEvent> blockingQueue, int value, Bus bus) {
         this.value = value;
-        this.counted = true;
+        this.counted = false;
         this.blockingQueue = blockingQueue;
         this.bus = bus;
     }
 
     public int countdown() {
+//        if (isDownCounted()) {
+//            throw new CounterNotInitiatedException();
+//        }
         if (value > 0) {
             value--;
         }
         else {
+            setCounted(true);
             finishedCounting();
         }
         return value;
@@ -43,8 +47,13 @@ abstract public class Counter {
         return value;
     }
 
-    public void setValue(int value) {
+    public void initiateCounter(int value) {
+        this.counted = false;
         this.value = value;
+    }
+
+    public void setCounted(boolean counted) {
+        this.counted = counted;
     }
 
     public boolean isDownCounted() {

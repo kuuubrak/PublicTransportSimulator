@@ -94,7 +94,11 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
 
     @Override
     public void actionPerformed(final ActionEvent actionEvent) {
-        model.step();
+        try {
+            model.step();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mockup = createMockup();
         networkClient.send(new OrderParseMockup(mockup));
 //        view.updateBoard(mockup);

@@ -17,7 +17,7 @@ abstract public class Cooldown extends Counter {
     }
 
     public void reset() {
-        setValue(max_value);
+        initiateCounter(max_value);
     }
 
     private void finishedCounting() {

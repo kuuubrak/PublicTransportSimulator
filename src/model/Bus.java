@@ -214,7 +214,7 @@ public final class Bus implements EventListener {
 
 
     public void setValueToNextStop(int length) {
-        getToNextStop().setValue(length);
+        getToNextStop().initiateCounter(length);
     }
 
     public void reachStop(BusStop busStop)
