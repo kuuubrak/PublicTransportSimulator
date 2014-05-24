@@ -174,14 +174,6 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
                 System.out.println("Przystanek: " + bus.getCurrentBusStop().getNAME());
                 if (bus.getCurrentBusStop() instanceof BusTerminus) {
                     bus.getLoopsToFinish().countdown();
-                    if (bus.areLoopsFinished()) {
-                        try {
-                            eventsBlockingQueue.put(new BusComeBackSignal(bus));
-                        } catch (final InterruptedException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
                 }
                 if (bus.isGetOffRequestNow()) {
                     bus.occupyCurrentBusStop();

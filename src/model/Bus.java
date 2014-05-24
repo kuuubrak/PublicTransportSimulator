@@ -1,6 +1,7 @@
 package model;
 
 import event.*;
+import model.counter.*;
 import simulator.SimulatorConstants;
 import view.BusEvent;
 
@@ -28,23 +29,23 @@ public final class Bus implements EventListener {
     /**
      * A container of currently held <b>Passengers</b>
      */
+    public BlockingQueue<BusEvent> blockingQueue;
     private Map<BusStop, Passenger> passengerMap = new HashMap<BusStop, Passenger>();
     private BusStop currentBusStop;
     private BusState state;
     private Counter toNextStop;
-    private Counter loopsToFinish;
+    private LoopsCooldown loopsToFinish;
     private Cooldown cooldownAfterLoops;
     private Map<BusState, BusBehaviorStrategy> busBehaviorStrategyMap = new HashMap<BusState, BusBehaviorStrategy>();
-    public BlockingQueue<BusEvent> blockingQueue;
 
     public Bus(BusStop startStation, LinkedBlockingQueue<BusEvent> blockingQueue) {
+        this.blockingQueue = blockingQueue;
         this.currentBusStop = startStation;
         this.state = BusState.READY_TO_GO;
-        this.toNextStop = new Counter(this.currentBusStop.getDistance());
-        this.loopsToFinish = new Cooldown(SimulatorConstants.loops);
-        this.cooldownAfterLoops = new Cooldown(SimulatorConstants.cooldownAfterLoops);
+        this.toNextStop = new ToNextStopDistanceCounter(blockingQueue, this.currentBusStop.getDistance(), this);
+        this.loopsToFinish = new LoopsCooldown(blockingQueue, SimulatorConstants.loops, this);
+        this.cooldownAfterLoops = new BreakAfterFinishedCooldown(blockingQueue, SimulatorConstants.cooldownAfterLoops, this);
         this.busBehaviorStrategyMap = getBusBehaviorStrategyMap();
-        this.blockingQueue = blockingQueue;
     }
 
     private Map<BusState, BusBehaviorStrategy> getBusBehaviorStrategyMap() {
@@ -282,16 +283,6 @@ public final class Bus implements EventListener {
         @Override
         void execute() {
             toNextStop.countdown();
-            if (toNextStop.isDownCounted()) {
-                try
-                {
-                    blockingQueue.put(new BusArrivesToBusStop(Bus.this));
-                } catch (final InterruptedException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -325,16 +316,6 @@ public final class Bus implements EventListener {
         @Override
         void execute() {
             toNextStop.countdown();
-            if (toNextStop.isDownCounted()) {
-                try
-                {
-                    blockingQueue.put(new BusReturnedToDepot(Bus.this));
-                } catch (final InterruptedException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -346,16 +327,6 @@ public final class Bus implements EventListener {
         @Override
         void execute() {
             cooldownAfterLoops.countdown();
-            if (cooldownAfterLoops.isDownCounted()) {
-                try
-                {
-                    blockingQueue.put(new BusReadyToGo(Bus.this));
-                } catch (final InterruptedException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
