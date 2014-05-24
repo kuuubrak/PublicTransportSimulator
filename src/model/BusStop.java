@@ -90,11 +90,11 @@ public class BusStop implements Serializable {
     }
 
     /**
-     * <b>getDistance</b><br>
+     * <b>getDistanceToNextStop</b><br>
      *
      * @return distance - required to reach next <b>BusStop</b>.
      */
-    public final int getDistance() {
+    public final int getDistanceToNextStop() {
         return route.getLength();
     }
 

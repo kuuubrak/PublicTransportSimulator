@@ -33,18 +33,20 @@ public final class Bus implements EventListener {
     private Map<BusStop, Passenger> passengerMap = new HashMap<BusStop, Passenger>();
     private BusStop currentBusStop;
     private BusState state;
-    private Counter toNextStop;
+    private ToNextStopDistanceCounter toNextStop;
     private LoopsCooldown loopsToFinish;
-    private Cooldown cooldownAfterLoops;
+    private BreakAfterFinishedCooldown cooldownAfterLoops;
+    private ReturnToDepotCooldown returnToDepotCooldown;
     private Map<BusState, BusBehaviorStrategy> busBehaviorStrategyMap = new HashMap<BusState, BusBehaviorStrategy>();
 
     public Bus(BusStop startStation, LinkedBlockingQueue<BusEvent> blockingQueue) {
         this.blockingQueue = blockingQueue;
         this.currentBusStop = startStation;
         this.state = BusState.READY_TO_GO;
-        this.toNextStop = new ToNextStopDistanceCounter(blockingQueue, this.currentBusStop.getDistance(), this);
+        this.toNextStop = new ToNextStopDistanceCounter(blockingQueue, this.currentBusStop.getDistanceToNextStop(), this);
         this.loopsToFinish = new LoopsCooldown(blockingQueue, SimulatorConstants.loops, this);
         this.cooldownAfterLoops = new BreakAfterFinishedCooldown(blockingQueue, SimulatorConstants.cooldownAfterLoops, this);
+        this.returnToDepotCooldown = new ReturnToDepotCooldown(blockingQueue, SimulatorConstants.depotTerminusDistance, this);
         this.busBehaviorStrategyMap = getBusBehaviorStrategyMap();
     }
 
@@ -138,7 +140,7 @@ public final class Bus implements EventListener {
     }
 
     public final void comeback() {
-        setValueToNextStop(SimulatorConstants.depotTerminusDistance);
+        setCounterToNextStop(SimulatorConstants.depotTerminusDistance);
         setState(BusState.FINISHED);
     }
     /**
@@ -213,14 +215,14 @@ public final class Bus implements EventListener {
     }
 
 
-    public void setValueToNextStop(int length) {
+    public void setCounterToNextStop(int length) {
         getToNextStop().initiateCounter(length);
     }
 
     public void reachStop(BusStop busStop)
     {
         setCurrentBusStop(busStop);
-        setValueToNextStop(getCurrentBusStop().getDistance());
+        setCounterToNextStop(getCurrentBusStop().getDistanceToNextStop());
     }
 
     public void reachNextStop() {
@@ -260,6 +262,19 @@ public final class Bus implements EventListener {
 
     public void freeCurrentBusStop() { freeBusStop(getCurrentBusStop()); }
 
+    public boolean isNextStopOccupied() { return getNextBusStop().isOccupied(); }
+
+    public void terminusCheck() {
+        if (getCurrentBusStop() instanceof BusTerminus) {
+            getLoopsToFinish().countdown();
+            System.out.println("To finish:" + getLoopsToFinish().getValue());
+        }
+    }
+
+    public boolean isFinished() {
+        return getLoopsToFinish().isDownCounted();
+    }
+
     abstract private class BusBehaviorStrategy {
         abstract void execute();
     }
@@ -289,21 +304,30 @@ public final class Bus implements EventListener {
     /**
      * <b>Strategia autobusu czekającego na zwolnienie się przystanka.</b>
      * Jeśli inny autobus zajmował przystanek,
-     * to ten sprawdza, czy przystanek jest nadal zajęty, jak nie to wjeżdża.
-     *
-     * TODO: jeśli jest kolejkowanie do przystanka, to zaimplementować
+     * to ten sprawdza, czy przystanek jest nadal zajęty.
+     * Jeśli jest wolny, to wjeżdża na niego i w przypadku zakończenia trasy
+     * wysadza wszystkich pasażerów, w przeciwnym razie standardowo: najpierw opuszczają
+     * go pasażerowie, dla których jest to przystanek docelowy, a następnie wsiadają do niego
+     * kolejne osoby w miarę wolnych miejsc.
      *
      */
     private final class BusWaitingForBusStopStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
-            try
-            {
-                blockingQueue.put(new BusArrivesToBusStop(Bus.this));
-            } catch (final InterruptedException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            if (!Bus.this.isNextStopOccupied()) {
+                reachNextStop();
+                occupyCurrentBusStop();
+                if (isFinished()) {
+                    setState(BusState.PUT_OUT_ALL);
+                }
+                else {
+                    if (isGetOffRequestNow()) {
+                        setState(BusState.PUT_OUT);
+                    }
+                    else {
+                        setState(BusState.TAKE_IN);
+                    }
+                }
             }
         }
     }
@@ -315,7 +339,7 @@ public final class Bus implements EventListener {
     private final class BusReturningStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
-            toNextStop.countdown();
+            returnToDepotCooldown.countdown();
         }
     }
 

@@ -20,7 +20,6 @@ public class Schedule {
         busStops.add(busDepot);
         busStops.add(busTerminus);
         busDepot.setRoute(SimulatorConstants.depotTerminusDistance);
-        busTerminus.setToDepot(SimulatorConstants.depotTerminusDistance);
         lastStop = busTerminus;
         for (Pair<String, Integer> pair : SimulatorConstants.busStopSettings) {
             currentStop = new BusStop(pair.getKey());

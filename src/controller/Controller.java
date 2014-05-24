@@ -4,7 +4,6 @@ import event.*;
 import mockup.Mockup;
 import model.Bus;
 import model.BusState;
-import model.BusTerminus;
 import model.Model;
 import network.Client;
 import order.FunctionalitySimulationModule;
@@ -76,19 +75,32 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
             /**
              * Zwykłe zdarzenia i sygnały
              */
-            while (!eventsBlockingQueue.isEmpty()) {
+            while (true)
+            {
                 BusEvent busEvent = null;
-                busEvent = eventsBlockingQueue.poll();
+                try
+                {
+                    busEvent = eventsBlockingQueue.take();
+                } catch (final InterruptedException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
                 myStrategy.execute(busEvent.getBus());
             }
+//            while (!eventsBlockingQueue.isEmpty()) {
+//                BusEvent busEvent = eventsBlockingQueue.poll();
+//                final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
+//                myStrategy.execute(busEvent.getBus());
+//            }
             /**
              * Priorytetowe zdarzenia -> rozkazy
              */
-            while (!ordersBlockingQueue.isEmpty()) {
-                Order<FunctionalitySimulationModule> order = ordersBlockingQueue.poll();
-                order.execute(this);
-            }
+//            while (!ordersBlockingQueue.isEmpty()) {
+//                Order<FunctionalitySimulationModule> order = ordersBlockingQueue.poll();
+//                order.execute(this);
+//            }
         }
     }
 
@@ -170,21 +182,56 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
     private final class BusArrivesToBusStopStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
-            if (bus.getNextBusStop().isOccupied()) {
-                bus.setState(BusState.WAITING);
-            }
-            else {
-                bus.reachNextStop();
-                System.out.println("Przystanek: " + bus.getCurrentBusStop().getNAME());
-                if (bus.getCurrentBusStop() instanceof BusTerminus) {
-                    bus.getLoopsToFinish().countdown();
+//            System.out.println("Wykonuje: BusArrivesToBusStopStrategy");
+            bus.terminusCheck();
+            if (bus.isFinished()) {
+                if (bus.isEmpty()) {
+                    bus.reachNextStop();
                 }
-                if (bus.isGetOffRequestNow()) {
-                    bus.occupyCurrentBusStop();
-                    bus.setState(BusState.PUT_OUT);
-                } else if (bus.isGetOnRequestNow()) {
-                    bus.occupyCurrentBusStop();
-                    bus.setState(BusState.TAKE_IN);
+                else {
+                    if (bus.isNextStopOccupied()) {
+                        bus.setState(BusState.WAITING);
+                    } else {
+                        bus.reachNextStop();
+                        bus.occupyCurrentBusStop();
+                        bus.setState(BusState.PUT_OUT_ALL);
+                    }
+                }
+            }
+            if (!bus.isFinished()) {
+                /**
+                 * Jeśli autobus jest pełny i nikt na danym przystanku nie wysiada, przystanek jest pomijany.
+                 */
+                if (bus.isFull() && !bus.isGetOffRequestNow()) {
+                    bus.reachNextStop();
+                }
+                /**
+                 * Jeśli nikt na danym przystanku nie czeka i nie chce wysiadać, przystanek jest pomijany.
+                 */
+                else if (bus.isEmpty() && !bus.isGetOnRequestNow()) {
+                    bus.reachNextStop();
+                }
+                else {
+                    if (bus.isNextStopOccupied()) {
+                        bus.setState(BusState.WAITING);
+                    } else {
+                        bus.reachNextStop();
+                        System.out.println(bus.getCurrentBusStop().getNAME());
+                        /**
+                         * Po zatrzymaniu się autobusu na przystanku najpierw opuszczają go pasażerowie,
+                         * dla których jest to przystanek docelowy, a następnie wsiadają do niego
+                         * kolejne osoby w miarę wolnych miejsc.
+                         */
+                        if (!bus.isFinished()) {
+                            if (bus.isGetOffRequestNow()) {
+                                bus.occupyCurrentBusStop();
+                                bus.setState(BusState.PUT_OUT);
+                            } else if (bus.isGetOnRequestNow()) {
+                                bus.occupyCurrentBusStop();
+                                bus.setState(BusState.TAKE_IN);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -198,13 +245,8 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
     private final class BusComeBackSignalStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
-            if (!bus.isEmpty()) {
-                bus.occupyCurrentBusStop();
-                bus.setState(BusState.PUT_OUT_ALL);
-            }
-            else {
-                bus.comeback();
-            }
+//            System.out.println("Wykonuje: BusComeBackSignalStrategy");
+            bus.comeback();
         }
     }
 
@@ -215,8 +257,10 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
     private final class BusPutOutAllStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
+//            System.out.println("Wykonuje: BusPutOutAllStrategy");
             bus.freeCurrentBusStop();
             bus.comeback();
+            System.out.println("Następny:" + bus.getToNextStop().getValue());
         }
     }
 
@@ -228,6 +272,7 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
     private final class BusPutOutPassengersStrategy extends  MyStrategy {
         @Override
         void execute(Bus bus) {
+//            System.out.println("Wykonuje: BusPutOutPassengersStrategy");
             if (bus.isGetOnRequestNow()) {
                 bus.setState(BusState.TAKE_IN);
             }
@@ -245,6 +290,7 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
     private final class BusReadyToGoStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
+//            System.out.println("Wykonuje: BusReadyToGoStrategy");
             bus.setState(BusState.READY_TO_GO);
         }
     }
@@ -256,10 +302,10 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
     private final class BusReturnedToDepotStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
+//            System.out.println("Wykonuje: BusReturnedToDepot");
             bus.reachDepot();
             bus.setState(BusState.HAVING_BREAK);
-            System.out.println("Przystanek: " + bus.getCurrentBusStop().getNAME());
-            System.out.println("Liczba pasażerów:" + bus.getPassengerMap().size());
+            System.out.println(bus.getCurrentBusStop().getNAME());
         }
     }
 
@@ -270,6 +316,7 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
     private final class BusStartSignalStrategy extends MyStrategy {
         @Override
         void execute(Bus bus) {
+//            System.out.println("Wykonuje: BusStartSignalStrategy");
             bus.setState(BusState.RUNNING);
         }
     }
@@ -281,6 +328,7 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
     private final class BusTookInPassengersStrategy extends  MyStrategy {
         @Override
         void execute(Bus bus) {
+//            System.out.println("Wykonuje: BusTookInPassengersStrategy");
             bus.freeCurrentBusStop();
             bus.setState(BusState.RUNNING);
         }
