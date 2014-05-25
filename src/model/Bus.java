@@ -1,6 +1,8 @@
 package model;
 
-import event.*;
+import event.busevents.BusPutOutAll;
+import event.busevents.BusPutOutPassengers;
+import event.busevents.BusTookInPassengers;
 import model.counter.*;
 import simulator.SimulatorConstants;
 import view.BusEvent;
@@ -34,8 +36,8 @@ public final class Bus implements EventListener {
     private BusStop currentBusStop;
     private BusState state;
     private ToNextStopDistanceCounter toNextStop;
-    private LoopsCooldown loopsToFinish;
-    private BreakAfterFinishedCooldown cooldownAfterLoops;
+    private LoopsCounter loopsToFinish;
+    private BreakAfterFinishedCounter cooldownAfterLoops;
     private ReturnToDepotCooldown returnToDepotCooldown;
     private Map<BusState, BusBehaviorStrategy> busBehaviorStrategyMap = new HashMap<BusState, BusBehaviorStrategy>();
 
@@ -44,8 +46,8 @@ public final class Bus implements EventListener {
         this.currentBusStop = startStation;
         this.state = BusState.READY_TO_GO;
         this.toNextStop = new ToNextStopDistanceCounter(blockingQueue, this.currentBusStop.getDistanceToNextStop(), this);
-        this.loopsToFinish = new LoopsCooldown(blockingQueue, SimulatorConstants.loops, this);
-        this.cooldownAfterLoops = new BreakAfterFinishedCooldown(blockingQueue, SimulatorConstants.cooldownAfterLoops, this);
+        this.loopsToFinish = new LoopsCounter(blockingQueue, SimulatorConstants.loops, this);
+        this.cooldownAfterLoops = new BreakAfterFinishedCounter(blockingQueue, SimulatorConstants.cooldownAfterLoops, this);
         this.returnToDepotCooldown = new ReturnToDepotCooldown(blockingQueue, SimulatorConstants.depotTerminusDistance, this);
         this.busBehaviorStrategyMap = getBusBehaviorStrategyMap();
     }

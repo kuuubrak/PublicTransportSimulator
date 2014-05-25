@@ -1,4 +1,4 @@
-package event;
+package event.busevents;
 
 import model.Bus;
 import view.BusEvent;
@@ -6,8 +6,8 @@ import view.BusEvent;
 /**
  * Created by ppeczek on 2014-05-21.
  */
-public class BusReadyToGo extends BusEvent {
-    public BusReadyToGo(Bus bus) {
+public class BusComeBackSignal extends BusEvent {
+    public BusComeBackSignal(Bus bus) {
         super(bus);
     }
 }

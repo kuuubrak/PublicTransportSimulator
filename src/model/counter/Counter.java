@@ -35,7 +35,7 @@ abstract public class Counter {
         return value;
     }
 
-    private void finishedCounting() {
+    public void finishedCounting() {
         throwEvent();
     }
 

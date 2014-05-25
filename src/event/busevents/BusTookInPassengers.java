@@ -1,4 +1,4 @@
-package event;
+package event.busevents;
 
 import model.Bus;
 import view.BusEvent;

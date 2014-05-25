@@ -8,10 +8,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by ppeczek on 2014-05-21.
  */
-abstract public class Cooldown extends Counter {
+abstract public class CyclicCounter extends Counter {
     public int max_value;
 
-    public Cooldown(LinkedBlockingQueue<BusEvent> blockingQueue, int value, Bus bus) {
+    public CyclicCounter(LinkedBlockingQueue<BusEvent> blockingQueue, int value, Bus bus) {
         super(blockingQueue, value, bus);
         max_value = value;
     }
@@ -20,7 +20,7 @@ abstract public class Cooldown extends Counter {
         initiateCounter(max_value);
     }
 
-    private void finishedCounting() {
+    public void finishedCounting() {
         reset();
         throwEvent();
     }

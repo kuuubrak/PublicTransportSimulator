@@ -1,6 +1,6 @@
 package model.counter;
 
-import event.BusArrivesToBusStop;
+import event.busevents.BusArrivesToBusStop;
 import model.Bus;
 import view.BusEvent;
 

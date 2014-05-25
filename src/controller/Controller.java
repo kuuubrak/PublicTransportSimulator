@@ -1,17 +1,17 @@
 package controller;
 
-import event.*;
+import event.BusStartSignal;
+import event.ContinousSimulationEvent;
+import event.NewPassengerEvent;
+import event.PassengerGenerationInterval;
+import event.busevents.*;
 import mockup.Mockup;
-import model.Bus;
-import model.BusDepot;
-import model.BusState;
-import model.Model;
+import model.*;
 import network.Client;
-import order.FunctionalitySimulationModule;
-import order.Order;
 import order.sim.OrderParseMockup;
 import simulator.SimulatorConstants;
 import view.BusEvent;
+import view.SimulatorEvent;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -24,13 +24,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by ppeczek on 2014-05-21.
  */
-public class Controller implements ActionListener, FunctionalitySimulationModule {
+public class Controller implements ActionListener {
     private static Controller ourInstance = new Controller();
 
     private final Model model;
-    private final Map<Class<? extends BusEvent>, MyStrategy> eventDictionaryMap;
+    private final Map<Class<? extends SimulatorEvent>, MyStrategy> eventDictionaryMap;
     private final LinkedBlockingQueue<BusEvent> eventsBlockingQueue;
-    private final LinkedBlockingQueue<Order> ordersBlockingQueue;
     private final Timer timer;
     private Mockup mockup;
     private Client networkClient = new Client();
@@ -40,7 +39,6 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
     private Controller() {
         networkClient.establishConnection(host, port);
         this.eventsBlockingQueue = new LinkedBlockingQueue<BusEvent>();
-        this.ordersBlockingQueue = networkClient.getOrdersBlockingQueue();
         this.eventDictionaryMap = getEventDictionaryMap();
         this.model = new Model(eventsBlockingQueue);
         this.mockup = createMockup();
@@ -53,16 +51,28 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
         return ourInstance;
     }
 
-    private Map<Class<? extends BusEvent>, MyStrategy> getEventDictionaryMap() {
-        final Map<Class<? extends BusEvent>, MyStrategy> resultMap = new HashMap<Class<? extends BusEvent>, MyStrategy>();
+    private Map<Class<? extends SimulatorEvent>, MyStrategy> getEventDictionaryMap() {
+        final Map<Class<? extends SimulatorEvent>, MyStrategy> resultMap = new HashMap<Class<? extends SimulatorEvent>, MyStrategy>();
+        /**
+         * Zdarzenia generowane cyklicznie przez symulator
+         */
+        resultMap.put(BusStartSignal.class, new BusStartSignalStrategy());
+        /**
+         * Zdarzenia generowane przez autobus
+         */
         resultMap.put(BusArrivesToBusStop.class, new BusArrivesToBusStopStrategy());
         resultMap.put(BusComeBackSignal.class, new BusComeBackSignalStrategy());
         resultMap.put(BusPutOutPassengers.class, new BusPutOutPassengersStrategy());
         resultMap.put(BusPutOutAll.class, new BusPutOutAllStrategy());
         resultMap.put(BusReadyToGo.class, new BusReadyToGoStrategy());
         resultMap.put(BusReturnedToDepot.class, new BusReturnedToDepotStrategy());
-        resultMap.put(BusStartSignal.class, new BusStartSignalStrategy());
         resultMap.put(BusTookInPassengers.class, new BusTookInPassengersStrategy());
+        /**
+         * Rozkazy użytkownika
+         */
+        resultMap.put(NewPassengerEvent.class, new NewPassengerStrategy());
+        resultMap.put(PassengerGenerationInterval.class, new PassengerGenerationIntervalStrategy());
+        resultMap.put(ContinousSimulationEvent.class, new ContinousSimulationStrategy());
         return Collections.unmodifiableMap(resultMap);
     }
 
@@ -78,30 +88,18 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
              */
             while (true)
             {
-                BusEvent busEvent = null;
+                SimulatorEvent simulatorEvent = null;
                 try
                 {
-                    busEvent = eventsBlockingQueue.take();
+                    simulatorEvent = eventsBlockingQueue.take();
                 } catch (final InterruptedException e)
                 {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
-                myStrategy.execute(busEvent.getBus());
+                final MyStrategy myStrategy = eventDictionaryMap.get(simulatorEvent.getClass());
+                myStrategy.execute(simulatorEvent);
             }
-//            while (!eventsBlockingQueue.isEmpty()) {
-//                BusEvent busEvent = eventsBlockingQueue.poll();
-//                final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
-//                myStrategy.execute(busEvent.getBus());
-//            }
-//            /**
-//             * Priorytetowe zdarzenia -> rozkazy
-//             */
-//            while (!ordersBlockingQueue.isEmpty()) {
-//                Order<FunctionalitySimulationModule> order = ordersBlockingQueue.poll();
-//                order.execute(this);
-//            }
         }
     }
 
@@ -133,43 +131,22 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
         this.port = port;
     }
 
-    @Override
-    public void runSimulation(boolean patataj) {
-
-    }
-
-    @Override
-    public void stepSimulation(boolean goSlower) {
-
-    }
-
-    @Override
-    public void passengerGenerationConfig(int minGen, int maxGen) {
-
-    }
-
-    @Override
-    public void newPassenger(String busStopStart, String busStopStop) {
-
-    }
-
-    @Override
-    public void releaseBus() {
-
-    }
-
-    @Override
-    public void trapBus() {
-
-    }
-
-    @Override
-    public void updateBus() {
-
-    }
-
     abstract private class MyStrategy {
-        abstract void execute(Bus bus);
+        abstract void execute(SimulatorEvent simulatorEvent);
+    }
+
+    /**
+     * <b>Obsługa sygnału rozpoczęcia kursu.</b>
+     * Autobus zaczyna jechać.
+     */
+    private final class BusStartSignalStrategy extends MyStrategy {
+        @Override
+        void execute(SimulatorEvent simulatorEvent) {
+            BusDepot busDepot = BusDepot.getInstance();
+            Bus bus = busDepot.getBusQueue().poll();
+            System.out.println("Wykonuje: BusStartSignalStrategy");
+            bus.setState(BusState.RUNNING);
+        }
     }
 
     /**
@@ -181,8 +158,10 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
      * Jeśli nie ma ani jednych, ani drugich, to autobus jedzie dalej.
      */
     private final class BusArrivesToBusStopStrategy extends MyStrategy {
+
         @Override
-        void execute(Bus bus) {
+        void execute(SimulatorEvent busEvent) {
+            Bus bus = busEvent.getBus();
 //            System.out.println("Wykonuje: BusArrivesToBusStopStrategy");
             bus.terminusCheck();
             if (bus.isFinished()) {
@@ -249,7 +228,8 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
      */
     private final class BusComeBackSignalStrategy extends MyStrategy {
         @Override
-        void execute(Bus bus) {
+        void execute(SimulatorEvent busEvent) {
+            Bus bus = busEvent.getBus();
 //            System.out.println("Wykonuje: BusComeBackSignalStrategy");
             bus.comeback();
         }
@@ -261,7 +241,8 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
      */
     private final class BusPutOutAllStrategy extends MyStrategy {
         @Override
-        void execute(Bus bus) {
+        void execute(SimulatorEvent busEvent) {
+            Bus bus = busEvent.getBus();
 //            System.out.println("Wykonuje: BusPutOutAllStrategy");
             bus.freeCurrentBusStop();
             bus.comeback();
@@ -274,9 +255,10 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
      * Jeśli jacyś pasażerowie chcą wsiąść, to autobus ich zabiera.
      * W przeciwnym wypadku autobus wyrusza dalej.
      */
-    private final class BusPutOutPassengersStrategy extends  MyStrategy {
+    private final class BusPutOutPassengersStrategy extends MyStrategy {
         @Override
-        void execute(Bus bus) {
+        void execute(SimulatorEvent busEvent) {
+            Bus bus = busEvent.getBus();
 //            System.out.println("Wykonuje: BusPutOutPassengersStrategy");
             if (bus.isGetOnRequestNow()) {
                 bus.setState(BusState.TAKE_IN);
@@ -294,8 +276,9 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
      */
     private final class BusReadyToGoStrategy extends MyStrategy {
         @Override
-        void execute(Bus bus) {
+        void execute(SimulatorEvent busEvent) {
 //            System.out.println("Wykonuje: BusReadyToGoStrategy");
+            Bus bus = busEvent.getBus();
             bus.setState(BusState.READY_TO_GO);
         }
     }
@@ -306,7 +289,8 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
      */
     private final class BusReturnedToDepotStrategy extends MyStrategy {
         @Override
-        void execute(Bus bus) {
+        void execute(SimulatorEvent busEvent) {
+            Bus bus = busEvent.getBus();
 //            System.out.println("Wykonuje: BusReturnedToDepot");
             BusDepot busDepot = BusDepot.getInstance();
             busDepot.getBusQueue().add(bus);
@@ -317,29 +301,45 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
     }
 
     /**
-     * <b>Obsługa sygnału rozpoczęcia kursu.</b>
-     * Autobus zaczyna jechać.
+     * <b>Obsługa zdarzenia zabrania wszystkich pasażerów z przystanka.</b>
+     * Autobus jedzie dalej.
      */
-    private final class BusStartSignalStrategy extends MyStrategy {
+    private final class BusTookInPassengersStrategy extends MyStrategy {
         @Override
-        void execute(Bus bus) {
-            BusDepot busDepot = BusDepot.getInstance();
-//            Bus bus = busDepot.getBusQueue().poll();
-            System.out.println("Wykonuje: BusStartSignalStrategy");
+        void execute(SimulatorEvent busEvent) {
+            Bus bus = busEvent.getBus();
+//            System.out.println("Wykonuje: BusTookInPassengersStrategy");
+            bus.freeCurrentBusStop();
             bus.setState(BusState.RUNNING);
         }
     }
 
-    /**
-     * <b>Obsługa zdarzenia zabrania wszystkich pasażerów z przystanka.</b>
-     * Autobus jedzie dalej.
-     */
-    private final class BusTookInPassengersStrategy extends  MyStrategy {
+    private final class NewPassengerStrategy extends MyStrategy {
         @Override
-        void execute(Bus bus) {
-//            System.out.println("Wykonuje: BusTookInPassengersStrategy");
-            bus.freeCurrentBusStop();
-            bus.setState(BusState.RUNNING);
+        void execute(SimulatorEvent simulatorEvent) {
+            BusStop busStop = simulatorEvent.getFrom();
+            busStop.getPassengerQueue().add(new Passenger(simulatorEvent.getTo(), System.currentTimeMillis()));
+        }
+    }
+
+    private final class PassengerGenerationIntervalStrategy extends MyStrategy {
+        @Override
+        void execute(SimulatorEvent simulatorEvent) {
+        }
+    }
+
+    private final class ContinousSimulationStrategy extends MyStrategy {
+        @Override
+        void execute(SimulatorEvent simulatorEvent) {
+            /**
+             * TODO: włączyć obsługę guzika GUI
+             */
+            if (simulatorEvent.isContinuous()) {
+                timer.start();
+
+            } else {
+                timer.stop();
+            }
         }
     }
 }

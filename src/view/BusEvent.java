@@ -6,7 +6,7 @@ import model.BusStop;
 /**
  * Created by ppeczek on 2014-05-21.
  */
-public class BusEvent {
+public class BusEvent extends SimulatorEvent {
     private Bus bus;
     private BusStop busStop;
 

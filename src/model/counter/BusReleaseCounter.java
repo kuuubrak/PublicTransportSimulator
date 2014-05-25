@@ -1,8 +1,6 @@
 package model.counter;
 
 import event.BusStartSignal;
-import model.Bus;
-import model.BusDepot;
 import view.BusEvent;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -10,19 +8,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by tomasz on 25.05.2014.
  */
-public class BusReleaseCounter extends Cooldown {
+public class BusReleaseCounter extends CyclicCounter {
 
-    private BusDepot busStop;
-
-    public BusReleaseCounter(LinkedBlockingQueue<BusEvent> blockingQueue, int releasePeriod, BusDepot busStop) {
+    public BusReleaseCounter(LinkedBlockingQueue<BusEvent> blockingQueue, int releasePeriod) {
         super(blockingQueue, releasePeriod, null);
-        this.busStop = busStop;
     }
 
     public void throwEvent() {
      try
         {
-            getBlockingQueue().put(new BusStartSignal(busStop.getBusQueue().poll()));
+            getBlockingQueue().put(new BusStartSignal());
         } catch (final InterruptedException e)
         {
             // TODO Auto-generated catch block

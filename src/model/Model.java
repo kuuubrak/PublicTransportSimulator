@@ -1,6 +1,5 @@
 package model;
 
-import event.BusStartSignal;
 import mockup.Mockup;
 import model.counter.BusReleaseCounter;
 import simulator.SimulatorConstants;
@@ -26,24 +25,16 @@ public class Model {
 
     public Model(LinkedBlockingQueue<BusEvent> blockingQueue) {
         BusDepot busDepot = BusDepot.getInstance();
-        busReleaseCounter = new BusReleaseCounter(blockingQueue, SimulatorConstants.defaultBusReleaseCooldown, busDepot);
+        busReleaseCounter = new BusReleaseCounter(blockingQueue, SimulatorConstants.defaultBusReleaseCooldown);
         for (int i=0; i<N; ++i) {
             Bus bus = new Bus(busDepot, blockingQueue);
             busContainer.add(bus);
             BusDepot.getInstance().getBusQueue().add(bus);
         }
-        try {
-            blockingQueue.put(new BusStartSignal(BusDepot.getInstance().getBusQueue().poll()));
-            blockingQueue.put(new BusStartSignal(BusDepot.getInstance().getBusQueue().poll()));
-        } catch (final InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     public Mockup createMockup() {
-        final Mockup mockup = new Mockup(getBusContainer(), schedule.getBusStops());
-        return mockup;
+        return new Mockup(getBusContainer(), schedule.getBusStops());
     }
 
     public ArrayList<Bus> getBusContainer() {
@@ -67,7 +58,7 @@ public class Model {
      * Adds new <b>Passengers</b> to <b>BusStops</b>.
      */
     public final void generatePassengers(final double intensity) {
-        double numberOfPassengersToGenerate = (double) (random() * intensity);
+        double numberOfPassengersToGenerate = (random() * intensity);
         ArrayList<BusStop> passengersStops = schedule.getPassengersStops();
         for (double i = 0; i < numberOfPassengersToGenerate; i++) {
             Random rand = new Random();
@@ -84,6 +75,4 @@ public class Model {
     public double getPassengerGenerationIntensity() {
         return passengerGenerationIntensity;
     }
-
-
 }
