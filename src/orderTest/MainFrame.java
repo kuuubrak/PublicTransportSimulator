@@ -1,11 +1,11 @@
 package orderTest;
 
-import Order.gui.OrderCreatePassenger;
-import Order.gui.OrderGenerationConfig;
-import Order.gui.OrderRunContinuously;
+import event.guievents.ContinuousSimulationEvent;
+import event.guievents.NewPassengerEvent;
+import event.guievents.PassengerGenerationInterval;
 import network.Client;
 import network.Server;
-import simulator.SimulatorConstants;
+import main.SimulatorConstants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -138,7 +138,7 @@ public class MainFrame extends JFrame {
         startStepSimulationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                OrderRunContinuously startStepSimulation = new OrderRunContinuously(false);
+                ContinuousSimulationEvent startStepSimulation = new ContinuousSimulationEvent(false);
 
                 networkClient.send(startStepSimulation);
             }
@@ -147,8 +147,8 @@ public class MainFrame extends JFrame {
         stopStepSimulationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                OrderRunContinuously startStepSimulation = new OrderRunContinuously(true);
-                networkClient.send(startStepSimulation);
+                ContinuousSimulationEvent stopStepSimulation = new ContinuousSimulationEvent(true);
+                networkClient.send(stopStepSimulation);
             }
         });
 
@@ -157,7 +157,7 @@ public class MainFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String from = (String)MainFrame.this.passengerLocationList.getSelectedValue();
                 String to = (String)MainFrame.this.passengerDestinationList.getSelectedValue();
-                OrderCreatePassenger createPassenger = new OrderCreatePassenger(from, to);
+                NewPassengerEvent createPassenger = new NewPassengerEvent(from, to);
                 networkClient.send(createPassenger);
             }
         });
@@ -167,7 +167,7 @@ public class MainFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int minTime = Integer.parseInt(MainFrame.this.minimalPassengerCreationIntervalTextField.getText());
                 int maxTime = Integer.parseInt(MainFrame.this.maximalPassengerCreationIntervalTextField.getText());
-                OrderGenerationConfig config = new OrderGenerationConfig(minTime, maxTime);
+                PassengerGenerationInterval config = new PassengerGenerationInterval(minTime, maxTime);
                 networkClient.send(config);
             }
         });

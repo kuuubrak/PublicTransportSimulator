@@ -1,4 +1,4 @@
-package simulator;
+package main;
 
 import javafx.util.Pair;
 
@@ -9,7 +9,6 @@ import java.util.ArrayList;
  */
 public final class SimulatorConstants {
     public final static int simulationSpeed = 50;
-    public final static double simulatorDefaultGenerationIntensity = 0.5;
     public final static String simulatorHostAddress = "127.0.0.1";
     public final static int simulatorPort = 8124;
     public final static int cooldownAfterLoops = 10;

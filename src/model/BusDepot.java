@@ -1,6 +1,6 @@
 package model;
 
-import simulator.SimulatorConstants;
+import main.SimulatorConstants;
 
 import java.util.LinkedList;
 import java.util.Queue;

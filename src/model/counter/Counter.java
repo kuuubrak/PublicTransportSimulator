@@ -12,7 +12,7 @@ abstract public class Counter {
     private int value;
     private boolean counted;
     private LinkedBlockingQueue<BusEvent> blockingQueue;
-    private Bus bus;
+    private final Bus bus;
 
     public Counter(LinkedBlockingQueue<BusEvent> blockingQueue, int value, Bus bus) {
         this.value = value;

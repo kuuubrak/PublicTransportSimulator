@@ -1,25 +1,24 @@
-package event;
+package event.guievents;
 
-import model.BusStop;
 import view.SimulatorEvent;
 
 /**
  * Created by ppeczek on 2014-05-25.
  */
 public class NewPassengerEvent extends SimulatorEvent {
-    private final BusStop from;
-    private final BusStop to;
+    private final String from;
+    private final String to;
 
-    public NewPassengerEvent(BusStop from, BusStop to) {
+    public NewPassengerEvent(String from, String to) {
         this.from = from;
         this.to = to;
     }
 
-    public BusStop getFrom() {
+    public String getFrom() {
         return from;
     }
 
-    public BusStop getTo() {
+    public String getTo() {
         return to;
     }
 }

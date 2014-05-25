@@ -23,6 +23,7 @@ public class BusStop implements Serializable {
     /**
      * Queue of <b>Passengers</b> waiting for a place in the <b>Bus</b>.
      */
+
     private Queue<Passenger> passengerQueue;
     private Route route;
     private boolean occupied;

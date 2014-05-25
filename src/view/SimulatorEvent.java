@@ -1,7 +1,6 @@
 package view;
 
 import model.Bus;
-import model.BusStop;
 
 /**
  * Created by ppeczek on 2014-05-25.
@@ -11,9 +10,9 @@ public class SimulatorEvent {
         return null;
     }
 
-    public BusStop getTo() { return null; }
+    public String getTo() { return null; }
 
-    public BusStop getFrom() { return null; }
+    public String getFrom() { return null; }
 
     public int getMin() {
         return 0;

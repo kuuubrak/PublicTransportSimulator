@@ -1,7 +1,7 @@
 package model;
 
 import javafx.util.Pair;
-import simulator.SimulatorConstants;
+import main.SimulatorConstants;
 
 import java.util.ArrayList;
 
@@ -34,25 +34,30 @@ public class Schedule {
         return ourInstance;
     }
 
-    public static BusDepot getBusDepot() {
-        return BusDepot.getInstance();
-    }
-
     public static ArrayList<BusStop> getBusStops() {
         return busStops;
     }
 
-    public BusTerminus getTerminus() {
-        return BusTerminus.getInstance();
-    }
-
     public ArrayList<BusStop> getPassengersStops() {
         ArrayList<BusStop> passengersStops = new ArrayList<BusStop>();
-        for (BusStop bs : getBusStops()) {
+        for (BusStop bs : busStops) {
             if (!(bs instanceof BusDepot)) {
                 passengersStops.add(bs);
             }
         }
         return passengersStops;
     }
+
+    public BusStop findBusStop(String name) {
+        for (BusStop bs : busStops) {
+            if (bs.getNAME().equals(name)) {
+                return bs;
+            }
+        }
+        return null;
+    }
+
+//    public void addStop(BusStop busStop) {
+//        getBusStops().put(busStop.getNAME(), busStop);
+//    }
 }

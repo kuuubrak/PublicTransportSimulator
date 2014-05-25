@@ -1,16 +1,14 @@
 package model;
 
+import main.SimulatorConstants;
 import mockup.Mockup;
 import model.counter.BusReleaseCounter;
-import simulator.SimulatorConstants;
 import view.BusEvent;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static java.lang.Math.random;
-import static simulator.SimulatorConstants.N;
+import static main.SimulatorConstants.N;
 
 /**
  * Created by ppeczek on 2014-05-21.
@@ -20,8 +18,6 @@ public class Model {
     private ArrayList<Bus> busContainer = new ArrayList<Bus>();
     private Schedule schedule = Schedule.getInstance();
     private BusReleaseCounter busReleaseCounter;
-
-    private double passengerGenerationIntensity = SimulatorConstants.simulatorDefaultGenerationIntensity;
 
     public Model(LinkedBlockingQueue<BusEvent> blockingQueue) {
         BusDepot busDepot = BusDepot.getInstance();
@@ -45,7 +41,10 @@ public class Model {
         for (Bus bus : busContainer) {
             bus.move();
         }
-        generatePassengers(getPassengerGenerationIntensity());
+        for (BusStop busStop : new ArrayList<BusStop>(schedule.getPassengersStops())) {
+
+        }
+        generatePassengers();
         busReleaseCounter.countdown();
 //        System.out.println("Zajętość przystanków:");
 //        for (BusStop busStop : schedule.getPassengersStops()) {
@@ -57,22 +56,18 @@ public class Model {
      * <b>generatePassengers</b>
      * Adds new <b>Passengers</b> to <b>BusStops</b>.
      */
-    public final void generatePassengers(final double intensity) {
-        double numberOfPassengersToGenerate = (random() * intensity);
-        ArrayList<BusStop> passengersStops = schedule.getPassengersStops();
-        for (double i = 0; i < numberOfPassengersToGenerate; i++) {
-            Random rand = new Random();
-            int index;
-            index = rand.nextInt(passengersStops.size());
-            BusStop location = passengersStops.get(index);
-
-            index = (rand.nextInt(passengersStops.size() - 1) + index)%passengersStops.size();
-            BusStop destination = passengersStops.get(index);
-            location.queuePush(new Passenger(destination, System.currentTimeMillis()));
-        }
-    }
-
-    public double getPassengerGenerationIntensity() {
-        return passengerGenerationIntensity;
+    public final void generatePassengers() {
+//        double numberOfPassengersToGenerate = (random() * intensity);
+//        ArrayList<BusStop> passengersStops = new ArrayList<BusStop>(schedule.getPassengersStops().values());
+//        for (double i = 0; i < numberOfPassengersToGenerate; i++) {
+//            Random rand = new Random();
+//            int index;
+//            index = rand.nextInt(passengersStops.size());
+//            BusStop location = passengersStops.get(index);
+//
+//            index = (rand.nextInt(passengersStops.size() - 1) + index)%passengersStops.size();
+//            BusStop destination = passengersStops.get(index);
+//            location.queuePush(new Passenger(destination, System.currentTimeMillis()));
+//        }
     }
 }

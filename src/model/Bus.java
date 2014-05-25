@@ -4,7 +4,7 @@ import event.busevents.BusPutOutAll;
 import event.busevents.BusPutOutPassengers;
 import event.busevents.BusTookInPassengers;
 import model.counter.*;
-import simulator.SimulatorConstants;
+import main.SimulatorConstants;
 import view.BusEvent;
 
 import java.util.*;

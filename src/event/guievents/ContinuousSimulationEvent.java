@@ -1,14 +1,14 @@
-package event;
+package event.guievents;
 
 import view.SimulatorEvent;
 
 /**
  * Created by ppeczek on 2014-05-25.
  */
-public class ContinousSimulationEvent extends SimulatorEvent {
+public class ContinuousSimulationEvent extends SimulatorEvent {
     private final boolean continuous;
 
-    public ContinousSimulationEvent(boolean continuous) {
+    public ContinuousSimulationEvent(boolean continuous) {
         this.continuous = continuous;
     }
 

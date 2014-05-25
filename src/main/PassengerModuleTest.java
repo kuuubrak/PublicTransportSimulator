@@ -1,4 +1,4 @@
-package simulator;
+package main;
 
 /*
 import static org.junit.Assert.assertTrue;

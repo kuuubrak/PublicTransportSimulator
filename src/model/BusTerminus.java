@@ -1,6 +1,6 @@
 package model;
 
-import simulator.SimulatorConstants;
+import main.SimulatorConstants;
 
 /**
  * Created by ppeczek on 2014-05-21.
