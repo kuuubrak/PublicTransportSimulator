@@ -19,13 +19,20 @@ public final class SimulatorConstants {
     public final static String terminusName = "Pętla";
     public final static int loops = 3;
 
+
+    public final static String ratuszStopName = "Ratusz ArsenaL";
+    public final static String centrumStopName = "DZendruM";
+    public final static String SGHStopName = "SGHuj";
+    public final static String westStopName = "Łest stejszn";
+    public final static String tomaszKnapik = "czytał Tomasz Knapik";
+
     public final static int N = 10;
     public final static ArrayList<Pair<String, Integer>> busStopSettings = new ArrayList<Pair<String, Integer>>() {{
-        add(new Pair<String, Integer>("Ratusz ArsenaL", 3));
-        add(new Pair<String, Integer>("DZendruM, konwinient czendz tu sabulban end longdistanz treinz", 5));
-        add(new Pair<String, Integer>("SGHuj", 3));
-        add(new Pair<String, Integer>("Łest Łejłej stejszn", 2));
-        add(new Pair<String, Integer>("czytał Tomasz Knapik", 4));
+        add(new Pair<String, Integer>(ratuszStopName, 3));
+        add(new Pair<String, Integer>(centrumStopName, 5));
+        add(new Pair<String, Integer>(SGHStopName, 3));
+        add(new Pair<String, Integer>(westStopName, 2));
+        add(new Pair<String, Integer>(tomaszKnapik, 4));
     }};
 
 }
