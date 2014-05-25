@@ -2,6 +2,7 @@ package model;
 
 import event.BusStartSignal;
 import mockup.Mockup;
+import model.counter.BusReleaseCounter;
 import simulator.SimulatorConstants;
 import view.BusEvent;
 
@@ -19,11 +20,13 @@ public class Model {
 
     private ArrayList<Bus> busContainer = new ArrayList<Bus>();
     private Schedule schedule = Schedule.getInstance();
+    private BusReleaseCounter busReleaseCounter;
 
     private double passengerGenerationIntensity = SimulatorConstants.simulatorDefaultGenerationIntensity;
 
     public Model(LinkedBlockingQueue<BusEvent> blockingQueue) {
         BusDepot busDepot = BusDepot.getInstance();
+        busReleaseCounter = new BusReleaseCounter(blockingQueue, SimulatorConstants.defaultBusReleaseCooldown, busDepot);
         for (int i=0; i<N; ++i) {
             Bus bus = new Bus(busDepot, blockingQueue);
             busContainer.add(bus);
@@ -52,7 +55,7 @@ public class Model {
             bus.move();
         }
         generatePassengers(getPassengerGenerationIntensity());
-
+        busReleaseCounter.countdown();
 //        System.out.println("Zajętość przystanków:");
 //        for (BusStop busStop : schedule.getPassengersStops()) {
 //            System.out.println(busStop.getNAME() + ": " + busStop.getPassengerQueue().size());

@@ -13,6 +13,7 @@ public final class SimulatorConstants {
     public final static String simulatorHostAddress = "127.0.0.1";
     public final static int simulatorPort = 8124;
     public final static int cooldownAfterLoops = 10;
+    public final static int defaultBusReleaseCooldown = 3;
 
     public final static int depotTerminusDistance = 2;
     public final static String depotName = "Zajezdnia";
