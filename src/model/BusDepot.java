@@ -2,14 +2,15 @@ package model;
 
 import simulator.SimulatorConstants;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by ppeczek on 2014-05-21.
  */
 public class BusDepot extends BusStop {
     private static BusDepot ourInstance = new BusDepot();
-    private ArrayList<Bus> busArrayList = new ArrayList<Bus>();
+    private Queue<Bus> busQueue = new LinkedList<Bus>();
 
     private BusDepot() {
         super(SimulatorConstants.depotName);
@@ -23,7 +24,7 @@ public class BusDepot extends BusStop {
         setRoute(BusTerminus.getInstance(), length);
     }
 
-    public ArrayList<Bus> getBusArrayList() {
-        return busArrayList;
+    public Queue<Bus> getBusQueue() {
+        return busQueue;
     }
 }

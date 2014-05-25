@@ -231,7 +231,7 @@ public final class Bus implements EventListener {
 
     public void reachDepot() {
         reachStop(BusDepot.getInstance());
-        BusDepot.getInstance().getBusArrayList().add(this);
+        BusDepot.getInstance().getBusQueue().add(this);
     }
 
     public boolean areLoopsFinished() {

@@ -76,32 +76,32 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
             /**
              * Zwykłe zdarzenia i sygnały
              */
-//            while (true)
-//            {
-//                BusEvent busEvent = null;
-//                try
-//                {
-//                    busEvent = eventsBlockingQueue.take();
-//                } catch (final InterruptedException e)
-//                {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                }
-//                final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
-//                myStrategy.execute(busEvent.getBus());
-//            }
-            while (!eventsBlockingQueue.isEmpty()) {
-                BusEvent busEvent = eventsBlockingQueue.poll();
+            while (true)
+            {
+                BusEvent busEvent = null;
+                try
+                {
+                    busEvent = eventsBlockingQueue.take();
+                } catch (final InterruptedException e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
                 myStrategy.execute(busEvent.getBus());
             }
-            /**
-             * Priorytetowe zdarzenia -> rozkazy
-             */
-            while (!ordersBlockingQueue.isEmpty()) {
-                Order<FunctionalitySimulationModule> order = ordersBlockingQueue.poll();
-                order.execute(this);
-            }
+//            while (!eventsBlockingQueue.isEmpty()) {
+//                BusEvent busEvent = eventsBlockingQueue.poll();
+//                final MyStrategy myStrategy = eventDictionaryMap.get(busEvent.getClass());
+//                myStrategy.execute(busEvent.getBus());
+//            }
+//            /**
+//             * Priorytetowe zdarzenia -> rozkazy
+//             */
+//            while (!ordersBlockingQueue.isEmpty()) {
+//                Order<FunctionalitySimulationModule> order = ordersBlockingQueue.poll();
+//                order.execute(this);
+//            }
         }
     }
 
@@ -187,6 +187,7 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
             bus.terminusCheck();
             if (bus.isFinished()) {
                 if (bus.isEmpty()) {
+                    System.out.println(bus + " nie zatrzymuje się na: " + bus.getCurrentBusStop().getNAME());
                     bus.reachNextStop();
                 }
                 else {
@@ -194,6 +195,7 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
                         bus.setState(BusState.WAITING);
                     } else {
                         bus.reachNextStop();
+                        System.out.println(bus + ": " + bus.getCurrentBusStop().getNAME());
                         bus.occupyCurrentBusStop();
                         bus.setState(BusState.PUT_OUT_ALL);
                     }
@@ -204,12 +206,14 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
                  * Jeśli autobus jest pełny i nikt na danym przystanku nie wysiada, przystanek jest pomijany.
                  */
                 if (bus.isFull() && !bus.isGetOffRequestNow()) {
+                    System.out.println(bus + " nie zatrzymuje się na: " + bus.getCurrentBusStop().getNAME());
                     bus.reachNextStop();
                 }
                 /**
                  * Jeśli nikt na danym przystanku nie czeka i nie chce wysiadać, przystanek jest pomijany.
                  */
                 else if (bus.isEmpty() && !bus.isGetOnRequestNow()) {
+                    System.out.println(bus + " nie zatrzymuje się na: " + bus.getCurrentBusStop().getNAME());
                     bus.reachNextStop();
                 }
                 else {
@@ -305,7 +309,7 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
         void execute(Bus bus) {
 //            System.out.println("Wykonuje: BusReturnedToDepot");
             BusDepot busDepot = BusDepot.getInstance();
-            busDepot.getBusArrayList().add(bus);
+            busDepot.getBusQueue().add(bus);
             bus.reachDepot();
             bus.setState(BusState.HAVING_BREAK);
             System.out.println(bus + ": " + bus.getCurrentBusStop().getNAME());
@@ -320,8 +324,8 @@ public class Controller implements ActionListener, FunctionalitySimulationModule
         @Override
         void execute(Bus bus) {
             BusDepot busDepot = BusDepot.getInstance();
-            busDepot.getBusArrayList().remove(bus);
-//            System.out.println("Wykonuje: BusStartSignalStrategy");
+//            Bus bus = busDepot.getBusQueue().poll();
+            System.out.println("Wykonuje: BusStartSignalStrategy");
             bus.setState(BusState.RUNNING);
         }
     }

@@ -25,11 +25,13 @@ public class Model {
     public Model(LinkedBlockingQueue<BusEvent> blockingQueue) {
         BusDepot busDepot = BusDepot.getInstance();
         for (int i=0; i<N; ++i) {
-            busContainer.add(new Bus(busDepot, blockingQueue));
+            Bus bus = new Bus(busDepot, blockingQueue);
+            busContainer.add(bus);
+            BusDepot.getInstance().getBusQueue().add(bus);
         }
         try {
-            blockingQueue.put(new BusStartSignal(getBusContainer().get(0)));
-//            blockingQueue.put(new BusStartSignal(getBusContainer().get(1)));
+            blockingQueue.put(new BusStartSignal(BusDepot.getInstance().getBusQueue().poll()));
+            blockingQueue.put(new BusStartSignal(BusDepot.getInstance().getBusQueue().poll()));
         } catch (final InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -50,6 +52,7 @@ public class Model {
             bus.move();
         }
         generatePassengers(getPassengerGenerationIntensity());
+
 //        System.out.println("Zajętość przystanków:");
 //        for (BusStop busStop : schedule.getPassengersStops()) {
 //            System.out.println(busStop.getNAME() + ": " + busStop.getPassengerQueue().size());
