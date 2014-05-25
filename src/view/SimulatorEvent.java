@@ -1,5 +1,6 @@
 package view;
 
+import mockup.Mockup;
 import model.Bus;
 
 /**
@@ -25,4 +26,6 @@ public class SimulatorEvent {
     public boolean isContinuous() {
         return false;
     }
+
+    public Mockup getMockup() { return null; }
 }

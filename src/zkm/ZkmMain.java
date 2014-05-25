@@ -22,7 +22,6 @@ public class ZkmMain {
     private Integer lowerBound;
     private Integer upperBound;
     private Integer loopTimeMinute; // TODO
-    private
 
 
     public ZkmMain(String host, int port, Integer lowerBound, Integer upperBound, Integer loopTimeMinute) {
@@ -84,14 +83,14 @@ public class ZkmMain {
     }
 
     private void receiveMockup() {
-
-        SimulatorEvent event;
-        event = sc.getEventsBlockingQueue().poll();
+        SimulatorEvent event = sc.getEventsBlockingQueue().poll();
 
         if (event != null) {
-            order.execute(this);
+            /**
+             * A tak, bo mamy tylko 1 event dla ZKM
+             */
+            mockup = event.getMockup();
         }
-
     }
 
     private boolean endLoop() {

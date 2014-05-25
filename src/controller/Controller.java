@@ -1,21 +1,19 @@
 package controller;
 
 import event.BusStartSignal;
+import event.busevents.*;
 import event.guievents.ContinuousSimulationEvent;
 import event.guievents.NewPassengerEvent;
 import event.guievents.PassengerGenerationInterval;
-import event.busevents.*;
+import main.SimulatorConstants;
 import mockup.Mockup;
 import model.*;
 import network.Client;
-import main.SimulatorConstants;
-import view.BusEvent;
 import view.SimulatorEvent;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -111,9 +109,7 @@ public class Controller implements ActionListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        mockup = createMockup();
-        networkClient.send(new OrderParseMockup(mockup));
-//        view.updateBoard(mockup);
+        networkClient.send(createMockup());
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -145,8 +141,10 @@ public class Controller implements ActionListener {
         void execute(SimulatorEvent simulatorEvent) {
             BusDepot busDepot = BusDepot.getInstance();
             Bus bus = busDepot.getBusQueue().poll();
-            System.out.println("Wykonuje: BusStartSignalStrategy");
-            bus.setState(BusState.RUNNING);
+            if (bus != null) {
+                System.out.println("Wykonuje: BusStartSignalStrategy");
+                bus.setState(BusState.RUNNING);
+            }
         }
     }
 
@@ -280,6 +278,7 @@ public class Controller implements ActionListener {
         void execute(SimulatorEvent busEvent) {
 //            System.out.println("Wykonuje: BusReadyToGoStrategy");
             Bus bus = busEvent.getBus();
+            BusDepot.getInstance().getBusQueue().add(bus);
             bus.setState(BusState.READY_TO_GO);
         }
     }
@@ -345,7 +344,4 @@ public class Controller implements ActionListener {
         }
     }
 
-    private ArrayList<BusStop> getPassengersStops() {
-        return Schedule.getInstance().getPassengersStops();
-    }
 }

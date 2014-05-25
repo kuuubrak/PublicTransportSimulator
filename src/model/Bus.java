@@ -3,12 +3,14 @@ package model;
 import event.busevents.BusPutOutAll;
 import event.busevents.BusPutOutPassengers;
 import event.busevents.BusTookInPassengers;
-import model.counter.*;
 import main.SimulatorConstants;
-import view.BusEvent;
+import model.counter.*;
 import view.SimulatorEvent;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -92,7 +94,9 @@ public final class Bus implements EventListener {
         Passenger passenger = busStop.takePassenger();
 //        System.out.println("pasażer: " + passenger.getID());
 //        System.out.println("kolejka: " + busStop.getPassengerQueue().size());
-        passengerMap.put(passenger.getDestination(), passenger);
+        if (passenger != null) {
+            passengerMap.put(passenger.getDestination(), passenger);
+        }
 //        System.out.println("Liczba pasażerów:" + getPassengerMap().size());
     }
 
@@ -234,11 +238,6 @@ public final class Bus implements EventListener {
 
     public void reachDepot() {
         reachStop(BusDepot.getInstance());
-        BusDepot.getInstance().getBusQueue().add(this);
-    }
-
-    public boolean areLoopsFinished() {
-        return getLoopsToFinish().isDownCounted();
     }
     
     public boolean isGetOffRequest(BusStop busStop) {
