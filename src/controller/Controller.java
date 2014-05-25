@@ -29,8 +29,9 @@ public class Controller implements ActionListener {
     private static Controller ourInstance = new Controller();
 
     private final Model model;
+
     private final Map<Class<? extends SimulatorEvent>, MyStrategy> eventDictionaryMap;
-    private final LinkedBlockingQueue<BusEvent> eventsBlockingQueue;
+    private final LinkedBlockingQueue<SimulatorEvent> eventsBlockingQueue;
     private final Timer timer;
     private Mockup mockup;
     private Client networkClient = new Client();
@@ -39,7 +40,7 @@ public class Controller implements ActionListener {
 
     private Controller() {
         networkClient.establishConnection(host, port);
-        this.eventsBlockingQueue = new LinkedBlockingQueue<BusEvent>();
+        this.eventsBlockingQueue = new LinkedBlockingQueue<SimulatorEvent>();
         this.eventDictionaryMap = getEventDictionaryMap();
         this.model = new Model(eventsBlockingQueue);
         this.mockup = createMockup();

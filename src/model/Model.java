@@ -4,6 +4,7 @@ import main.SimulatorConstants;
 import mockup.Mockup;
 import model.counter.BusReleaseCounter;
 import view.BusEvent;
+import view.SimulatorEvent;
 
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -19,7 +20,7 @@ public class Model {
     private Schedule schedule = Schedule.getInstance();
     private BusReleaseCounter busReleaseCounter;
 
-    public Model(LinkedBlockingQueue<BusEvent> blockingQueue) {
+    public Model(LinkedBlockingQueue<SimulatorEvent> blockingQueue) {
         BusDepot busDepot = BusDepot.getInstance();
         busReleaseCounter = new BusReleaseCounter(blockingQueue, SimulatorConstants.defaultBusReleaseCooldown);
         for (int i=0; i<N; ++i) {
@@ -27,6 +28,7 @@ public class Model {
             busContainer.add(bus);
             BusDepot.getInstance().getBusQueue().add(bus);
         }
+        schedule.initBusStopPassengersCounters(blockingQueue);
     }
 
     public Mockup createMockup() {
@@ -42,7 +44,7 @@ public class Model {
             bus.move();
         }
         for (BusStop busStop : new ArrayList<BusStop>(schedule.getPassengersStops())) {
-
+            busStop.getPassengerCounter().countdown();
         }
         generatePassengers();
         busReleaseCounter.countdown();

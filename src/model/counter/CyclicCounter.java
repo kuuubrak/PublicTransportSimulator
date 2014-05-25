@@ -2,6 +2,7 @@ package model.counter;
 
 import model.Bus;
 import view.BusEvent;
+import view.SimulatorEvent;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -11,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 abstract public class CyclicCounter extends Counter {
     public int max_value;
 
-    public CyclicCounter(LinkedBlockingQueue<BusEvent> blockingQueue, int value, Bus bus) {
+    public CyclicCounter(LinkedBlockingQueue<SimulatorEvent> blockingQueue, int value, Bus bus) {
         super(blockingQueue, value, bus);
         max_value = value;
     }

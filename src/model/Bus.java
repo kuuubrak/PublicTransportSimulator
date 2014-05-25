@@ -6,6 +6,7 @@ import event.busevents.BusTookInPassengers;
 import model.counter.*;
 import main.SimulatorConstants;
 import view.BusEvent;
+import view.SimulatorEvent;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -31,7 +32,7 @@ public final class Bus implements EventListener {
     /**
      * A container of currently held <b>Passengers</b>
      */
-    public BlockingQueue<BusEvent> blockingQueue;
+    public BlockingQueue<SimulatorEvent> blockingQueue;
     private Map<BusStop, Passenger> passengerMap = new HashMap<BusStop, Passenger>();
     private BusStop currentBusStop;
     private BusState state;
@@ -41,7 +42,7 @@ public final class Bus implements EventListener {
     private ReturnToDepotCooldown returnToDepotCooldown;
     private Map<BusState, BusBehaviorStrategy> busBehaviorStrategyMap = new HashMap<BusState, BusBehaviorStrategy>();
 
-    public Bus(BusStop startStation, LinkedBlockingQueue<BusEvent> blockingQueue) {
+    public Bus(BusStop startStation, LinkedBlockingQueue<SimulatorEvent> blockingQueue) {
         this.blockingQueue = blockingQueue;
         this.currentBusStop = startStation;
         this.state = BusState.READY_TO_GO;
@@ -134,7 +135,7 @@ public final class Bus implements EventListener {
     private final void transferPassenger(BusStop busStop) {
         Passenger passenger = getPassengerMap().entrySet().iterator().next().getValue();
         passenger.setTIMESTAMP(System.currentTimeMillis());
-        getPassengerMap().remove(passenger.getDestination(), passenger);
+        getPassengerMap().remove(passenger.getDestination(), passenger); // czemu to ciagle rzuca errora?
         BusStop busStop1 = getCurrentBusStop();
         if (!currentBusStop.equals(busStop1)) {
             busStop1.getPassengerQueue().add(passenger);

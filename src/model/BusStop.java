@@ -1,9 +1,16 @@
 package model;
 
+import controller.Controller;
+import main.SimulatorConstants;
+import model.counter.NewPassengerCounter;
+import view.SimulatorEvent;
+
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * <b>BusStop.</b><br>
@@ -27,6 +34,7 @@ public class BusStop implements Serializable {
     private Queue<Passenger> passengerQueue;
     private Route route;
     private boolean occupied;
+    private NewPassengerCounter passengerCounter;
 
     public BusStop(final String name) {
         this.ID = UUID.randomUUID();
@@ -34,9 +42,15 @@ public class BusStop implements Serializable {
         this.passengerQueue = new LinkedList<Passenger>();
         this.route = new Route();
         this.occupied = false;
-
     }
 
+    public void createNewPassengerCounter(LinkedBlockingQueue<SimulatorEvent> blockingQueue, int value) {
+        passengerCounter = new NewPassengerCounter(blockingQueue, value, this);
+    }
+
+    public NewPassengerCounter getPassengerCounter() {
+        return passengerCounter;
+    }
     /**
      * @return the NAME
      */

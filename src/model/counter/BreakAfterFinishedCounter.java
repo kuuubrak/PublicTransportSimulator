@@ -3,6 +3,7 @@ package model.counter;
 import event.busevents.BusReadyToGo;
 import model.Bus;
 import view.BusEvent;
+import view.SimulatorEvent;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -10,7 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by ppeczek on 2014-05-24.
  */
 public class BreakAfterFinishedCounter extends CyclicCounter {
-    public BreakAfterFinishedCounter(LinkedBlockingQueue<BusEvent> blockingQueue, int cooldownAfterLoops, Bus bus) {
+    public BreakAfterFinishedCounter(LinkedBlockingQueue<SimulatorEvent> blockingQueue, int cooldownAfterLoops, Bus bus) {
         super(blockingQueue, cooldownAfterLoops, bus);
     }
 

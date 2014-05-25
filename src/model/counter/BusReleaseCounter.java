@@ -2,6 +2,7 @@ package model.counter;
 
 import event.BusStartSignal;
 import view.BusEvent;
+import view.SimulatorEvent;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -10,7 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class BusReleaseCounter extends CyclicCounter {
 
-    public BusReleaseCounter(LinkedBlockingQueue<BusEvent> blockingQueue, int releasePeriod) {
+    public BusReleaseCounter(LinkedBlockingQueue<SimulatorEvent> blockingQueue, int releasePeriod) {
         super(blockingQueue, releasePeriod, null);
     }
 

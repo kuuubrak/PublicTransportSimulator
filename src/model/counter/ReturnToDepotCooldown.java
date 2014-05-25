@@ -3,6 +3,7 @@ package model.counter;
 import event.busevents.BusReturnedToDepot;
 import model.Bus;
 import view.BusEvent;
+import view.SimulatorEvent;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -10,7 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Created by ppeczek on 2014-05-24.
  */
 public class ReturnToDepotCooldown extends CyclicCounter {
-    public ReturnToDepotCooldown(LinkedBlockingQueue<BusEvent> blockingQueue, int value, Bus bus) {
+    public ReturnToDepotCooldown(LinkedBlockingQueue<SimulatorEvent> blockingQueue, int value, Bus bus) {
         super(blockingQueue, value, bus);
     }
 

@@ -9,10 +9,14 @@ import java.util.ArrayList;
  */
 public final class SimulatorConstants {
     public final static int simulationSpeed = 50;
+    public final static double simulatorDefaultGenerationIntensity = 0.5;
     public final static String simulatorHostAddress = "127.0.0.1";
     public final static int simulatorPort = 8124;
     public final static int cooldownAfterLoops = 10;
-    public final static int defaultBusReleaseCooldown = 30;
+    public final static int defaultBusReleaseCooldown = 15;
+    public final static int defaultMinGenerationTime = 1;
+    public final static int defaultMaxGenerationTime = 5;
+    public final static int randomTimeGenerationShift = 1; //Random.nextInt generuje wartosci od 0, a nie od 1
 
     public final static int depotTerminusDistance = 2;
     public final static String depotName = "Zajezdnia";

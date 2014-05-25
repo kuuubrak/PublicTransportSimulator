@@ -2,6 +2,7 @@ package model.counter;
 
 import model.Bus;
 import view.BusEvent;
+import view.SimulatorEvent;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -11,10 +12,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 abstract public class Counter {
     private int value;
     private boolean counted;
-    private LinkedBlockingQueue<BusEvent> blockingQueue;
+    private LinkedBlockingQueue<SimulatorEvent> blockingQueue;
     private final Bus bus;
 
-    public Counter(LinkedBlockingQueue<BusEvent> blockingQueue, int value, Bus bus) {
+    public Counter(LinkedBlockingQueue<SimulatorEvent> blockingQueue, int value, Bus bus) {
         this.value = value;
         this.counted = false;
         this.blockingQueue = blockingQueue;
@@ -60,7 +61,7 @@ abstract public class Counter {
         return counted;
     }
 
-    public LinkedBlockingQueue<BusEvent> getBlockingQueue() {
+    public LinkedBlockingQueue<SimulatorEvent> getBlockingQueue() {
         return blockingQueue;
     }
 

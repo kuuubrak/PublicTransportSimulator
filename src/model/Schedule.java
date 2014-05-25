@@ -1,9 +1,14 @@
 package model;
 
+import controller.Controller;
 import javafx.util.Pair;
 import main.SimulatorConstants;
+import model.counter.NewPassengerCounter;
+import view.SimulatorEvent;
 
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by ppeczek on 2014-05-21.
@@ -32,6 +37,19 @@ public class Schedule {
 
     public static Schedule getInstance() {
         return ourInstance;
+    }
+
+    public void initBusStopPassengersCounters(LinkedBlockingQueue<SimulatorEvent> eventQueue) {
+        for (BusStop stop : this.getPassengersStops()) {
+            stop.createNewPassengerCounter(eventQueue, randomPassengerGenerationInterval());
+        }
+    }
+
+    private int randomPassengerGenerationInterval() {
+        Random randomGenerator = new Random();
+        int newMaxValue = randomGenerator.nextInt(SimulatorConstants.defaultMaxGenerationTime - SimulatorConstants.defaultMinGenerationTime) +
+                SimulatorConstants.defaultMinGenerationTime + SimulatorConstants.randomTimeGenerationShift;
+        return newMaxValue;
     }
 
     public static ArrayList<BusStop> getBusStops() {
