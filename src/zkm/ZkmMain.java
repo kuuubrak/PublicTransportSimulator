@@ -1,13 +1,11 @@
 package zkm;
 
+import event.guievents.BusReleasingFrequency;
 import mockup.Mockup;
 import model.Bus;
 import model.BusStop;
 import network.Client;
-import order.FunctionalityMockupParser;
-import order.Order;
-import order.zkm.OrderReleaseBus;
-import order.zkm.OrderTrapBus;
+import view.SimulatorEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,7 +13,7 @@ import java.util.ArrayList;
 /**
  * @author Rafal Jagielski
  */
-public class ZkmMain implements FunctionalityMockupParser {
+public class ZkmMain {
 
     private String host;
     private int port;
@@ -24,6 +22,7 @@ public class ZkmMain implements FunctionalityMockupParser {
     private Integer lowerBound;
     private Integer upperBound;
     private Integer loopTimeMinute; // TODO
+    private
 
 
     public ZkmMain(String host, int port, Integer lowerBound, Integer upperBound, Integer loopTimeMinute) {
@@ -84,17 +83,12 @@ public class ZkmMain implements FunctionalityMockupParser {
         System.out.println("ZKM has stopped.");
     }
 
-    @Override
-    public void newMockup(Mockup fresh) {
-        mockup = fresh;
-    }
-
     private void receiveMockup() {
 
-        Order<FunctionalityMockupParser> order;
-        order = sc.getOrdersBlockingQueue().poll();
+        SimulatorEvent event;
+        event = sc.getEventsBlockingQueue().poll();
 
-        if (order != null) {
+        if (event != null) {
             order.execute(this);
         }
 
@@ -116,17 +110,17 @@ public class ZkmMain implements FunctionalityMockupParser {
         //TODO pozmieniać Ordery na zmianę częstotliwości jeżdżenia autobusów.
         if (freeSeatsNr == 0) {
             if (peopleWaitingNr == 0) {
-                sc.send(new OrderTrapBus());
+                sc.send(new BusReleasingFrequency(10));
             } else {
-                sc.send(new OrderReleaseBus());
+                sc.send(new BusReleasingFrequency(15));
             }
         } else {
             Integer coef = peopleWaitingNr > freeSeatsNr ? (peopleWaitingNr / freeSeatsNr) : 1;
             coef = coef * loopTimeMinute;
             if (coef > upperBound) {
-                sc.send(new OrderReleaseBus());
+                sc.send(new BusReleasingFrequency(15));
             } else if (coef < lowerBound) {
-                sc.send(new OrderTrapBus());
+                sc.send(new BusReleasingFrequency(10));
             }
         }
     }

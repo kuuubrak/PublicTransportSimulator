@@ -1,7 +1,7 @@
 package network;
 
-import order.Order;
 import view.BusEvent;
+import view.SimulatorEvent;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -25,7 +25,7 @@ public class Client {
     /**
      * Kolejka, do ktorej sa wrzucane otrzymane rozkazy
      */
-    private LinkedBlockingQueue<Order> ordersBlockingQueue;
+    private LinkedBlockingQueue<SimulatorEvent> eventsBlockingQueue;
     /**
      * Implementacja watku odbierajacego obiekty od serwera
      */
@@ -40,7 +40,7 @@ public class Client {
 
                     System.out.println("Dostalem: " + object.getClass());
                     if (object instanceof BusEvent) {
-                        ordersBlockingQueue.add((Order) object);
+                        eventsBlockingQueue.add((SimulatorEvent) object);
                     }
                     //if( object instanceof order )
                     //{
@@ -61,7 +61,7 @@ public class Client {
 
     public Client() {
         socket = new Socket();
-        ordersBlockingQueue = new LinkedBlockingQueue<Order>();
+        eventsBlockingQueue = new LinkedBlockingQueue<SimulatorEvent>();
     }
 
     /**
@@ -134,7 +134,7 @@ public class Client {
         }
     }
 
-    public LinkedBlockingQueue<Order> getOrdersBlockingQueue() {
-        return ordersBlockingQueue;
+    public LinkedBlockingQueue<SimulatorEvent> getEventsBlockingQueue() {
+        return eventsBlockingQueue;
     }
 }
