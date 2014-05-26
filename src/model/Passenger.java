@@ -17,7 +17,7 @@ public class Passenger {
     /**
      * On which step the <b>Passenger</b> appeared at the <b>BusStop</b>
      */
-    private float TIMESTAMP;
+    private Long TIMESTAMP;
     /**
      * <b>Passengers'</b> designated <b>BusStop</b>.
      */
@@ -26,15 +26,16 @@ public class Passenger {
     /**
      * @param destination Wymagane.
      */
-    public Passenger(final BusStop destination, final float timeStamp) {
+    public Passenger(final BusStop destination) {
         this.destination = destination;
-        this.TIMESTAMP = timeStamp;
+        this.TIMESTAMP = SimulationTimer.getInstance().getTime();
         this.ID = UUID.randomUUID();
     }
 
-    public final float getWaitingTime()
+    //TODO: Nie wiem czy takie odwołanie do SimulationTimer jest poprawne
+    public final Long getWaitingTime()
     {
-        return System.currentTimeMillis() - TIMESTAMP;
+        return SimulationTimer.getInstance().getTime() - TIMESTAMP;
     }
 
     /**
@@ -47,11 +48,11 @@ public class Passenger {
     /**
      * @return the TIMESTAMP
      */
-    public final float getTIMESTAMP() {
+    public final Long getTIMESTAMP() {
         return TIMESTAMP;
     }
 
-    public void setTIMESTAMP(float TIMESTAMP) {
+    public void setTIMESTAMP(Long TIMESTAMP) {
         this.TIMESTAMP = TIMESTAMP;
     }
 

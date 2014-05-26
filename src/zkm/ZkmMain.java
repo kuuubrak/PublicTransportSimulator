@@ -1,14 +1,18 @@
 package zkm;
 
-import event.guievents.BusReleasingFrequency;
+import event.BusStartSignal;
+import event.BusReleasingFrequency;
+import event.TrapBus;
 import mockup.Mockup;
 import model.Bus;
 import model.BusStop;
+import model.Passenger;
 import network.Client;
 import view.SimulatorEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * @author Rafal Jagielski
@@ -18,7 +22,6 @@ public class ZkmMain {
     private String host;
     private int port;
     private Client sc = new Client();
-    private Mockup mockup;
     private Integer lowerBound;
     private Integer upperBound;
     private Integer loopTimeMinute; // TODO
@@ -30,7 +33,6 @@ public class ZkmMain {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
         this.loopTimeMinute = loopTimeMinute;
-        mockup = new Mockup(new ArrayList<Bus>(), new ArrayList<BusStop>()); //Tymczasowo
     }
 
     public static void main(String[] args) {
@@ -59,38 +61,69 @@ public class ZkmMain {
 
         System.out.println("Press enter key to stop.");
 
+        Mockup mockup = null;
         do {
-            receiveMockup();
+            mockup = receiveMockup();
+            //TODO: jaką ja mam pewność, że te autobusy są poukładane?
             ArrayList<Bus> buses = (ArrayList<Bus>) mockup.getBuses();
             ArrayList<BusStop> busStops = (ArrayList<BusStop>) mockup.getBusStops();
 
+            Integer noOfBuses = 0;
             Integer freeSeatsNr = 0;
-            Integer peopleWaitingNr = 0;
+            Integer generalPeopleWaitingNr = 0;
+            Long generalSumOfWaitingTime = 0L;
+            Integer noOfPeopleWithoutPlaceInBus = 0;
+            Long sumOfWaitingTimeWithoutPlaceInBus = 0L;
 
             for (Bus bus : buses) {
+                noOfBuses += 1;
                 freeSeatsNr += bus.getNumberOfFreeSeats();
             }
 
             for (BusStop busStop : busStops) {
-                peopleWaitingNr += busStop.getNumberOfPassengersWaiting();
+                generalPeopleWaitingNr += busStop.getNumberOfPassengersWaiting();
+
+                for(Passenger passenger : busStop.getPassengerQueue())
+                {
+                    generalSumOfWaitingTime +=  passenger.getWaitingTime();
+                }
             }
 
-            makeDecision(freeSeatsNr, peopleWaitingNr);
+            makeDecision(noOfBuses, freeSeatsNr, generalPeopleWaitingNr,
+                    generalSumOfWaitingTime, noOfPeopleWithoutPlaceInBus,
+                    sumOfWaitingTimeWithoutPlaceInBus);
 
         } while (endLoop());
 
         System.out.println("ZKM has stopped.");
     }
 
-    private void receiveMockup() {
-        SimulatorEvent event = sc.getEventsBlockingQueue().poll();
+    private Mockup receiveMockup() {
 
-        if (event != null) {
-            /**
-             * A tak, bo mamy tylko 1 event dla ZKM
-             */
-            mockup = event.getMockup();
+        SimulatorEvent event = null;
+        BlockingQueue<SimulatorEvent> queueOfOrders = sc.getEventsBlockingQueue();
+
+        //Pętla powoduje, że pobierany jest zawsze ostatni event (makieta) jeśli jest ich kilka
+        //(np. gdy było chwilowe rozłączenie), bądź następuje zawieszenie i oczekiwanie, jeśli nie było żadnego
+        while (!queueOfOrders.isEmpty() || event == null)
+        {
+            try
+            {
+                event = queueOfOrders.take();
+            }
+            catch (InterruptedException e)
+            {
+                //TODO skąd się bierze ten wyjątek i co z nim zrobić?
+                e.printStackTrace();
+            }
         }
+
+        /**
+         * A tak, bo mamy tylko 1 event dla ZKM.
+         * Należy pobrać tylko ostatni element z kolejki.
+         * Jeśli nie ma żadnego to należy się zawiesić w oczekiwaniu.
+         */
+        return event.getMockup();
     }
 
     private boolean endLoop() {
@@ -105,22 +138,32 @@ public class ZkmMain {
         return true;
     }
 
-    private void makeDecision(int freeSeatsNr, int peopleWaitingNr) {
-        //TODO pozmieniać Ordery na zmianę częstotliwości jeżdżenia autobusów.
-        if (freeSeatsNr == 0) {
-            if (peopleWaitingNr == 0) {
-                sc.send(new BusReleasingFrequency(10));
-            } else {
-                sc.send(new BusReleasingFrequency(15));
+    private void makeDecision(Integer noOfBuses, Integer freeSeatsNr, Integer generalPeopleWaitingNr,
+                              Long generalSumOfWaitingTime, Integer noOfPeopleWithoutPlaceInBus,
+                              Long sumOfWaitingTimeWithoutPlaceInBus)
+    {
+        Integer minimumSumOfWaitingTime = 200;
+        Integer numberOfPassengersWaitingBorder = 10;
+
+
+        if (generalPeopleWaitingNr < numberOfPassengersWaitingBorder) //Liczba pasażerów jest mała - wysyłanie autobusów doraźnie
+        {
+            sc.send(new BusReleasingFrequency(0));
+
+            if (noOfPeopleWithoutPlaceInBus > 0
+                && sumOfWaitingTimeWithoutPlaceInBus > minimumSumOfWaitingTime)
+            {
+                sc.send(new BusStartSignal());
             }
-        } else {
-            Integer coef = peopleWaitingNr > freeSeatsNr ? (peopleWaitingNr / freeSeatsNr) : 1;
-            coef = coef * loopTimeMinute;
-            if (coef > upperBound) {
-                sc.send(new BusReleasingFrequency(15));
-            } else if (coef < lowerBound) {
-                sc.send(new BusReleasingFrequency(10));
+            else if (noOfPeopleWithoutPlaceInBus.equals(0))
+            {
+                sc.send(new TrapBus()); //Zmniejsza liczbę okrążeń najbliższego autobusu do ostatniego
             }
+        }
+        else
+        {
+            //TODO: Obliczyć potrzebną częstotliwość
+            sc.send(new BusReleasingFrequency(10));
         }
     }
 }

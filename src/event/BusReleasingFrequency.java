@@ -1,4 +1,4 @@
-package event.guievents;
+package event;
 
 import view.SimulatorEvent;
 

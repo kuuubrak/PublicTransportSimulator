@@ -1,4 +1,4 @@
-package Order.gui;
+package order.gui;
 
 import order.FunctionalitySimulationModule;
 import order.Order;

@@ -30,7 +30,7 @@ public final class Bus implements EventListener {
     /**
      * How many <b>Passengers</b> can one <b>Bus</b> hold.
      */
-    private static final int MAX_SEATS = 10;
+    private static final int MAX_SEATS = SimulatorConstants.noOfSeatsInBus;
     /**
      * A container of currently held <b>Passengers</b>
      */

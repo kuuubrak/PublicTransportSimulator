@@ -61,6 +61,12 @@ public class NewPassengerCounter extends CyclicCounter {
         throwEvent();
     }
 
+    public void setCounterBounds(int minValue, int maxValue)
+    {
+        minGenerationTime = minValue;
+        maxGenerationTime = maxValue;
+    }
+
     private int randomMaxValue() {
         Random randomGenerator = new Random();
         int newMaxValue;

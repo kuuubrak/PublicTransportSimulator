@@ -1,7 +1,9 @@
 package controller;
 
 import event.BusStartSignal;
+import event.TrapBus;
 import event.busevents.*;
+import event.BusReleasingFrequency;
 import event.guievents.ContinuousSimulationEvent;
 import event.guievents.NewPassengerEvent;
 import event.guievents.PassengerGenerationInterval;
@@ -72,6 +74,8 @@ public class Controller implements ActionListener {
         resultMap.put(NewPassengerEvent.class, new NewPassengerStrategy());
         resultMap.put(PassengerGenerationInterval.class, new PassengerGenerationIntervalStrategy());
         resultMap.put(ContinuousSimulationEvent.class, new ContinousSimulationStrategy());
+        resultMap.put(BusReleasingFrequency.class, new BusReleasingFrequencyStrategy());
+        resultMap.put(TrapBus.class, new TrapBusStrategy());
         return Collections.unmodifiableMap(resultMap);
     }
 
@@ -319,13 +323,16 @@ public class Controller implements ActionListener {
         void execute(SimulatorEvent simulatorEvent) {
             BusStop from = Schedule.getInstance().findBusStop(simulatorEvent.getFrom());
             BusStop to = Schedule.getInstance().findBusStop(simulatorEvent.getTo());
-            from.getPassengerQueue().add(new Passenger(to, System.currentTimeMillis()));
+            model.generateSpecificPassenger(from, to);
         }
     }
 
     private final class PassengerGenerationIntervalStrategy extends MyStrategy {
         @Override
         void execute(SimulatorEvent simulatorEvent) {
+            int lowerBound = simulatorEvent.getMin();
+            int upperBound = simulatorEvent.getMax();
+            model.setNewPassengerCountersBound(lowerBound, upperBound);
         }
     }
 
@@ -341,6 +348,31 @@ public class Controller implements ActionListener {
             } else {
                 timer.stop();
             }
+        }
+    }
+
+    private final class BusReleasingFrequencyStrategy extends MyStrategy {
+        @Override
+        void execute(SimulatorEvent simulatorEvent) {
+            BusReleasingFrequency event = (BusReleasingFrequency) simulatorEvent;
+            if (event.getFrequency() == 0)
+            {
+                //Zatrzymaj wypuszczanie autobusów
+                model.busReleaseCounterState(false);
+            }
+            else
+            {
+                //Uruchamianie countera na wypadek jakby był wcześniej zatrzymany.
+                model.busReleaseCounterState(true);
+                model.setBusReleaseCounterValue(event.getFrequency());
+            }
+        }
+    }
+
+    private final class TrapBusStrategy extends MyStrategy {
+        @Override
+        void execute(SimulatorEvent simulatorEvent) {
+            //TODO zmniejszanie liczby okrążeń autobusu, który jest najbliżej zajezdni
         }
     }
 

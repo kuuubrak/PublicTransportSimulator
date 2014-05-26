@@ -14,6 +14,7 @@ abstract public class Counter {
     private boolean counted;
     private LinkedBlockingQueue<SimulatorEvent> blockingQueue;
     private final Bus bus;
+    private boolean working = true;
 
     public Counter(LinkedBlockingQueue<SimulatorEvent> blockingQueue, int value, Bus bus) {
         this.value = value;
@@ -26,6 +27,11 @@ abstract public class Counter {
 //        if (isDownCounted()) {
 //            throw new CounterNotInitiatedException();
 //        }
+        if (!working)
+        {
+            return value;
+        }
+
         if (value > 0) {
             value--;
         }
@@ -34,6 +40,11 @@ abstract public class Counter {
             finishedCounting();
         }
         return value;
+    }
+
+    public void setWorking(boolean working)
+    {
+        this.working = working;
     }
 
     public void finishedCounting() {
