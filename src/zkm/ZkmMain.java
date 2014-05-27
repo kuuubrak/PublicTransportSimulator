@@ -3,6 +3,9 @@ package zkm;
 import event.BusStartSignal;
 import event.BusReleasingFrequency;
 import event.TrapBus;
+import javafx.util.Pair;
+import main.Simulator;
+import main.SimulatorConstants;
 import mockup.Mockup;
 import model.Bus;
 import model.BusStop;
@@ -19,40 +22,20 @@ import java.util.concurrent.BlockingQueue;
  */
 public class ZkmMain {
 
-    private String host;
-    private int port;
+    private String host = ZkmConstants.host;
+    private int port = ZkmConstants.port;
     private Client sc = new Client();
-    private Integer lowerBound;
-    private Integer upperBound;
-    private Integer loopTimeMinute; // TODO
+    private Integer loopTimeMinute = 0; // TODO
 
 
-    public ZkmMain(String host, int port, Integer lowerBound, Integer upperBound, Integer loopTimeMinute) {
-        this.host = host;
-        this.port = port;
-        this.lowerBound = lowerBound;
-        this.upperBound = upperBound;
-        this.loopTimeMinute = loopTimeMinute;
+    public ZkmMain() {
+        for (Pair<String, Integer> pair : SimulatorConstants.busStopSettings){
+            loopTimeMinute += pair.getValue();
+        }
     }
 
     public static void main(String[] args) {
-        //if (args.length != 2)
-        //{
-        //    System.out.println("Wrong number of arguments. Program is stopping.");
-        //    return;
-        //}
-        String host = "127.0.0.1";
-        int port = 8125;
-        Integer lowerBound = 10;//Integer.parseInt(args[0]);
-        Integer upperBound = 20;//Integer.parseInt(args[1]);
-        Integer loopTimeMinute = 0;
-        if (lowerBound > upperBound) {
-            System.out.println("Lower bound (first arg) cannot be higher than upper bound (second argument)\n"
-                    + "Program is stopping.");
-            return;
-        }
-
-        ZkmMain zkmMain = new ZkmMain(host, port, lowerBound, upperBound, loopTimeMinute);
+        ZkmMain zkmMain = new ZkmMain();
         zkmMain.mainLoop();
     }
 
@@ -72,8 +55,8 @@ public class ZkmMain {
             Integer freeSeatsNr = 0;
             Integer generalPeopleWaitingNr = 0;
             Long generalSumOfWaitingTime = 0L;
-            Integer noOfPeopleWithoutPlaceInBus = 0;
-            Long sumOfWaitingTimeWithoutPlaceInBus = 0L;
+            Integer noOfPeopleWithoutPlaceInBus = 0; //??
+            Long sumOfWaitingTimeWithoutPlaceInBus = 0L; //??
 
             for (Bus bus : buses) {
                 noOfBuses += 1;
@@ -142,16 +125,26 @@ public class ZkmMain {
                               Long generalSumOfWaitingTime, Integer noOfPeopleWithoutPlaceInBus,
                               Long sumOfWaitingTimeWithoutPlaceInBus)
     {
-        Integer minimumSumOfWaitingTime = 200;
-        Integer numberOfPassengersWaitingBorder = 10;
+        int diffPeople = generalPeopleWaitingNr - freeSeatsNr;
+        int busDiff = (int) Math.ceil(diffPeople / (double) SimulatorConstants.noOfSeatsInBus) + noOfBuses;
+        if (busDiff < 0 ) throw new RuntimeException("Wyliczona częstotliwość ma być mniejsza od 0");
+        if (busDiff == 0)
+        {
+            sc.send(new BusReleasingFrequency(0));
+        }
+        else
+        {
+            int newFrequency = loopTimeMinute / busDiff + 1; //dla bezpieczeństwa jest plus 1
+            sc.send(new BusReleasingFrequency(newFrequency));
+        }
 
-
-        if (generalPeopleWaitingNr < numberOfPassengersWaitingBorder) //Liczba pasażerów jest mała - wysyłanie autobusów doraźnie
+        /*
+        if (generalPeopleWaitingNr < ZkmConstants.numberOfPassengersWaitingBorder) //Liczba pasażerów jest mała - wysyłanie autobusów doraźnie
         {
             sc.send(new BusReleasingFrequency(0));
 
             if (noOfPeopleWithoutPlaceInBus > 0
-                && sumOfWaitingTimeWithoutPlaceInBus > minimumSumOfWaitingTime)
+                && sumOfWaitingTimeWithoutPlaceInBus > ZkmConstants.minimumSumOfWaitingTime)
             {
                 sc.send(new BusStartSignal());
             }
@@ -162,8 +155,8 @@ public class ZkmMain {
         }
         else
         {
-            //TODO: Obliczyć potrzebną częstotliwość
-            sc.send(new BusReleasingFrequency(10));
+
         }
+        */
     }
 }
