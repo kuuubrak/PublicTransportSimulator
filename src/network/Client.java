@@ -53,9 +53,8 @@ public class Client {
                     System.out.println("Dostalem: " + object.getClass());
                     eventsBlockingQueue.add((SimulatorEvent) object);
                 } catch (IOException e) {
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Błąd odbierania z serwera", e); // dodałem ~maciej168
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Błąd odbierania z serwera"); // dodałem ~maciej168
                     reportConnectionProblem();
-                    throw new RuntimeException();
                 } catch (ClassNotFoundException e) {
                     // Nierozpoznane klasy sa ignorowane
                     //e.printStackTrace(); //zmieniłem ~maciej168
@@ -93,11 +92,11 @@ public class Client {
         } catch (Exception e) {
             Logger.getLogger(Client.class.getName()).log(Level.FINE, "Błąd łączenia z serwerem"); // dodałem ~maciej168
             closeConnection();
-            return false;
         }
         finally {
             connectingProgress.set(false);
         }
+        return false;
     }
 
     /**
@@ -126,8 +125,9 @@ public class Client {
      * Metoda przyjmujaca zgloszenia o problemie z polaczeniem
      */
     public void reportConnectionProblem() {
-        if (!connectingProgress.get()) {
-            connect();
+        boolean connected = false;
+        while (!connectingProgress.get() && !connected) {
+            connected = connect();
         }
     }
 
@@ -138,6 +138,7 @@ public class Client {
         if (isConnected()) {
             try {
                 socket.close();
+                socket = new Socket();
             } catch (IOException e) {
                 executorService.shutdownNow();
                 socket = new Socket();

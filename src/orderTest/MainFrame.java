@@ -58,7 +58,7 @@ public class MainFrame extends JFrame {
 
     public MainFrame(String title) throws HeadlessException {
         super(title);
-        Server myServer = new Server(testGuiServerSocket, testSimulatorSocket, 6503);
+        Server myServer = new Server(testGuiServerSocket, testSimulatorSocket, 8125);
         try {
             myServer.runServer();
         } catch (IOException e) {

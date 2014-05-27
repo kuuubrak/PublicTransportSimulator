@@ -40,7 +40,7 @@ public class ZkmMain {
     }
 
     public void mainLoop() {
-        sc.connect();
+        while(!sc.connect());
 
         System.out.println("Press enter key to stop.");
 
