@@ -39,7 +39,7 @@ public class Controller implements ActionListener {
     private int port;
 
     private Controller() {
-        setNetData("127.0.0.1", MainFrame.testSimulatorSocket);
+        setNetData(SimulatorConstants.simulatorHostAddress, SimulatorConstants.simulatorPort);
         this.eventsBlockingQueue = new LinkedBlockingQueue<SimulatorEvent>();
         this.eventDictionaryMap = getEventDictionaryMap();
         this.model = new Model(eventsBlockingQueue);
