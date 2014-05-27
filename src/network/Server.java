@@ -59,7 +59,7 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
      * Otwiera polaczenia dla wszystkich modulow,
      * przypisuje kazdemu modulowi odpowiadajacych mu odbiorcow.
      */
-    public void createServer() throws IOException {
+    public void runServer() throws IOException {
         try {
             gui = new ModuleNetwork(guiPort, this);
             passengers = new ModuleNetwork(passengersPort, this);

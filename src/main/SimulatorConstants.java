@@ -12,6 +12,7 @@ public final class SimulatorConstants {
     public final static double simulatorDefaultGenerationIntensity = 0.5;
     public final static String simulatorHostAddress = "192.168.43.242";
     public final static int simulatorPort = 8124;
+    public final static int connectingTimeout = 5000;
     public final static int cooldownAfterLoops = 10;
     public final static int defaultBusReleaseCooldown = 15;
     public final static int noOfSeatsInBus = 20;

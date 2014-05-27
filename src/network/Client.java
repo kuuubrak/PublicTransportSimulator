@@ -1,7 +1,6 @@
 package network;
 
-import event.guievents.ContinuousSimulationEvent;
-import view.BusEvent;
+import main.SimulatorConstants;
 import view.SimulatorEvent;
 
 import java.io.IOException;
@@ -9,7 +8,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +29,15 @@ public class Client {
      * Kolejka, do ktorej sa wrzucane otrzymane rozkazy
      */
     private LinkedBlockingQueue<SimulatorEvent> eventsBlockingQueue;
+    private String serverAddress;
+    private int serverPort;
+    /**
+     * Uzywane w metodzie reportConnectionProblem,
+     * zeby zapobiec wielokrotnemu uruchamiania watku laczenia.
+     */
+    private volatile AtomicBoolean connectingProgress;
+    ExecutorService executorService;
+
     /**
      * Implementacja watku odbierajacego obiekty od serwera
      */
@@ -39,18 +50,11 @@ public class Client {
                     System.out.println("Czekam" + socket.getLocalPort());
                     ois = new ObjectInputStream(socket.getInputStream());
                     Object object = ois.readObject();
-
                     System.out.println("Dostalem: " + object.getClass());
-                    //if (object instanceof SimulatorEvent) {
-                        eventsBlockingQueue.add((SimulatorEvent) object);
-                 //   }
-                    //if( object instanceof order )
-                    //{
-                    //	send order
-                    //}
+                    eventsBlockingQueue.add((SimulatorEvent) object);
                 } catch (IOException e) {
                     Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Błąd odbierania z serwera", e); // dodałem ~maciej168
-                    closeConnection();
+                    reportConnectionProblem();
                     throw new RuntimeException();
                 } catch (ClassNotFoundException e) {
                     // Nierozpoznane klasy sa ignorowane
@@ -61,9 +65,13 @@ public class Client {
         }
     };
 
-    public Client() {
+    public Client(final String serverAddress, final int serverPort) {
         this.eventsBlockingQueue = new LinkedBlockingQueue<SimulatorEvent>();
         socket = new Socket();
+        connectingProgress = new AtomicBoolean(false);
+        this.serverAddress = serverAddress;
+        this.serverPort = serverPort;
+        executorService = Executors.newSingleThreadExecutor();
     }
 
     public void setEventsBlockingQueue(LinkedBlockingQueue<SimulatorEvent> eventsBlockingQueue) {
@@ -73,27 +81,29 @@ public class Client {
     /**
      * Laczy z serwerem i uruchamia watek odbierajacy obiekty.
      *
-     * @param address - adres ip serwera
      * @return boolean - polaczenie udane/nieudane
      */
-    public boolean establishConnection(final String address, int serverPort) {
+    public boolean connect() {
+        connectingProgress.set(true);
+        closeConnection();
         try {
-            closeConnection();
-            socket.connect(new InetSocketAddress(address, serverPort), 5000);
-            new Thread(receive).start();
+            socket.connect(new InetSocketAddress(serverAddress, serverPort), SimulatorConstants.connectingTimeout);
+            executorService.execute(receive);
             return true;
         } catch (Exception e) {
             Logger.getLogger(Client.class.getName()).log(Level.FINE, "Błąd łączenia z serwerem"); // dodałem ~maciej168
             closeConnection();
-            return false; // buuu, Macieju. buuuuuuuuuuuuu. Toż to aktywne oczekiwanie wyjdzie w użytkowaniu.
+            return false;
+        }
+        finally {
+            connectingProgress.set(false);
         }
     }
 
     /**
      * Wysyla obiekt do serwera
      *
-     * @param object
-     * @return
+     * @return true jezeli udalo sie wyslac, false jezeli wystapil blad
      */
     public boolean send(final Object object) {
         if (socket.isBound()) {
@@ -113,6 +123,15 @@ public class Client {
     }
 
     /**
+     * Metoda przyjmujaca zgloszenia o problemie z polaczeniem
+     */
+    public void reportConnectionProblem() {
+        if (!connectingProgress.get()) {
+            connect();
+        }
+    }
+
+    /**
      * Zamkniecie polaczenia z serwerem
      */
     public void closeConnection() {
@@ -120,6 +139,7 @@ public class Client {
             try {
                 socket.close();
             } catch (IOException e) {
+                executorService.shutdownNow();
                 socket = new Socket();
             }
         } else {
@@ -129,8 +149,6 @@ public class Client {
 
     /**
      * Informuje czy z socketem jest polaczony jakis serwer.
-     *
-     * @return
      */
     private boolean isConnected() {
         if (socket == null) {

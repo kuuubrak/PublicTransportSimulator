@@ -24,7 +24,7 @@ public class ZkmMain {
 
     private String host = ZkmConstants.host;
     private int port = ZkmConstants.port;
-    private Client sc = new Client();
+    private Client sc = new Client(host, port);
     private Integer loopTimeMinute = 0; // TODO
 
 
@@ -40,7 +40,7 @@ public class ZkmMain {
     }
 
     public void mainLoop() {
-        sc.establishConnection(host, port);
+        sc.connect();
 
         System.out.println("Press enter key to stop.");
 

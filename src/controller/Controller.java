@@ -34,7 +34,7 @@ public class Controller implements ActionListener {
     private final LinkedBlockingQueue<SimulatorEvent> eventsBlockingQueue;
     private final Timer timer;
     private Mockup mockup;
-    private Client networkClient = new Client();
+    private Client networkClient;
     private String host;
     private int port;
 
@@ -47,7 +47,8 @@ public class Controller implements ActionListener {
 //        this.view = new View(eventsBlockingQueue, mockup);
         this.timer = new Timer(SimulatorConstants.simulationSpeed, this);
         timer.start();
-        networkClient.establishConnection(host, port);
+        networkClient = new Client(host, port);
+        networkClient.connect();
         networkClient.setEventsBlockingQueue(eventsBlockingQueue);
     }
 

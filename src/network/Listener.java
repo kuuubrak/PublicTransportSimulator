@@ -42,8 +42,7 @@ class Listener implements Runnable {
                 if (!clogged)// Jak nie ma symulowanej awarii. ~maciej168
                 {
                     for (ModuleNetwork receiver : module.getReceivers()) {
-                        if (object instanceof ServerOrder)// dodana filtracja rozkazów ~maciej168
-                        {
+                        if (object instanceof ServerOrder) {// dodana filtracja rozkazów ~maciej168
                             server.executeOrder((Order) object);
                         } else {
                             server.send(object, receiver);

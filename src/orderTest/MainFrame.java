@@ -60,7 +60,7 @@ public class MainFrame extends JFrame {
         super(title);
         Server myServer = new Server(testGuiServerSocket, testSimulatorSocket, 6503);
         try {
-            myServer.createServer();
+            myServer.runServer();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -182,8 +182,8 @@ public class MainFrame extends JFrame {
     }
 
     private void initNetworkClient() {
-        networkClient = new Client();
-        networkClient.establishConnection("127.0.0.1", testGuiServerSocket);
+        networkClient = new Client("127.0.0.1", testGuiServerSocket);
+        networkClient.connect();
     }
 
 }

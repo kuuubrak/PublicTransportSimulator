@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,10 +35,14 @@ class ModuleNetwork {
     private Server server;
     private ExecutorService executor;
 
-    private boolean connectingProgress;
+    /**
+     * Uzywane w metodzie reportConnectionProblem,
+     * zeby zapobiec wielokrotnemu uruchamiania watku laczenia.
+     */
+    private volatile AtomicBoolean connectingProgress;
 
     ModuleNetwork(final int port, final Server server) throws IOException {
-        connectingProgress = false;
+        connectingProgress = new AtomicBoolean(false);
         this.server = server;
         receivers = new ArrayList<ModuleNetwork>();
         try {
@@ -65,11 +70,10 @@ class ModuleNetwork {
         Runnable connecting = new Runnable() {
             @Override
             public void run() {
-                connectingProgress = true;
+                connectingProgress.set(true);
+                server.closeConnection(socket);
                 try {
-                    server.closeConnection(socket);
                     socket = serverSocket.accept();
-                    //executor.execute(new Listener(module)); // zmiana ~maciej168
                     currentListener = new Listener(ModuleNetwork.this, server);
                     executor.execute(currentListener);
                     System.out.println("Podlaczyl sie klient - port: " + serverSocket.getLocalPort());
@@ -78,7 +82,7 @@ class ModuleNetwork {
                     Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Błąd tworzenia Listener'a", e);
                     throw new RuntimeException();
                 } finally {
-                    connectingProgress = false;
+                    connectingProgress.set(false);
                 }
             }
         };
@@ -96,7 +100,7 @@ class ModuleNetwork {
      * Metoda przyjmujaca zgloszenia o problemie z polaczeniem
      */
     public void reportConnectionProblem() {
-        if (!connectingProgress) {
+        if (!connectingProgress.get()) {
             connect();
         }
     }
