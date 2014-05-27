@@ -97,7 +97,7 @@ public final class Bus implements EventListener {
         if (passenger != null) {
             passengerMap.put(passenger.getDestination(), passenger);
         }
-//        System.out.println("Liczba pasażerów:" + getPassengerMap().size());
+
     }
 
     private final void putOutPassengers() {
@@ -139,11 +139,12 @@ public final class Bus implements EventListener {
     private final void transferPassenger(BusStop busStop) {
         Passenger passenger = getPassengerMap().entrySet().iterator().next().getValue();
         passenger.setTIMESTAMP(System.currentTimeMillis());
-        getPassengerMap().remove(passenger.getDestination(), passenger); // czemu to ciagle rzuca errora?
+     //   getPassengerMap().remove(passenger.getDestination(), passenger); // czemu to ciagle rzuca errora?
         BusStop busStop1 = getCurrentBusStop();
         if (!currentBusStop.equals(busStop1)) {
             busStop1.getPassengerQueue().add(passenger);
         }
+
     }
 
     public final void comeback() {
@@ -228,6 +229,7 @@ public final class Bus implements EventListener {
 
     public void reachStop(BusStop busStop)
     {
+        System.out.println(this + " Liczba pasażerów:" + getPassengerMap().size());
         setCurrentBusStop(busStop);
         setCounterToNextStop(getCurrentBusStop().getDistanceToNextStop());
     }

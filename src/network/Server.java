@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 // Logger.getLogger(Server.class .getName()).setLevel(Level.OFF) i już nie widać żadnych komunikatów. Cudny mechanizm, polecam
 // ~maciej168
 // Dodałem obsługę rozkazów
+
 public class Server implements FunctionalityServer, OrderRecipient<FunctionalityServer> {
     /**
      * Obiekt reprezentujacy modul GUI

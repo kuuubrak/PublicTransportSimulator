@@ -11,6 +11,7 @@ import main.SimulatorConstants;
 import mockup.Mockup;
 import model.*;
 import network.Client;
+import orderTest.MainFrame;
 import view.SimulatorEvent;
 
 import javax.swing.*;
@@ -38,7 +39,7 @@ public class Controller implements ActionListener {
     private int port;
 
     private Controller() {
-        networkClient.establishConnection(host, port);
+        setNetData("127.0.0.1", MainFrame.testSimulatorSocket);
         this.eventsBlockingQueue = new LinkedBlockingQueue<SimulatorEvent>();
         this.eventDictionaryMap = getEventDictionaryMap();
         this.model = new Model(eventsBlockingQueue);
@@ -46,6 +47,8 @@ public class Controller implements ActionListener {
 //        this.view = new View(eventsBlockingQueue, mockup);
         this.timer = new Timer(SimulatorConstants.simulationSpeed, this);
         timer.start();
+        networkClient.establishConnection(host, port);
+        networkClient.setEventsBlockingQueue(eventsBlockingQueue);
     }
 
     public static Controller getInstance() {
@@ -95,6 +98,7 @@ public class Controller implements ActionListener {
                 try
                 {
                     simulatorEvent = eventsBlockingQueue.take();
+                    System.out.println(simulatorEvent.getClass());
                 } catch (final InterruptedException e)
                 {
                     // TODO Auto-generated catch block
@@ -113,7 +117,7 @@ public class Controller implements ActionListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        networkClient.send(createMockup());
+       // networkClient.send(createMockup());
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -342,11 +346,15 @@ public class Controller implements ActionListener {
             /**
              * TODO: włączyć obsługę guzika GUI
              */
+            System.out.println("abc");
             if (simulatorEvent.isContinuous()) {
+                timer.setRepeats(true);
                 timer.start();
 
             } else {
                 timer.stop();
+                timer.setRepeats(false);
+                timer.start();
             }
         }
     }

@@ -30,8 +30,11 @@ class SleepingSender {
                     if (server.isConnected(receiverSocket)) {
                         ObjectOutputStream oos = null;
                         try {
+                            System.out.println("Wysylam" + receiverSocket.getLocalPort());
                             oos = new ObjectOutputStream(receiverSocket.getOutputStream());
                             oos.writeObject(pack.getObject());
+                            System.out.println("Wyslalem" + receiverSocket.getLocalPort());
+
                         } catch (SocketException e) {
                             Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Błąd wysyłania"); // dodałem ~maciej168
                             e.printStackTrace();

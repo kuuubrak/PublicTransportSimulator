@@ -1,5 +1,6 @@
 package network;
 
+import event.guievents.ContinuousSimulationEvent;
 import view.BusEvent;
 import view.SimulatorEvent;
 
@@ -33,15 +34,16 @@ public class Client {
         @Override
         public void run() {
             ObjectInputStream ois = null;
-            while (!socket.isClosed() && ois != null) {
+            while (!socket.isClosed()) {
                 try {
+                    System.out.println("Czekam" + socket.getLocalPort());
                     ois = new ObjectInputStream(socket.getInputStream());
                     Object object = ois.readObject();
 
                     System.out.println("Dostalem: " + object.getClass());
-                    if (object instanceof BusEvent) {
+                    //if (object instanceof SimulatorEvent) {
                         eventsBlockingQueue.add((SimulatorEvent) object);
-                    }
+                 //   }
                     //if( object instanceof order )
                     //{
                     //	send order
@@ -60,8 +62,12 @@ public class Client {
     };
 
     public Client() {
+        this.eventsBlockingQueue = new LinkedBlockingQueue<SimulatorEvent>();
         socket = new Socket();
-        eventsBlockingQueue = new LinkedBlockingQueue<SimulatorEvent>();
+    }
+
+    public void setEventsBlockingQueue(LinkedBlockingQueue<SimulatorEvent> eventsBlockingQueue) {
+        this.eventsBlockingQueue = eventsBlockingQueue;
     }
 
     /**
