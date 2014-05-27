@@ -5,7 +5,7 @@ package zkm;
  */
 public final class ZkmConstants
 {
-    public final static String host = "192.168.43.242";
+    public final static String host = "127.0.0.1";
     public final static int port = 8125;
 
     public final static int minimumSumOfWaitingTime = 200;
