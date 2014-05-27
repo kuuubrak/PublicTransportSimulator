@@ -1,9 +1,9 @@
 package controller;
 
+import event.BusReleasingFrequency;
 import event.BusStartSignal;
 import event.TrapBus;
 import event.busevents.*;
-import event.BusReleasingFrequency;
 import event.guievents.ContinuousSimulationEvent;
 import event.guievents.NewPassengerEvent;
 import event.guievents.PassengerGenerationInterval;
@@ -11,7 +11,6 @@ import main.SimulatorConstants;
 import mockup.Mockup;
 import model.*;
 import network.Client;
-import orderTest.MainFrame;
 import view.SimulatorEvent;
 
 import javax.swing.*;

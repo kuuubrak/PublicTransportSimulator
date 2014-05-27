@@ -1,9 +1,6 @@
 package model;
 
-import controller.Controller;
-import javafx.util.Pair;
 import main.SimulatorConstants;
-import model.counter.NewPassengerCounter;
 import view.SimulatorEvent;
 
 import java.util.ArrayList;

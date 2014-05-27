@@ -1,14 +1,11 @@
 package model;
 
-import controller.Controller;
-import main.SimulatorConstants;
 import model.counter.NewPassengerCounter;
 import view.SimulatorEvent;
 
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
 

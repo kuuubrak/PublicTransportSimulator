@@ -2,11 +2,8 @@ package model.counter;
 
 import event.guievents.NewPassengerEvent;
 import main.SimulatorConstants;
-import model.Bus;
-import model.BusDepot;
 import model.BusStop;
 import model.Schedule;
-import view.BusEvent;
 import view.SimulatorEvent;
 
 import java.util.ArrayList;

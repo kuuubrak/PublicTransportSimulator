@@ -1,10 +1,6 @@
 package zkm;
 
-import event.BusStartSignal;
 import event.BusReleasingFrequency;
-import event.TrapBus;
-import javafx.util.Pair;
-import main.Simulator;
 import main.SimulatorConstants;
 import mockup.Mockup;
 import model.Bus;
@@ -12,6 +8,7 @@ import model.BusStop;
 import model.Passenger;
 import network.Client;
 import view.SimulatorEvent;
+import model.Pair;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -138,4 +135,5 @@ public class ZkmMain {
             sc.send(new BusReleasingFrequency(newFrequency));
         }
     }
+
 }

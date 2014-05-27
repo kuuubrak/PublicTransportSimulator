@@ -3,9 +3,9 @@ package orderTest;
 import event.guievents.ContinuousSimulationEvent;
 import event.guievents.NewPassengerEvent;
 import event.guievents.PassengerGenerationInterval;
+import main.SimulatorConstants;
 import network.Client;
 import network.Server;
-import main.SimulatorConstants;
 
 import javax.swing.*;
 import java.awt.*;

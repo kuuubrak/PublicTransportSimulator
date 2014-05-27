@@ -52,6 +52,7 @@ public class MainWindow extends JFrame {
         buttonsPanel.add(switchSimulationButton);
 
 
+
         JButton stepButton = new JButton("Next step");
         stepButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
@@ -90,6 +91,7 @@ public class MainWindow extends JFrame {
             }
         });
     }
+
 
     /**
      * Launch the application.
