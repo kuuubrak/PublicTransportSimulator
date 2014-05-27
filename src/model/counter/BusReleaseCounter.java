@@ -1,7 +1,6 @@
 package model.counter;
 
 import event.BusStartSignal;
-import view.BusEvent;
 import view.SimulatorEvent;
 
 import java.util.concurrent.LinkedBlockingQueue;

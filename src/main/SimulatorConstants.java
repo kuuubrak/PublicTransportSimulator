@@ -1,8 +1,7 @@
 package main;
 
-import javafx.util.Pair;
-
 import java.util.ArrayList;
+import model.Pair;
 
 /**
  * Created by ppeczek on 2014-05-20.

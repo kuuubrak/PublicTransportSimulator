@@ -3,7 +3,6 @@ package model;
 import main.SimulatorConstants;
 import mockup.Mockup;
 import model.counter.BusReleaseCounter;
-import view.BusEvent;
 import view.SimulatorEvent;
 
 import java.util.ArrayList;
