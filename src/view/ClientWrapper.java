@@ -7,34 +7,42 @@ import network.Client;
 import order.FunctionalityMockupParser;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * TODO delete
  */
-public class Conturoruru{
+public class ClientWrapper extends Thread{
     private Client client = null;
-    LinkedBlockingQueue<SimulatorEvent> evQueue = new LinkedBlockingQueue<>();
-    FunctionalityMockupParser fun=null;
-    public Conturoruru(FunctionalityMockupParser gui){
+    private LinkedBlockingQueue<SimulatorEvent> evQueue = new LinkedBlockingQueue<>();
+    private GuiFunctionality gun=null;
+    private boolean runny = true;
+
+    public ClientWrapper(GuiFunctionality gui){
         addImplementor(gui);
         connect();
     }
 
-    public Conturoruru(){
+    public ClientWrapper(){
         this(null);
     }
 
-    public void addImplementor(FunctionalityMockupParser gui){
-        fun=gui;
+    public void addImplementor(GuiFunctionality gui){
+        gun=gui;
     }
 
-    public void suck(){
-        while (true){
-            SimulatorEvent ev=null;
-            while(!evQueue.isEmpty()){//przewijanie do ostatniej otrzymanej
-                ev = evQueue.poll();
+    @Override
+    public void run(){
+        try {
+            while (runny){
+                SimulatorEvent ev = null;
+                while (!evQueue.isEmpty()) {//przewijanie do ostatniej otrzymanej
+                    ev = evQueue.poll(5, TimeUnit.SECONDS);
+                }
+                gun.newMockup(ev.getMockup());
             }
-            fun.newMockup(ev.getMockup());
+        }catch(InterruptedException e){
+            if(runny) gun.connectionLost();
         }
     }
 
@@ -53,12 +61,17 @@ public class Conturoruru{
     public void kill(){
         client.closeConnection();
         client = null;
+        runny = false;
     }
 
     public void connect(){
         client = new Client("127.0.0.1", 666);
         evQueue.clear();
         client.setEventsBlockingQueue(evQueue);
-        client.connect();
+        if(client.connect()){
+            gun.connectionEstablished();
+        }else{
+            gun.connectionLost();
+        }
     }
 }
