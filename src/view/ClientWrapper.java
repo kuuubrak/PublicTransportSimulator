@@ -4,23 +4,29 @@ import event.guievents.ContinuousSimulationEvent;
 import event.guievents.NewPassengerEvent;
 import event.guievents.PassengerGenerationInterval;
 import network.Client;
-import order.FunctionalityMockupParser;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-/**
- * TODO delete
- */
+
 public class ClientWrapper extends Thread{
     private Client client = null;
     private LinkedBlockingQueue<SimulatorEvent> evQueue = new LinkedBlockingQueue<>();
     private GuiFunctionality gun=null;
     private boolean runny = true;
+    private Properties config;
+    private File configFile = new File("server.cfg");
 
     public ClientWrapper(GuiFunctionality gui){
         addImplementor(gui);
-        connect();
+        config = new Properties();
+        try {
+            config.load(new FileInputStream(configFile));
+        } catch (IOException e) {}
     }
 
     public ClientWrapper(){
@@ -33,6 +39,7 @@ public class ClientWrapper extends Thread{
 
     @Override
     public void run(){
+        connect();
         try {
             while (runny){
                 SimulatorEvent ev = null;
@@ -64,8 +71,10 @@ public class ClientWrapper extends Thread{
         runny = false;
     }
 
-    public void connect(){
-        client = new Client("127.0.0.1", 666);
+    private void connect(){
+        String ip = config.getProperty("ip","127.0.0.1");
+        int port = Integer.parseInt(config.getProperty("port", "6066"));
+        client = new Client(ip,port);
         evQueue.clear();
         client.setEventsBlockingQueue(evQueue);
         if(client.connect()){
