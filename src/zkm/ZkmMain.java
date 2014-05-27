@@ -125,38 +125,17 @@ public class ZkmMain {
                               Long generalSumOfWaitingTime, Integer noOfPeopleWithoutPlaceInBus,
                               Long sumOfWaitingTimeWithoutPlaceInBus)
     {
-        int diffPeople = generalPeopleWaitingNr - freeSeatsNr;
-        int busDiff = (int) Math.ceil(diffPeople / (double) SimulatorConstants.noOfSeatsInBus) + noOfBuses;
-        if (busDiff < 0 ) throw new RuntimeException("Wyliczona częstotliwość ma być mniejsza od 0");
-        if (busDiff == 0)
+        int peopleInsideBuses = noOfBuses*SimulatorConstants.noOfSeatsInBus - freeSeatsNr;
+        int peopleInTheWorld = peopleInsideBuses + generalPeopleWaitingNr;
+        int howManyBuses = (int) Math.ceil(peopleInTheWorld / (double) SimulatorConstants.noOfSeatsInBus) ;
+        if (howManyBuses == 0)
         {
             sc.send(new BusReleasingFrequency(0));
         }
         else
         {
-            int newFrequency = loopTimeMinute / busDiff + 1; //dla bezpieczeństwa jest plus 1
+            int newFrequency = (loopTimeMinute * SimulatorConstants.loops) / (howManyBuses);
             sc.send(new BusReleasingFrequency(newFrequency));
         }
-
-        /*
-        if (generalPeopleWaitingNr < ZkmConstants.numberOfPassengersWaitingBorder) //Liczba pasażerów jest mała - wysyłanie autobusów doraźnie
-        {
-            sc.send(new BusReleasingFrequency(0));
-
-            if (noOfPeopleWithoutPlaceInBus > 0
-                && sumOfWaitingTimeWithoutPlaceInBus > ZkmConstants.minimumSumOfWaitingTime)
-            {
-                sc.send(new BusStartSignal());
-            }
-            else if (noOfPeopleWithoutPlaceInBus.equals(0))
-            {
-                sc.send(new TrapBus()); //Zmniejsza liczbę okrążeń najbliższego autobusu do ostatniego
-            }
-        }
-        else
-        {
-
-        }
-        */
     }
 }
