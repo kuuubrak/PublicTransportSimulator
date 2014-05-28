@@ -13,6 +13,8 @@ public class ViewModel {
     private List<BusStopView> busStopViewList;
     private List<BusView> busViewList = new ArrayList<BusView>();
     private DetailView currentDetailView;
+    private final int BUS_WIDTH = 20;
+    private final int BUS_HEIGHT = 10;
 
     public ViewModel(){
 
@@ -28,8 +30,14 @@ public class ViewModel {
 
     public void updateBusList(List<Bus> busList){
         busViewList.clear();
+        BusView busView;
+        int i = 0;
         for (Bus bus: busList) {
-            busViewList.add(new BusView(bus));
+            busView = new BusView(bus);
+            busView.setMiniViewSize(BUS_WIDTH, BUS_HEIGHT);
+            busView.setMiniViewPosition(10, i*(BUS_HEIGHT + 2));
+            busViewList.add(busView);
+            i++;
         }
            if(!busViewList.isEmpty()){
                currentDetailView = busViewList.get(0);
@@ -40,5 +48,9 @@ public class ViewModel {
 
     public DetailView getCurrentDetailView() {
         return currentDetailView;
+    }
+
+    public List<BusView> getBusViewList() {
+        return busViewList;
     }
 }

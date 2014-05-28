@@ -34,12 +34,7 @@ public class MainWindow extends JFrame{
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        worldCanvas = new Canvas() {
-            @Override
-            public void paint(Graphics g) {
-                g.fillRect(0, 0, this.getWidth(), this.getHeight());
-            }
-        };
+        worldCanvas = new WorldView(viewModel);
         worldCanvas.setBounds(10,10,100,100);
         contentPane.add(worldCanvas);
 

@@ -24,10 +24,10 @@ public class BusStopView implements DetailView, MouseListener {
     }
 
     //@Override
-    public void paint(Graphics2D g2) {
-        busStopBackground.paint(g2);
-        busStopSign.paint(g2);
-        passengerContainer.draw(g2);
+    public void paint(Graphics g) {
+        busStopBackground.paint(g);
+        busStopSign.paint(g);
+        passengerContainer.draw(g);
 
 
     }
@@ -62,7 +62,7 @@ public class BusStopView implements DetailView, MouseListener {
     }
 
     @Override
-    public void drawDetailView(Graphics2D g2) {
+    public void drawDetailView(Graphics g) {
 
     }
 
@@ -101,10 +101,10 @@ public class BusStopView implements DetailView, MouseListener {
             this.height = height;
         }
 
-        public void paint(Graphics2D g2) {
-            g2.drawImage(image, x, y, imageWidth, imageHeight, null);
-            g2.setColor(pistilColor);
-            g2.fillRect(x + imageWidth / 2 - pistilWidth / 2, y + imageHeight, pistilWidth, height - imageHeight);
+        public void paint(Graphics g) {
+            g.drawImage(image, x, y, imageWidth, imageHeight, null);
+            g.setColor(pistilColor);
+            g.fillRect(x + imageWidth / 2 - pistilWidth / 2, y + imageHeight, pistilWidth, height - imageHeight);
         }
 
     }
@@ -124,19 +124,19 @@ public class BusStopView implements DetailView, MouseListener {
             this.height = height;
         }
 
-        public void paint(Graphics2D g2) {
-            g2.setColor(roadColor);
-            g2.fillRect(0, (int) (0.6 * height), width, (int) (0.4 * height));
-            g2.setColor(sidewalkColor);
-            g2.fillRect(0, (int) (0.2 * height), width, (int) (0.4 * height));
-            g2.setColor(grassColor);
-            g2.fillRect(0, 0, width, (int) (0.2 * height));
-            g2.setColor(curbColor);
-            g2.drawLine(0, (int) (0.6 * height) - 1, width, (int) (0.6 * height) - 1);
-            g2.drawLine(0, (int) (0.6 * height), width, (int) (0.6 * height));
-            g2.drawLine(0, (int) (0.6 * height) + 1, width, (int) (0.6 * height) + 1);
-            g2.setColor(roadLineColor);
-            g2.fillRect(0, height - 8, width, 8);
+        public void paint(Graphics g) {
+            g.setColor(roadColor);
+            g.fillRect(0, (int) (0.6 * height), width, (int) (0.4 * height));
+            g.setColor(sidewalkColor);
+            g.fillRect(0, (int) (0.2 * height), width, (int) (0.4 * height));
+            g.setColor(grassColor);
+            g.fillRect(0, 0, width, (int) (0.2 * height));
+            g.setColor(curbColor);
+            g.drawLine(0, (int) (0.6 * height) - 1, width, (int) (0.6 * height) - 1);
+            g.drawLine(0, (int) (0.6 * height), width, (int) (0.6 * height));
+            g.drawLine(0, (int) (0.6 * height) + 1, width, (int) (0.6 * height) + 1);
+            g.setColor(roadLineColor);
+            g.fillRect(0, height - 8, width, 8);
         }
     }
 
