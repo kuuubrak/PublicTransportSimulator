@@ -103,10 +103,7 @@ public abstract class SimulationObjectView implements DoubleView {
         this.detailViewYPosition = y;
     }
 
-    @Override
-    public void drawMiniView(Graphics g) {
 
-    }
 
     @Override
     public void setMiniViewPosition(int x, int y) {
@@ -123,5 +120,14 @@ public abstract class SimulationObjectView implements DoubleView {
     @Override
     public void rotateMiniView(int direct) {
         this.miniViewDirect = direct;
+    }
+
+    public boolean isMiniViewPressed(int x, int y) {
+        if(x>=miniViewXPosition&&x<=miniViewXPosition+miniViewWidth
+                &&y>=miniViewYPosition&&y<=miniViewYPosition+miniViewHeight){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

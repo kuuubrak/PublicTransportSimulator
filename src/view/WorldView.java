@@ -1,26 +1,63 @@
 package view;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * Created by mateusz on 28.05.14.
  */
-public class WorldView extends Canvas {
+public class WorldView extends Canvas implements MouseListener {
 
     private ViewModel viewModel;
+    private ViewUpdater viewUpdater;
 
-    public WorldView(ViewModel viewModel){
+    public WorldView(ViewModel viewModel, ViewUpdater viewUpdater){
         super();
+        this.viewModel = viewModel;
+        this.viewUpdater = viewUpdater;
+        addMouseListener(this);
+    }
+
+    public void updateViewModel(ViewModel viewModel){
         this.viewModel = viewModel;
     }
 
     public void paint(Graphics g){
         g.setColor(Color.GREEN);
         g.fillRect(0, 0, getWidth(), getHeight());
-        g.setColor(Color.BLUE);
         for(BusView busView: viewModel.getBusViewList()){
             busView.drawMiniView(g);
         }
     }
 
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+        for(BusView busView: viewModel.getBusViewList()){
+            if(busView.isMiniViewPressed(mouseEvent.getX(), mouseEvent.getY())){
+                viewModel.setCurrentDetailView(busView);
+            };
+        }
+        viewUpdater.repaint();
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {
+
+    }
 }

@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-public class MainWindow extends JFrame{
+public class MainWindow extends JFrame implements ViewUpdater{
 
     /**
      *
@@ -14,7 +14,7 @@ public class MainWindow extends JFrame{
     private static final long serialVersionUID = -3543647902381142115L;
     private static final int minWindowWidth = 1200;
     private JPanel contentPane;
-    private Canvas worldCanvas;
+    private WorldView worldCanvas;
     private DetailViewer detailCanvas;
     private JPanel buttonsPanel;
     private ClientWrapper clientWrapper;
@@ -34,13 +34,13 @@ public class MainWindow extends JFrame{
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        worldCanvas = new WorldView(viewModel);
+        worldCanvas = new WorldView(viewModel, this);
         worldCanvas.setBounds(10,10,100,100);
         contentPane.add(worldCanvas);
 
 
-        detailCanvas = new DetailViewer(200, 200, 100, 100);
-        detailCanvas.setDetaliView(viewModel.getCurrentDetailView());
+        detailCanvas = new DetailViewer(0, 0, 0, 0);
+        detailCanvas.setViewModel(viewModel);
         contentPane.add(detailCanvas);
 
         buttonsPanel = new ControlButtonsPanel(300, 10, 400, 250, clientWrapper);
@@ -94,8 +94,9 @@ public class MainWindow extends JFrame{
 
     public void updateViewModel(ViewModel viewModel) {
         contentPane.remove(detailCanvas);
-        detailCanvas = new DetailViewer(200, 200, 100, 100);
-        detailCanvas.setDetaliView(viewModel.getCurrentDetailView());
+        detailCanvas = new DetailViewer(0,0,0,0);
+        detailCanvas.setViewModel(viewModel);
+        worldCanvas.updateViewModel(viewModel);
         contentPane.add(detailCanvas);
         resize();
     }
