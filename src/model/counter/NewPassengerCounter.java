@@ -6,6 +6,7 @@ import model.BusStop;
 import model.Schedule;
 import view.SimulatorEvent;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -14,7 +15,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * Created by ppeczek on 2014-05-25.
  */
-public class NewPassengerCounter extends CyclicCounter {
+public class NewPassengerCounter extends CyclicCounter
+{
 
     private BusStop busStop;
     private LinkedBlockingQueue<SimulatorEvent> blockingQueue;

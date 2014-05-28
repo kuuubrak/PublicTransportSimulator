@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ClientWrapper extends Thread{
     private Client client = null;
-    private LinkedBlockingQueue<SimulatorEvent> evQueue = new LinkedBlockingQueue<>();
+    private LinkedBlockingQueue<SimulatorEvent> evQueue = new LinkedBlockingQueue<SimulatorEvent>();
     private GuiFunctionality gun=null;
     private boolean runny = true;
     private Properties config;

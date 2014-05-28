@@ -3,12 +3,14 @@ package model.counter;
 import model.Bus;
 import view.SimulatorEvent;
 
+import java.io.Serializable;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by ppeczek on 2014-05-20.
  */
-abstract public class Counter {
+abstract public class Counter implements Serializable
+{
     private int value;
     private boolean counted;
     private LinkedBlockingQueue<SimulatorEvent> blockingQueue;

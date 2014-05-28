@@ -3,12 +3,14 @@ package model.counter;
 import model.Bus;
 import view.SimulatorEvent;
 
+import java.io.Serializable;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by ppeczek on 2014-05-21.
  */
-abstract public class CyclicCounter extends Counter {
+abstract public class CyclicCounter extends Counter
+{
     public int max_value;
 
     public CyclicCounter(LinkedBlockingQueue<SimulatorEvent> blockingQueue, int value, Bus bus) {

@@ -33,7 +33,7 @@ public class Model {
     }
 
     public Mockup createMockup() {
-        return new Mockup(getBusContainer(), schedule.getBusStops());
+        return new Mockup(getBusContainer(), schedule.getBusStops(), simulationTimer.getTime());
     }
 
     public ArrayList<Bus> getBusContainer() {
@@ -51,6 +51,7 @@ public class Model {
         busReleaseCounter.countdown();
 
         simulationTimer.go();
+
 //        System.out.println("Zajętość przystanków:");
 //        for (BusStop busStop : schedule.getPassengersStops()) {
 //            System.out.println(busStop.getNAME() + ": " + busStop.getPassengerQueue().size());

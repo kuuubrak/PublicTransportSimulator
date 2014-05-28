@@ -55,7 +55,6 @@ class Listener implements Runnable {
                 break;
             } catch (ClassNotFoundException e) {
                 // Nierozpoznane klasy sa ignorowane
-                //e.printStackTrace(); //zmieniłem ~maciej168
                 Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Ignorowanie nieznanej klasy", e);
             } finally {
                 clogged = false; // dodałem ~maciej168

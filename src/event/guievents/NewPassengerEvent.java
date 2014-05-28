@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Created by ppeczek on 2014-05-25.
  */
-public class NewPassengerEvent extends SimulatorEvent implements Serializable {
+public class NewPassengerEvent extends SimulatorEvent {
     private final String from;
     private final String to;
 

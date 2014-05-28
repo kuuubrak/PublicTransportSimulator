@@ -1,10 +1,13 @@
 package model;
 
 
+import java.io.Serializable;
+
 /**
  * Created by ppeczek on 2014-05-20.
  */
-public class Route {
+public class Route implements Serializable
+{
     private BusStop toBusStop;
     private int length;
 

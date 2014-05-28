@@ -3,10 +3,13 @@ package view;
 import mockup.Mockup;
 import model.Bus;
 
+import java.io.Serializable;
+
 /**
  * Created by ppeczek on 2014-05-25.
  */
-public class SimulatorEvent {
+public class SimulatorEvent implements Serializable
+{
     public Bus getBus() {
         return null;
     }

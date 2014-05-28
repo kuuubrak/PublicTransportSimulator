@@ -3,12 +3,9 @@ package zkm;
 import event.BusReleasingFrequency;
 import main.SimulatorConstants;
 import mockup.Mockup;
-import model.Bus;
-import model.BusStop;
-import model.Passenger;
+import model.*;
 import network.Client;
 import view.SimulatorEvent;
-import model.Pair;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,8 +53,13 @@ public class ZkmMain {
             Long sumOfWaitingTimeWithoutPlaceInBus = 0L; //??
 
             for (Bus bus : buses) {
-                noOfBuses += 1;
-                freeSeatsNr += bus.getNumberOfFreeSeats();
+                System.out.println(bus.getState());
+                if (!bus.getState().equals(BusState.READY_TO_GO) && !bus.getState().equals(BusState.HAVING_BREAK))
+                //tylko autobusy nie będące w zajezdni
+                {
+                    noOfBuses += 1;
+                    freeSeatsNr += bus.getNumberOfFreeSeats();
+                }
             }
 
             for (BusStop busStop : busStops) {
@@ -65,7 +67,7 @@ public class ZkmMain {
 
                 for(Passenger passenger : busStop.getPassengerQueue())
                 {
-                    generalSumOfWaitingTime +=  passenger.getWaitingTime();
+                    generalSumOfWaitingTime += mockup.getCurrentTime() - passenger.getTIMESTAMP();
                 }
             }
 
@@ -75,6 +77,7 @@ public class ZkmMain {
 
         } while (endLoop());
 
+        sc.closeConnection();
         System.out.println("ZKM has stopped.");
     }
 
@@ -97,7 +100,6 @@ public class ZkmMain {
                 e.printStackTrace();
             }
         }
-
         /**
          * A tak, bo mamy tylko 1 event dla ZKM.
          * Należy pobrać tylko ostatni element z kolejki.
@@ -125,6 +127,10 @@ public class ZkmMain {
         int peopleInsideBuses = noOfBuses*SimulatorConstants.noOfSeatsInBus - freeSeatsNr;
         int peopleInTheWorld = peopleInsideBuses + generalPeopleWaitingNr;
         int howManyBuses = (int) Math.ceil(peopleInTheWorld / (double) SimulatorConstants.noOfSeatsInBus) ;
+
+        System.out.println("HowManyBuses: " + howManyBuses + "; CurrentNumberOfBuses: " + noOfBuses +  "; freeSeatsNr: " + freeSeatsNr
+                + "; generalPeopleWaitingNr: " + generalPeopleWaitingNr + "; generalSumOfWaitingTime: " + generalSumOfWaitingTime);
+
         if (howManyBuses == 0)
         {
             sc.send(new BusReleasingFrequency(0));

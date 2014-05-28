@@ -78,7 +78,6 @@ class ModuleNetwork {
                     executor.execute(currentListener);
                     System.out.println("Podlaczyl sie klient - port: " + serverSocket.getLocalPort());
                 } catch (IOException e) {
-                    // e.printStackTrace(); //zmieniłem ~maciej168
                     Logger.getLogger(Server.class.getName()).log(Level.WARNING, "Błąd tworzenia Listener'a", e);
                     throw new RuntimeException();
                 } finally {
