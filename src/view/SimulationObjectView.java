@@ -8,7 +8,7 @@ import java.util.Collection;
 /**
  * Created by mateusz on 28.05.14.
  */
-public abstract class SimulationObjectView implements DoubleView{
+public abstract class SimulationObjectView implements DoubleView {
 
     private static final int CELL_RESOLUTION = 28;
     private static final int PASSENGER_ROW_NUM = 6;

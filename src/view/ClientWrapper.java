@@ -14,8 +14,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 
-public class ClientWrapper extends Thread{
-    private Client client = null;
+public class ClientWrapper extends Thread {
+    private Client<Mockup> client = null;
     private LinkedBlockingQueue<Mockup> mockups = new LinkedBlockingQueue<Mockup>();
     private GuiFunctionality gun=null;
     private boolean runny = true;
@@ -42,12 +42,12 @@ public class ClientWrapper extends Thread{
     public void run(){
         connect();
         try {
-            while (runny){
-                SimulatorEvent ev = null;
+            while(runny) {
+                Mockup mockup = null;
                 while (!mockups.isEmpty()) {//przewijanie do ostatniej otrzymanej
-                    ev = mockups.poll(5, TimeUnit.SECONDS);
+                    mockup = mockups.poll(5, TimeUnit.SECONDS);
                 }
-                if(ev != null) gun.newMockup(ev.getMockup());
+                if(mockup != null) gun.newMockup(mockup.getMockup());
             }
         }catch(InterruptedException e){
             if(runny) gun.connectionLost();
@@ -72,6 +72,7 @@ public class ClientWrapper extends Thread{
         client.closeConnection();
         client = null;
         runny = false;
+        this.interrupt();
     }
 
     private void connect(){
@@ -79,15 +80,11 @@ public class ClientWrapper extends Thread{
         int port = Integer.parseInt(config.getProperty("port", "8123"));
         client = new Client(ip,port);
         mockups.clear();
-        client.setMockupsBlockingQueue(mockups);
+        client.setEventsBlockingQueue(mockups);
         if(client.connect()){
             gun.connectionEstablished();
         }else{
             gun.connectionLost();
         }
-    }
-
-    public void setMockups(LinkedBlockingQueue<Mockup> mockups) {
-        this.mockups = mockups;
     }
 }
