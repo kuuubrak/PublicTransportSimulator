@@ -53,7 +53,7 @@ public class Client {
                     System.out.println("Dostalem: " + object.getClass());
                     eventsBlockingQueue.add((SimulatorEvent) object);
                 } catch (IOException e) {
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Błąd odbierania z serwera"); // dodałem ~maciej168
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Błąd odbierania z serwera", e); // dodałem ~maciej168
                     reportConnectionProblem();
                 } catch (ClassNotFoundException e) {
                     // Nierozpoznane klasy sa ignorowane
@@ -110,9 +110,10 @@ public class Client {
             try {
                 oos = new ObjectOutputStream(socket.getOutputStream());
                 oos.writeObject(object);
+                oos.flush();
                 return true;
             } catch (IOException e) {
-                Logger.getLogger(Client.class.getName()).log(Level.WARNING, "Błąd wysyłania do serwera"); // dodałem ~maciej168
+                Logger.getLogger(Client.class.getName()).log(Level.WARNING, "Błąd wysyłania do serwera", e); // dodałem ~maciej168
                 e.printStackTrace();
                 closeConnection();
                 return false;

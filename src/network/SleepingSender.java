@@ -33,6 +33,7 @@ class SleepingSender {
                             System.out.println("Wysylam" + receiverSocket.getLocalPort());
                             oos = new ObjectOutputStream(receiverSocket.getOutputStream());
                             oos.writeObject(pack.getObject());
+                            oos.flush();
                             System.out.println("Wyslalem" + receiverSocket.getLocalPort());
 
                         } catch (SocketException e) {
