@@ -3,6 +3,7 @@ package view;
 import event.guievents.ContinuousSimulationEvent;
 import event.guievents.NewPassengerEvent;
 import event.guievents.PassengerGenerationInterval;
+import mockup.Mockup;
 import network.Client;
 
 import java.io.File;
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ClientWrapper extends Thread{
     private Client client = null;
-    private LinkedBlockingQueue<SimulatorEvent> evQueue = new LinkedBlockingQueue<SimulatorEvent>();
+    private LinkedBlockingQueue<Mockup> mockups = new LinkedBlockingQueue<Mockup>();
     private GuiFunctionality gun=null;
     private boolean runny = true;
     private Properties config;
@@ -43,8 +44,8 @@ public class ClientWrapper extends Thread{
         try {
             while (runny){
                 SimulatorEvent ev = null;
-                while (!evQueue.isEmpty()) {//przewijanie do ostatniej otrzymanej
-                    ev = evQueue.poll(5, TimeUnit.SECONDS);
+                while (!mockups.isEmpty()) {//przewijanie do ostatniej otrzymanej
+                    ev = mockups.poll(5, TimeUnit.SECONDS);
                 }
                 if(ev != null) gun.newMockup(ev.getMockup());
             }
@@ -77,12 +78,16 @@ public class ClientWrapper extends Thread{
         String ip = config.getProperty("ip","127.0.0.1");
         int port = Integer.parseInt(config.getProperty("port", "8123"));
         client = new Client(ip,port);
-        evQueue.clear();
-        client.setEventsBlockingQueue(evQueue);
+        mockups.clear();
+        client.setMockupsBlockingQueue(mockups);
         if(client.connect()){
             gun.connectionEstablished();
         }else{
             gun.connectionLost();
         }
+    }
+
+    public void setMockups(LinkedBlockingQueue<Mockup> mockups) {
+        this.mockups = mockups;
     }
 }

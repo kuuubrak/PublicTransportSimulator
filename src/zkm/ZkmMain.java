@@ -2,7 +2,7 @@ package zkm;
 
 import event.BusReleasingFrequency;
 import main.SimulatorConstants;
-import mockup.Mockup;
+import mockup.ZkmMockup;
 import model.*;
 import network.Client;
 import view.SimulatorEvent;
@@ -38,7 +38,7 @@ public class ZkmMain {
 
         System.out.println("Press enter key to stop.");
 
-        Mockup mockup = null;
+        ZkmMockup mockup = null;
         do {
             mockup = receiveMockup();
             //TODO: jaką ja mam pewność, że te autobusy są poukładane?
@@ -81,7 +81,7 @@ public class ZkmMain {
         System.out.println("ZKM has stopped.");
     }
 
-    private Mockup receiveMockup() {
+    private ZkmMockup receiveMockup() {
 
         SimulatorEvent event = null;
         BlockingQueue<SimulatorEvent> queueOfOrders = sc.getEventsBlockingQueue();
@@ -97,6 +97,7 @@ public class ZkmMain {
             catch (InterruptedException e)
             {
                 //TODO skąd się bierze ten wyjątek i co z nim zrobić?
+                //Bierze się jak się zjebie i nic się z nim nie robi.
                 e.printStackTrace();
             }
         }
@@ -105,7 +106,7 @@ public class ZkmMain {
          * Należy pobrać tylko ostatni element z kolejki.
          * Jeśli nie ma żadnego to należy się zawiesić w oczekiwaniu.
          */
-        return event.getMockup();
+        return event.getZkmMockup();
     }
 
     private boolean endLoop() {

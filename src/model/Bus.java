@@ -30,6 +30,7 @@ public final class Bus implements EventListener, Serializable
      * How many <b>Passengers</b> can one <b>Bus</b> hold.
      */
     private static final int MAX_SEATS = SimulatorConstants.noOfSeatsInBus;
+    private final UUID ID;
     /**
      * A container of currently held <b>Passengers</b>
      */
@@ -41,7 +42,6 @@ public final class Bus implements EventListener, Serializable
     private LoopsCounter loopsToFinish;
     private BreakAfterFinishedCounter cooldownAfterLoops;
     private ReturnToDepotCooldown returnToDepotCooldown;
-    private final UUID ID;
     private Map<BusState, BusBehaviorStrategy> busBehaviorStrategyMap = new HashMap<BusState, BusBehaviorStrategy>();
 
     public Bus(BusStop startStation, LinkedBlockingQueue<SimulatorEvent> blockingQueue) {
