@@ -15,7 +15,7 @@ public class MockupBus {
     private final Integer ID;
 
     public MockupBus(final Bus bus) {
-        this.passengerList = new ArrayList<Passenger>(bus.getPassengerMap().values());
+        this.passengerList = new ArrayList<>(bus.getPassengerMap().values());
         this.currentBusStop = bus.getCurrentBusStop().getNAME();
         this.lengthPassed = bus.getCurrentBusStop().getRoute().getLength() - bus.getToNextStop().getValue();
         this.ID = bus.getID();

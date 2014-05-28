@@ -20,9 +20,8 @@ public class MockupBusStop {
     public MockupBusStop(final BusStop busStop) {
         this.ID = busStop.getID();
         this.NAME = busStop.getNAME();
-        Queue<Passenger> passengerQueueCopy = new LinkedList<>();
-        passengerQueueCopy.addAll(busStop.getPassengerQueue());
-        for (Passenger p: passengerQueueCopy) {
+
+        for(Passenger p: busStop.getPassengerQueue()) {
             this.passengerQueue.add(new MockupPassenger(p));
         }
         this.toNextStop = busStop.getRoute().getLength();

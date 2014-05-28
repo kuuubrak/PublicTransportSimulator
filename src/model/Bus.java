@@ -206,11 +206,11 @@ public final class Bus implements EventListener, Serializable
         this.state = state;
     }
 
-    public Counter getToNextStop() {
+    public ToNextStopDistanceCounter getToNextStop() {
         return toNextStop;
     }
 
-    public Counter getLoopsToFinish() {
+    public LoopsCounter getLoopsToFinish() {
         return loopsToFinish;
     }
 
@@ -289,7 +289,7 @@ public final class Bus implements EventListener, Serializable
             }
             System.out.println(this + ": To finish:" + getLoopsToFinish().getValue());
         }else{
-            onTerminusAlready =false;
+            onTerminusAlready = false;
         }
     }
 

@@ -14,8 +14,8 @@ import java.util.List;
  */
 public final class Mockup
 {
-    private ArrayList<MockupBus> schedule = new ArrayList<MockupBus>();
-    private ArrayList<MockupBusStop> busStops = new ArrayList<MockupBusStop>();
+    private ArrayList<MockupBus> schedule = new ArrayList<>();
+    private ArrayList<MockupBusStop> busStops = new ArrayList<>();
     private final long currentTime;
 
     public Mockup(final ArrayList<Bus> schedule, final ArrayList<BusStop> busStops, long currentTime) {

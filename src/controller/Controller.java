@@ -96,7 +96,7 @@ public class Controller implements ActionListener {
             try
             {
                 simulatorEvent = eventsBlockingQueue.take();
-                System.out.println(simulatorEvent.getClass());
+//                System.out.println(simulatorEvent.getClass());
             } catch (final InterruptedException e){
                 e.printStackTrace();
             }
@@ -145,7 +145,6 @@ public class Controller implements ActionListener {
             BusDepot busDepot = BusDepot.getInstance();
             Bus bus = busDepot.getBusQueue().poll();
             if (bus != null) {
-                System.out.println("Wykonuje: BusStartSignalStrategy");
                 bus.setState(BusState.RUNNING);
             }
         }
@@ -164,9 +163,9 @@ public class Controller implements ActionListener {
         @Override
         void execute(SimulatorEvent busEvent) {
             Bus bus = busEvent.getBus();
-//            System.out.println("Wykonuje: BusArrivesToBusStopStrategy");
-            //todo chuuuujnia!!!
             bus.terminusCheck();
+//            System.out.println(this.getClass());
+//            System.out.println(bus.getState());
             if (bus.isFinished()) {
                 if (bus.isEmpty()) {
                     System.out.println(bus + " nie zatrzymuje się na: " + bus.getCurrentBusStop().getNAME());
@@ -232,8 +231,8 @@ public class Controller implements ActionListener {
     private final class BusComeBackSignalStrategy extends MyStrategy {
         @Override
         void execute(SimulatorEvent busEvent) {
+            System.out.println(this.getClass());
             Bus bus = busEvent.getBus();
-//            System.out.println("Wykonuje: BusComeBackSignalStrategy");
             bus.comeback();
         }
     }
@@ -245,8 +244,8 @@ public class Controller implements ActionListener {
     private final class BusPutOutAllStrategy extends MyStrategy {
         @Override
         void execute(SimulatorEvent busEvent) {
+            System.out.println(this.getClass());
             Bus bus = busEvent.getBus();
-//            System.out.println("Wykonuje: BusPutOutAllStrategy");
             bus.freeCurrentBusStop();
             bus.comeback();
             System.out.println("Następny:" + bus.getToNextStop().getValue());
@@ -262,7 +261,7 @@ public class Controller implements ActionListener {
         @Override
         void execute(SimulatorEvent busEvent) {
             Bus bus = busEvent.getBus();
-//            System.out.println("Wykonuje: BusPutOutPassengersStrategy");
+            System.out.println(this.getClass());
             if (bus.isGetOnRequestNow()) {
                 bus.setState(BusState.TAKE_IN);
             }
@@ -280,7 +279,7 @@ public class Controller implements ActionListener {
     private final class BusReadyToGoStrategy extends MyStrategy {
         @Override
         void execute(SimulatorEvent busEvent) {
-//            System.out.println("Wykonuje: BusReadyToGoStrategy");
+            System.out.println(this.getClass());
             Bus bus = busEvent.getBus();
             BusDepot.getInstance().getBusQueue().add(bus);
             bus.setState(BusState.READY_TO_GO);
@@ -295,7 +294,6 @@ public class Controller implements ActionListener {
         @Override
         void execute(SimulatorEvent busEvent) {
             Bus bus = busEvent.getBus();
-//            System.out.println("Wykonuje: BusReturnedToDepot");
             BusDepot busDepot = BusDepot.getInstance();
             busDepot.getBusQueue().add(bus);
             bus.reachDepot();
@@ -311,8 +309,8 @@ public class Controller implements ActionListener {
     private final class BusTookInPassengersStrategy extends MyStrategy {
         @Override
         void execute(SimulatorEvent busEvent) {
+            System.out.println(this.getClass());
             Bus bus = busEvent.getBus();
-//            System.out.println("Wykonuje: BusTookInPassengersStrategy");
             bus.freeCurrentBusStop();
             bus.setState(BusState.RUNNING);
         }

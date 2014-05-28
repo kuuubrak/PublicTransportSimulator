@@ -4,9 +4,9 @@ import model.counter.NewPassengerCounter;
 import view.SimulatorEvent;
 
 import java.io.Serializable;
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -36,7 +36,7 @@ public class BusStop implements Serializable {
     public BusStop(final String name) {
         this.ID = UUID.randomUUID();
         this.NAME = name;
-        this.passengerQueue = new LinkedList<Passenger>();
+        this.passengerQueue = new ConcurrentLinkedQueue<>();
         this.route = new Route();
         this.occupied = false;
     }
