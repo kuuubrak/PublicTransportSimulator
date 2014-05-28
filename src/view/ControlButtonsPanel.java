@@ -46,6 +46,7 @@ public class ControlButtonsPanel extends JPanel {
 
     private void initStepButton(){
         stepButton = new JButton("Next step");
+        stepButton.setEnabled(false);
         stepButton.setBounds(120, 30, 160, 80);
         add(stepButton);
         stepButton.addActionListener(new ActionListener() {
@@ -63,13 +64,10 @@ public class ControlButtonsPanel extends JPanel {
         switchSimulationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if(switchSimulationButton.isSelected()){
-                    switchSimulationButton.setText("Auto simulation");
-                    clientWrapper.setContinuous(true);
-                }else{
-                    switchSimulationButton.setText("Manual simulation");
-                    clientWrapper.setContinuous(false);
-                }
+                boolean sel = switchSimulationButton.isSelected();
+                switchSimulationButton.setText(sel?"Auto simulation":"Manual simulation");
+                clientWrapper.setContinuous(sel);
+                stepButton.setEnabled(!sel);
             }
         });
     }
