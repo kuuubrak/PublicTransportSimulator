@@ -23,7 +23,9 @@ public class DetailViewer extends Canvas{
         g.setColor(new Color(2, 133, 4));
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        if(viewModel != null) viewModel.getCurrentDetailView().drawDetailView(g2);
+        if(viewModel != null && viewModel.getCurrentDetailView() != null) {
+            viewModel.getCurrentDetailView().drawDetailView(g2);
+        }
     }
 
 
