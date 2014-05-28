@@ -4,12 +4,14 @@ import event.busevents.BusReadyToGo;
 import model.Bus;
 import view.SimulatorEvent;
 
+import java.io.Serializable;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by ppeczek on 2014-05-24.
  */
-public class BreakAfterFinishedCounter extends CyclicCounter {
+public class BreakAfterFinishedCounter extends CyclicCounter implements Serializable
+{
     public BreakAfterFinishedCounter(LinkedBlockingQueue<SimulatorEvent> blockingQueue, int cooldownAfterLoops, Bus bus) {
         super(blockingQueue, cooldownAfterLoops, bus);
     }

@@ -2,6 +2,7 @@ package mockup;
 
 import model.Bus;
 import model.BusStop;
+import view.SimulatorEvent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,7 +14,8 @@ import java.util.List;
  * <br>
  * Zawiera <b>rozkład jazdy</b> ( listę <b>Przystanków</b> ) oraz listę <b>Autobusów</b>.
  */
-public final class Mockup implements Serializable {
+public final class Mockup extends SimulatorEvent
+{
     private final ArrayList<Bus> schedule;
     private final ArrayList<BusStop> busStops;
 
@@ -35,4 +37,7 @@ public final class Mockup implements Serializable {
     public List<BusStop> getBusStops() {
         return busStops;
     }
+
+    @Override
+    public Mockup getMockup() { return this; }
 }

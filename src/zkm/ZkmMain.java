@@ -89,7 +89,9 @@ public class ZkmMain {
         {
             try
             {
+                System.out.println("Czekam na maietę");
                 event = queueOfOrders.take();
+                System.out.println("Dostałem makietę!");
             }
             catch (InterruptedException e)
             {
@@ -97,6 +99,8 @@ public class ZkmMain {
                 e.printStackTrace();
             }
         }
+
+        System.out.println("OK, mam ostatnią makietę.");
 
         /**
          * A tak, bo mamy tylko 1 event dla ZKM.

@@ -7,6 +7,7 @@ import main.SimulatorConstants;
 import model.counter.*;
 import view.SimulatorEvent;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.EventListener;
 import java.util.HashMap;
@@ -26,7 +27,8 @@ import java.util.concurrent.LinkedBlockingQueue;
  *
  * @author dan.krasniak
  */
-public final class Bus implements EventListener {
+public final class Bus implements EventListener, Serializable
+{
     /**
      * How many <b>Passengers</b> can one <b>Bus</b> hold.
      */
@@ -279,7 +281,7 @@ public final class Bus implements EventListener {
         return getLoopsToFinish().isDownCounted();
     }
 
-    abstract private class BusBehaviorStrategy {
+    abstract private class BusBehaviorStrategy implements Serializable {
         abstract void execute();
     }
 

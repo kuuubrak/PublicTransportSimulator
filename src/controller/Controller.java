@@ -117,7 +117,7 @@ public class Controller implements ActionListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-       // networkClient.send(createMockup());
+        networkClient.send(createMockup());
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override

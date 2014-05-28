@@ -1,6 +1,7 @@
 package model;
 
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -9,7 +10,8 @@ import java.util.UUID;
  * Na <b>Przystanku</b> tworzy kolejkę FIFO.
  * Moment pojawienia się <b>Pasażera</b> na przystanku oznaczany jako <b>TimeStamp</b>.
  */
-public class Passenger {
+public class Passenger implements Serializable
+{
     /**
      * Unique id
      */
