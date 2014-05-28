@@ -115,17 +115,17 @@ public class BusStop implements Serializable {
         getRoute().setLength(length);
     }
 
-    public Queue<Passenger> getPassengerQueue() {
+    public final Queue<Passenger> getPassengerQueue() {
         return passengerQueue;
     }
 
-    public boolean isOccupied() { return occupied; }
+    public final boolean isOccupied() { return occupied; }
 
     public void setOccupied(boolean occupied) {
         this.occupied = occupied;
     }
 
-    public UUID getID() {
+    public final UUID getID() {
         return ID;
     }
 }

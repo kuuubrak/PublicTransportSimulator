@@ -3,7 +3,6 @@ package mockup;
 import model.Bus;
 import model.Passenger;
 
-import java.math.RoundingMode;
 import java.util.ArrayList;
 
 /**
@@ -14,7 +13,6 @@ public class MockupBus {
     private final String currentBusStop;
     private final int lengthPassed;
     private final Integer ID;
-    private RoundingMode passengerMap;
 
     public MockupBus(final Bus bus) {
         this.passengerList = new ArrayList<Passenger>(bus.getPassengerMap().values());
@@ -37,9 +35,5 @@ public class MockupBus {
 
     public Integer getID() {
         return ID;
-    }
-
-    public RoundingMode getPassengerMap() {
-        return passengerMap;
     }
 }
