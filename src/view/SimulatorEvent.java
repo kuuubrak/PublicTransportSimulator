@@ -1,6 +1,7 @@
 package view;
 
 import mockup.Mockup;
+import mockup.ZkmMockup;
 import model.Bus;
 
 import java.io.Serializable;
@@ -31,4 +32,6 @@ public class SimulatorEvent implements Serializable
     }
 
     public Mockup getMockup() { return null; }
+
+    public ZkmMockup getZkmMockup() { return null; }
 }
