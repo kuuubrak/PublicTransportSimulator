@@ -2,6 +2,7 @@ package zkm;
 
 import event.BusReleasingFrequency;
 import main.SimulatorConstants;
+import mockup.Mockup;
 import mockup.ZkmMockup;
 import model.*;
 import network.Client;
@@ -19,13 +20,11 @@ public class ZkmMain extends Thread {
 
     private String host = ZkmConstants.host;
     private int port = ZkmConstants.port;
-    private Client sc = new Client(host, port);
+    private Client<SimulatorEvent> sc = new Client<>(host, port);
     /** zmienna przechowująca ilość kroków potrzebną do jednokrotnego przejazdu trasy
      * (nie zlicza czasu potrzebnego na wsiadanie i wysiadanie pasażerów)
      */
     private Integer loopTimeMinute = 0;
-    /** zmienna potrzebna do zakończenia pracy modułu */
-    private boolean cont = true;
 
     /**
      * Konstruktor jednocześnie inicjalizuje wartość paramteru loopTimeMinute korzystając z tablicy
@@ -57,16 +56,10 @@ public class ZkmMain extends Thread {
                             zkmMain.interruptMe();
                             cont = false;
                         }
-                    } catch (IOException e)
+                    } catch (Exception e)
                     {
                         // Nic nie trzeba robić.
                         // Jednynym efektem będzie ponowna próba sprawdzenia System.in
-                        e.printStackTrace();
-                    }
-                    catch (InterruptedException e)
-                    {
-                        // Nic nie trzeba robić.
-                        // Jedynym efektem będzie szybsze sprawdzenie warunku.
                         e.printStackTrace();
                     }
                 }
@@ -74,20 +67,21 @@ public class ZkmMain extends Thread {
             }
         }).start();
 
-        zkmMain.mainLoop();
+        zkmMain.start();
     }
 
     /**
      * Główna metoda programu zawierająca pętlę, która przetwarza kolejne makiety.
      * Oblicza z nich zgeneralizowane informacje, na podstawie których jest podejmowana decyzja.
      */
-    public void mainLoop() {
+    @Override // skoro dziedziczy sie po Thread to może urwa by skorzystać
+    public void run() {
         sc.connect();
 
         System.out.println("Press enter key to stop.");
 
         ZkmMockup mockup;
-        do {
+        while(true) {// wyjdzie na twardo jak sie klawiaturnie
             //Odbieranie makiety
             mockup = receiveMockup();
             ArrayList<Bus> buses = (ArrayList<Bus>) mockup.getBuses();
@@ -122,46 +116,28 @@ public class ZkmMain extends Thread {
             makeDecision(noOfBuses, freeSeatsNr, generalPeopleWaitingNr,
                     generalSumOfWaitingTime);
 
-        } while (cont);
+        }
     }
 
-    private ZkmMockup receiveMockup() {
     /**
      * Metoda odbierająca makietę z wątku klienta (network.Client) serwera. Jeśli w międzyczasie odebrane
      * zostało kilka makiet, to przekazywana jest tylko ta wysłana najpóźniej. Reszta jest ignorowana
      * (taka sytuacja może nastąpić, gdy zostanie utracone połączenie).
      * @return Zwracanym obiektem jest makieta nadana na serwerze.
      */
-
+    private ZkmMockup receiveMockup() {
         SimulatorEvent event = null;
         LinkedBlockingQueue<SimulatorEvent> queueOfOrders = sc.getEventsBlockingQueue();
-
-        //Pętla powoduje, że pobierany jest zawsze ostatni event (makieta) jeśli jest ich kilka
-        //(np. gdy było chwilowe rozłączenie), bądź następuje zawieszenie i oczekiwanie, jeśli nie było żadnego
-        while (!queueOfOrders.isEmpty() || event == null)
-        {
-            try
-            {
-                event = queueOfOrders.take();
+            try{
+                do{
+                    event = queueOfOrders.take();
+                }while (!queueOfOrders.isEmpty()); // przewijanie do ostatniej odebranej makiety
             }
-            catch (InterruptedException e)
-            {
-                //TODO skąd się bierze ten wyjątek i co z nim zrobić?
-                //Bierze się jak się zjebie i nic się z nim nie robi.
-                e.printStackTrace();
-                throw new RuntimeException();
-            }
-            // Jeśli odebraną makietą jest sztucznie wytworzona makieta, która umożliwia wyciągnięcie programu
-            // z zawieszenia powstałego poprzez metodę take() na BlockingQueue, to jednocześnie ustawiany jest parametr
-            // kończący pracę programu. usi to być dokonane w tym miejscu ponieważ pusta makieta nie może zostać
-            // przetworzona przez pętlę główną - wysłała by wtedy rozkaz do Symulatora niezgodny ze stanem faktycznym.
-            if (!cont)
-            {
+            catch (InterruptedException e){//wyjątek tylko jak Thread.interrupt()
                 sc.closeConnection();
                 System.out.println("ZKM has stopped.");
                 System.exit(0);
             }
-        }
 
         return event.getZkmMockup();
     }
@@ -207,22 +183,9 @@ public class ZkmMain extends Thread {
     }
 
     /**
-     * Metoda wywoływana przez wątek nasłuchujący klawiatury. Jej wykonanie polega na zmianie flagi wykonania
-     * na false oraz dołożeniu pustej makiety do kolejki, aby odblokować wątek, który się zatrzymał na
-     * BlockingQueue.
+     * Przerywa oczekiwanie na cokolwiek dochodzącego do kolejki i spierdala ze wszechświata.
      */
-    private void interruptMe()
-    {
-        cont = false;
-
-        ZkmMockup emptyMockup = new ZkmMockup(new ArrayList<Bus>(), new ArrayList<BusStop>(), 10L);
-        try
-        {
-            sc.getEventsBlockingQueue().put(emptyMockup);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
+    private void interruptMe(){
+        this.interrupt();
     }
 }

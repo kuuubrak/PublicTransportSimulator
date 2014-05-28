@@ -78,7 +78,7 @@ public class ClientWrapper extends Thread {
     private void connect(){
         String ip = config.getProperty("ip","127.0.0.1");
         int port = Integer.parseInt(config.getProperty("port", "8123"));
-        client = new Client(ip,port);
+        client = new Client<>(ip,port);
         mockups.clear();
         client.setEventsBlockingQueue(mockups);
         if(client.connect()){
