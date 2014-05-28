@@ -94,6 +94,7 @@ public class Controller implements ActionListener {
              */
             while (true)
             {
+
                 SimulatorEvent simulatorEvent = null;
                 try
                 {
