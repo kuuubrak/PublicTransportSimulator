@@ -48,6 +48,12 @@ public class ControlButtonsPanel extends JPanel {
         stepButton = new JButton("Next step");
         stepButton.setBounds(120, 30, 160, 80);
         add(stepButton);
+        stepButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                clientWrapper.nextStep();
+            }
+        });
     }
 
     private void initSwitchSimulationButton(){

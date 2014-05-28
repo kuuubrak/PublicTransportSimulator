@@ -46,7 +46,7 @@ public class ClientWrapper extends Thread{
                 while (!evQueue.isEmpty()) {//przewijanie do ostatniej otrzymanej
                     ev = evQueue.poll(5, TimeUnit.SECONDS);
                 }
-                gun.newMockup(ev.getMockup());
+                if(ev != null) gun.newMockup(ev.getMockup());
             }
         }catch(InterruptedException e){
             if(runny) gun.connectionLost();
@@ -56,6 +56,8 @@ public class ClientWrapper extends Thread{
     public void setContinuous(boolean set){
         client.send(new ContinuousSimulationEvent(set));
     }
+
+    public void nextStep(){client.send(new ContinuousSimulationEvent(false)); }
 
     public void createPassenger(String from, String to){
         client.send(new NewPassengerEvent(from, to));
@@ -73,7 +75,7 @@ public class ClientWrapper extends Thread{
 
     private void connect(){
         String ip = config.getProperty("ip","127.0.0.1");
-        int port = Integer.parseInt(config.getProperty("port", "6066"));
+        int port = Integer.parseInt(config.getProperty("port", "8123"));
         client = new Client(ip,port);
         evQueue.clear();
         client.setEventsBlockingQueue(evQueue);

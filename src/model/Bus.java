@@ -8,10 +8,7 @@ import model.counter.*;
 import view.SimulatorEvent;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.EventListener;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -44,6 +41,7 @@ public final class Bus implements EventListener, Serializable
     private LoopsCounter loopsToFinish;
     private BreakAfterFinishedCounter cooldownAfterLoops;
     private ReturnToDepotCooldown returnToDepotCooldown;
+    private final UUID ID;
     private Map<BusState, BusBehaviorStrategy> busBehaviorStrategyMap = new HashMap<BusState, BusBehaviorStrategy>();
 
     public Bus(BusStop startStation, LinkedBlockingQueue<SimulatorEvent> blockingQueue) {
@@ -55,6 +53,7 @@ public final class Bus implements EventListener, Serializable
         this.cooldownAfterLoops = new BreakAfterFinishedCounter(blockingQueue, SimulatorConstants.cooldownAfterLoops, this);
         this.returnToDepotCooldown = new ReturnToDepotCooldown(blockingQueue, SimulatorConstants.depotTerminusDistance, this);
         this.busBehaviorStrategyMap = getBusBehaviorStrategyMap();
+        ID = UUID.randomUUID();
     }
 
     private Map<BusState, BusBehaviorStrategy> getBusBehaviorStrategyMap() {
@@ -68,6 +67,10 @@ public final class Bus implements EventListener, Serializable
         resultMap.put(BusState.TAKE_IN, new BusTakesInPassengersStrategy());
         resultMap.put(BusState.PUT_OUT_ALL, new BusPutsOutAllStrategy());
         return Collections.unmodifiableMap(resultMap);
+    }
+
+    public UUID getID(){
+        return ID;
     }
 
     /**

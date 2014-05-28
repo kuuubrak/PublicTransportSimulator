@@ -3,7 +3,10 @@ package view;
 import model.Passenger;
 
 import java.awt.*;
-import java.util.Random;
+import java.math.BigDecimal;
+import static java.lang.Math.abs;
+import java.util.UUID;
+
 
 public class PassengerView {
 
@@ -11,41 +14,28 @@ public class PassengerView {
     private static final int textCloudHeigth = 70;
     private int x;
     private int y;
-    private int id;
     private int passengerSize;
-    private int waitingSteps;
     private TextCloud textCloud;
-    private Random random = new Random();
+    private Passenger passenger;
 
-
-    public PassengerView(int x, int y, int passengerSize) {
-        this.x = x;
-        this.y = y;
+    public PassengerView(Passenger passenger, int passengerSize) {
+        this.passenger = passenger;
         this.passengerSize = passengerSize;
         textCloud = createCloud();
-        id = random.nextInt(5000);
-        waitingSteps = random.nextInt(300);
     }
 
-    public PassengerView(int passengerSize) {
-        this(0, 0, passengerSize);
-    }
-
-    public PassengerView(Passenger passenger) {
-
-    }
-
-    private Color convertIdToColor(int id) {
-        return new Color((50 + id * 37) % 256, (20 + id * 67) % 256, (100 + id * 17) % 256);
+    private Color convertIdToColor(UUID id) {
+        return new Color(id.hashCode() & 255 , abs(~id.hashCode())  & 255, (id.hashCode()>>6)  & 256);
     }
 
     public void paint(Graphics2D g2) {
-        g2.setColor(convertIdToColor(id));
+        g2.setColor(convertIdToColor(passenger.getID()));
         g2.fillOval(x, y, passengerSize, passengerSize);
         g2.setColor(Color.LIGHT_GRAY);
         g2.drawOval(x, y, passengerSize, passengerSize);
         g2.setColor(Color.RED);
-        if (waitingSteps > 200) g2.drawString("!", x + passengerSize, y + passengerSize / 4);
+        if (passenger.getTIMESTAMP() > 200) g2.drawString("!", x + passengerSize, y + passengerSize / 4);
+        //textCloud.paint(g2);
 
     }
 
@@ -71,9 +61,9 @@ public class PassengerView {
                 g2.drawString("Waiting:", getX() + 3, getY() + 56);
                 g2.setColor(Color.BLACK);
                 g2.setFont(new Font("Arial", Font.BOLD, 12));
-                g2.drawString(Integer.toString(id), getX() + 20, getY() + 14);
-                g2.drawString("Wypizdów", getX() + 3, getY() + 42);
-                g2.drawString(Integer.toString(waitingSteps), getX() + 45, getY() + 56);
+                g2.drawString(passenger.getID().toString(), getX() + 20, getY() + 14);
+                g2.drawString(passenger.getDestination().toString(), getX() + 3, getY() + 42);
+                g2.drawString(BigDecimal.valueOf(passenger.getTIMESTAMP()).toString(), getX() + 45, getY() + 56);
             }
         };
     }

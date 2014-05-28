@@ -13,6 +13,7 @@ public abstract class SimulationObjectView implements DoubleView{
     private static final int CELL_RESOLUTION = 28;
     private static final int PASSENGER_ROW_NUM = 6;
     private static final int PASSENGER_COLUMN_NUM = 10;
+    private static final int PASSENGER_RESOLUTION = 24;
 
     private int miniViewXPosition = 0;
     private int miniViewYPosition = 0;
@@ -32,7 +33,7 @@ public abstract class SimulationObjectView implements DoubleView{
 
     public void setPassengers(Collection<Passenger> passengersList){
         for(Passenger passenger: passengersList){
-            passengerContainer.addPassengerView(new PassengerView(passenger));
+            passengerContainer.addPassengerView(new PassengerView(passenger, PASSENGER_RESOLUTION));
         }
 
     }

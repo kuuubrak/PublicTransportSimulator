@@ -31,7 +31,11 @@ public class ViewModel {
         for (Bus bus: busList) {
             busViewList.add(new BusView(bus));
         }
-
+           if(!busViewList.isEmpty()){
+               currentDetailView = busViewList.get(0);
+           }else{
+               currentDetailView = null;
+           }
     }
 
     public DetailView getCurrentDetailView() {

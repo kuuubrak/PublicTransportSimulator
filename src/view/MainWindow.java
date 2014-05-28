@@ -1,12 +1,8 @@
 package view;
 
-import mockup.Mockup;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
@@ -19,7 +15,7 @@ public class MainWindow extends JFrame{
     private static final int minWindowWidth = 1200;
     private JPanel contentPane;
     private Canvas worldCanvas;
-    private Canvas detailCanvas;
+    private DetailViewer detailCanvas;
     private JPanel buttonsPanel;
     private ClientWrapper clientWrapper;
     private ViewModel viewModel;
@@ -44,10 +40,12 @@ public class MainWindow extends JFrame{
                 g.fillRect(0, 0, this.getWidth(), this.getHeight());
             }
         };
+        worldCanvas.setBounds(10,10,100,100);
         contentPane.add(worldCanvas);
 
-        detailCanvas = new DetailViewender(820, 10, 360, 300);
-        ((DetailViewender)detailCanvas).setDetaliView(viewModel.getCurrentDetailView());
+
+        detailCanvas = new DetailViewer(200, 200, 100, 100);
+        detailCanvas.setDetaliView(viewModel.getCurrentDetailView());
         contentPane.add(detailCanvas);
 
         buttonsPanel = new ControlButtonsPanel(300, 10, 400, 250, clientWrapper);
@@ -63,7 +61,7 @@ public class MainWindow extends JFrame{
 
             @Override
             public void componentResized(ComponentEvent arg0) {
-               // resize();
+                resize();
 
             }
 
@@ -92,11 +90,18 @@ public class MainWindow extends JFrame{
             setSize(getWidth(), getWidth() / 2);
         } else {
             worldCanvas.setBounds(10, 10, (int) (0.6 * getWidth()), (int) (0.45 * getWidth()));
-            remove(detailCanvas);
-            detailCanvas = new DetailViewender(worldCanvas.getWidth() + 20, 10, (int) (0.64 * getHeight()), (int) (0.48 * getHeight()));
-            add(detailCanvas);
+
+            detailCanvas.setBounds(worldCanvas.getWidth() + 20, 10, (int) (0.64 * getHeight()), (int) (0.48 * getHeight()));
+
             buttonsPanel.setBounds(worldCanvas.getWidth() + 20, detailCanvas.getHeight() + 40, buttonsPanel.getWidth(), buttonsPanel.getHeight());
         }
     }
 
+    public void updateViewModel(ViewModel viewModel) {
+        contentPane.remove(detailCanvas);
+        detailCanvas = new DetailViewer(200, 200, 100, 100);
+        detailCanvas.setDetaliView(viewModel.getCurrentDetailView());
+        contentPane.add(detailCanvas);
+        resize();
+    }
 }

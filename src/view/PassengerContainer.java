@@ -6,7 +6,7 @@ import java.util.List;
 
 public class PassengerContainer {
     private final int cellResolution;
-    private List<PassengerView> passengerViewList;
+    private ArrayList<PassengerView> passengerViewList;
     private PassengerView moreDetailes = null;
     private int columnsNumber;
     private int x;
@@ -28,7 +28,10 @@ public class PassengerContainer {
     }
 
     public void draw(Graphics2D g2) {
-        for (PassengerView passenger : passengerViewList) {
+        PassengerView passenger;
+        for (int i = 0; i < passengerViewList.size(); i++) {
+            passenger = passengerViewList.get(i);
+            passenger.setXY(i%columnsNumber*cellResolution,100 + i/columnsNumber*cellResolution);
             passenger.paint(g2);
         }
         if (moreDetailes != null) moreDetailes.paintCloud(g2);

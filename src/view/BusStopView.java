@@ -20,9 +20,7 @@ public class BusStopView implements DetailView, MouseListener {
         busStopBackground = new BusStopBackground(width, height);
         busStopSign = new BusStopSign((int) (0.9 * width), (int) (0.25 * height), 100, (int) (0.3 * height));
         passengerContainer = new PassengerContainer((int) (0.80 * width), (int) (0.49 * height), columnNumber, rowNumber, (int) (0.05 * width));
-        for (int i = 0; i < 34; i++) {
-            passengerContainer.addPassengerView(new PassengerView((int) (0.05 * width) - 4));
-        }
+        
     }
 
     //@Override

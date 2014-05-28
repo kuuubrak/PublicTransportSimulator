@@ -47,7 +47,7 @@ public class Client {
             ObjectInputStream ois = null;
             while (!socket.isClosed()) {
                 try {
-                    System.out.println("Czekam" + socket.getLocalPort());
+                    System.out.println("Czekam " + socket.getLocalPort());
                     ois = new ObjectInputStream(socket.getInputStream());
                     Object object = ois.readObject();
                     System.out.println("Dostalem: " + object.getClass());

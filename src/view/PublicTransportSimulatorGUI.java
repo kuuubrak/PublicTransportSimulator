@@ -9,7 +9,7 @@ public class PublicTransportSimulatorGUI implements GuiFunctionality{
 
     private ClientWrapper clientWrapper;
     private ViewModel viewModel;
-    private static MainWindow mainWindow;
+    private MainWindow mainWindow;
 
     private static PublicTransportSimulatorGUI simulatorGUI;
 
@@ -21,8 +21,8 @@ public class PublicTransportSimulatorGUI implements GuiFunctionality{
         simulatorGUI.clientWrapper = new ClientWrapper(simulatorGUI);
         simulatorGUI.clientWrapper.start();
         simulatorGUI.viewModel = new ViewModel();
-        mainWindow = new MainWindow(simulatorGUI.clientWrapper, simulatorGUI.viewModel);
-        mainWindow.setVisible(true);
+        simulatorGUI.mainWindow = new MainWindow(simulatorGUI.clientWrapper, simulatorGUI.viewModel);
+        simulatorGUI.mainWindow.setVisible(true);
     }
 
     @Override
@@ -36,8 +36,10 @@ public class PublicTransportSimulatorGUI implements GuiFunctionality{
     }
 
     @Override
-    public void newMockup(Mockup fresh) {
+    public synchronized void newMockup(Mockup fresh) {
         viewModel.udateBusStopList(fresh.getBusStops());
         viewModel.updateBusList(fresh.getBuses());
+        simulatorGUI.mainWindow.updateViewModel(viewModel);
+        simulatorGUI.mainWindow.repaint();
     }
 }
