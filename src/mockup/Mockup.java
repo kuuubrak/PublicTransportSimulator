@@ -3,6 +3,7 @@ package mockup;
 import model.Bus;
 import model.BusStop;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  * <br>
  * Zawiera <b>rozkład jazdy</b> ( listę <b>Przystanków</b> ) oraz listę <b>Autobusów</b>.
  */
-public final class Mockup
+public final class Mockup implements Serializable
 {
     private ArrayList<MockupBus> schedule = new ArrayList<>();
     private ArrayList<MockupBusStop> busStops = new ArrayList<>();
