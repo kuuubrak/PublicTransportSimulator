@@ -2,7 +2,7 @@ package view;
 
 import java.awt.*;
 
-public class DetailViewer extends Canvas {
+public class DetailViewer extends Canvas{
 
     private static final long serialVersionUID = -7824633740035921796L;
     private DetailView detalilView;

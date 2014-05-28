@@ -24,7 +24,7 @@ public class TextCloud {
     }
 
 
-    public void paint(Graphics2D g2) {
+    public void paint(Graphics g2) {
         int[] xPoints = {getX(), getX() + width, getX() + width, getX() + (int) (0.6 * width), getX() + width / 2, getX() + (int) (0.4 * width), getX()};
         int[] yPoints = {getY(), getY(), getY() + height, getY() + height, getY() + (int) (1.15 * height), getY() + height, getY() + height};
         g2.setColor(lightColor);

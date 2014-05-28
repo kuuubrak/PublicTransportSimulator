@@ -87,8 +87,8 @@ public abstract class SimulationObjectView implements DoubleView{
     }
 
     @Override
-    public void drawDetailView(Graphics2D g2) {
-        passengerContainer.draw(g2);
+    public void drawDetailView(Graphics g) {
+        passengerContainer.draw(g);
     }
 
     @Override
@@ -104,7 +104,7 @@ public abstract class SimulationObjectView implements DoubleView{
     }
 
     @Override
-    public void drawMiniView(Graphics2D g2) {
+    public void drawMiniView(Graphics g) {
 
     }
 

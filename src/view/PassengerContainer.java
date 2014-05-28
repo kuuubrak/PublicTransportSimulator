@@ -27,14 +27,14 @@ public class PassengerContainer {
         passengerViewList.add(passengerView);
     }
 
-    public void draw(Graphics2D g2) {
+    public void draw(Graphics g) {
         PassengerView passenger;
         for (int i = 0; i < passengerViewList.size(); i++) {
             passenger = passengerViewList.get(i);
             passenger.setXY(i%columnsNumber*cellResolution,100 + i/columnsNumber*cellResolution);
-            passenger.paint(g2);
+            passenger.paint(g);
         }
-        if (moreDetailes != null) moreDetailes.paintCloud(g2);
+        if (moreDetailes != null) moreDetailes.paintCloud(g);
     }
 
     public void onMouseClick(int x, int y) {

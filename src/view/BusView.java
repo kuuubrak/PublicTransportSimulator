@@ -19,9 +19,9 @@ public class BusView extends SimulationObjectView {
     }
 
     @Override
-    public void drawDetailView(Graphics2D g2){
-        g2.setColor(Color.WHITE);
-        g2.drawString((new Integer(bus.getID()).toString()) ,10, 10);
-        super.drawDetailView(g2);
+    public void drawDetailView(Graphics g){
+        g.setColor(Color.WHITE);
+        g.drawString((new Integer(bus.getID()).toString()) ,10, 10);
+        super.drawDetailView(g);
     }
 }
