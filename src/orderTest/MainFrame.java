@@ -6,6 +6,7 @@ import event.guievents.PassengerGenerationInterval;
 import main.SimulatorConstants;
 import network.Client;
 import network.Server;
+import view.SimulatorEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,7 +49,7 @@ public class MainFrame extends JFrame {
     private JButton addPassengerButton;
     private JButton changeGenerationIntensityButton;
 
-    private Client networkClient;
+    private Client<SimulatorEvent> networkClient;
 
     public static void main (String [] args) {
 
@@ -182,7 +183,7 @@ public class MainFrame extends JFrame {
     }
 
     private void initNetworkClient() {
-        networkClient = new Client("127.0.0.1", testGuiServerSocket);
+        networkClient = new Client<>("127.0.0.1", testGuiServerSocket);
         networkClient.connect();
     }
 
