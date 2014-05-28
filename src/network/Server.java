@@ -130,4 +130,15 @@ public class Server implements FunctionalityServer, OrderRecipient<Functionality
             }
         }
     }
+
+    // server to moduł, więc niech mozże umie się zastartować bez viagry
+    public static void main(String[] args) {
+        try {
+            Server server = new Server(8123, 8124, 8125);
+            server.runServer();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

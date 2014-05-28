@@ -29,18 +29,17 @@ public class Controller implements ActionListener {
 
     private final Model model;
 
-    private final Map<Class<? extends SimulatorEvent>, MyStrategy> eventDictionaryMap;
     private final LinkedBlockingQueue<SimulatorEvent> eventsBlockingQueue;
     private final Timer timer;
     private Mockup mockup;
     private Client<SimulatorEvent> networkClient;
     private String host;
     private int port;
+    private Map<Class<? extends SimulatorEvent>, MyStrategy> resultMap=null;
 
     private Controller() {
         setNetData(SimulatorConstants.simulatorHostAddress, SimulatorConstants.simulatorPort);
-        this.eventsBlockingQueue = new LinkedBlockingQueue<SimulatorEvent>();
-        this.eventDictionaryMap = getEventDictionaryMap();
+        this.eventsBlockingQueue = new LinkedBlockingQueue<>();
         this.model = new Model(eventsBlockingQueue);
         this.mockup = createMockup();
 //        this.view = new View(eventsBlockingQueue, mockup);
@@ -56,30 +55,33 @@ public class Controller implements ActionListener {
     }
 
     private Map<Class<? extends SimulatorEvent>, MyStrategy> getEventDictionaryMap() {
-        final Map<Class<? extends SimulatorEvent>, MyStrategy> resultMap = new HashMap<Class<? extends SimulatorEvent>, MyStrategy>();
-        /**
-         * Zdarzenia generowane cyklicznie przez symulator
-         */
-        resultMap.put(BusStartSignal.class, new BusStartSignalStrategy());
-        /**
-         * Zdarzenia generowane przez autobus
-         */
-        resultMap.put(BusArrivesToBusStop.class, new BusArrivesToBusStopStrategy());
-        resultMap.put(BusComeBackSignal.class, new BusComeBackSignalStrategy());
-        resultMap.put(BusPutOutPassengers.class, new BusPutOutPassengersStrategy());
-        resultMap.put(BusPutOutAll.class, new BusPutOutAllStrategy());
-        resultMap.put(BusReadyToGo.class, new BusReadyToGoStrategy());
-        resultMap.put(BusReturnedToDepot.class, new BusReturnedToDepotStrategy());
-        resultMap.put(BusTookInPassengers.class, new BusTookInPassengersStrategy());
-        /**
-         * Rozkazy użytkownika
-         */
-        resultMap.put(NewPassengerEvent.class, new NewPassengerStrategy());
-        resultMap.put(PassengerGenerationInterval.class, new PassengerGenerationIntervalStrategy());
-        resultMap.put(ContinuousSimulationEvent.class, new ContinousSimulationStrategy());
-        resultMap.put(BusReleasingFrequency.class, new BusReleasingFrequencyStrategy());
-        resultMap.put(TrapBus.class, new TrapBusStrategy());
-        return Collections.unmodifiableMap(resultMap);
+        if(resultMap==null) {
+            resultMap = new HashMap<>();
+            /**
+             * Zdarzenia generowane cyklicznie przez symulator
+             */
+            resultMap.put(BusStartSignal.class, new BusStartSignalStrategy());
+            /**
+             * Zdarzenia generowane przez autobus
+             */
+            resultMap.put(BusArrivesToBusStop.class, new BusArrivesToBusStopStrategy());
+            resultMap.put(BusComeBackSignal.class, new BusComeBackSignalStrategy());
+            resultMap.put(BusPutOutPassengers.class, new BusPutOutPassengersStrategy());
+            resultMap.put(BusPutOutAll.class, new BusPutOutAllStrategy());
+            resultMap.put(BusReadyToGo.class, new BusReadyToGoStrategy());
+            resultMap.put(BusReturnedToDepot.class, new BusReturnedToDepotStrategy());
+            resultMap.put(BusTookInPassengers.class, new BusTookInPassengersStrategy());
+            /**
+             * Rozkazy użytkownika
+             */
+            resultMap.put(NewPassengerEvent.class, new NewPassengerStrategy());
+            resultMap.put(PassengerGenerationInterval.class, new PassengerGenerationIntervalStrategy());
+            resultMap.put(ContinuousSimulationEvent.class, new ContinousSimulationStrategy());
+            resultMap.put(BusReleasingFrequency.class, new BusReleasingFrequencyStrategy());
+            resultMap.put(TrapBus.class, new TrapBusStrategy());
+            resultMap = Collections.unmodifiableMap(resultMap);
+        }
+        return resultMap;
     }
 
     public Mockup createMockup() {
@@ -88,26 +90,18 @@ public class Controller implements ActionListener {
 
     public void work() {
 //        view.showGUI();
-        while (true) {
-            /**
-             * Zwykłe zdarzenia i sygnały
-             */
-            while (true)
+        while (true)
+        {
+            SimulatorEvent simulatorEvent = null;
+            try
             {
-
-                SimulatorEvent simulatorEvent = null;
-                try
-                {
-                    simulatorEvent = eventsBlockingQueue.take();
-                    System.out.println(simulatorEvent.getClass());
-                } catch (final InterruptedException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                final MyStrategy myStrategy = eventDictionaryMap.get(simulatorEvent.getClass());
-                myStrategy.execute(simulatorEvent);
+                simulatorEvent = eventsBlockingQueue.take();
+                System.out.println(simulatorEvent.getClass());
+            } catch (final InterruptedException e){
+                e.printStackTrace();
             }
+            final MyStrategy myStrategy = getEventDictionaryMap().get(simulatorEvent.getClass());
+            myStrategy.execute(simulatorEvent);
         }
     }
 
@@ -171,6 +165,7 @@ public class Controller implements ActionListener {
         void execute(SimulatorEvent busEvent) {
             Bus bus = busEvent.getBus();
 //            System.out.println("Wykonuje: BusArrivesToBusStopStrategy");
+            //todo chuuuujnia!!!
             bus.terminusCheck();
             if (bus.isFinished()) {
                 if (bus.isEmpty()) {
@@ -310,7 +305,7 @@ public class Controller implements ActionListener {
     }
 
     /**
-     * <b>Obsługa zdarzenia zabrania wszystkich pasażerów z przystanka.</b>
+     * <b>Obsługa zdarzenia zabrania wszystkich pasażerów z przystanku.</b>
      * Autobus jedzie dalej.
      */
     private final class BusTookInPassengersStrategy extends MyStrategy {
