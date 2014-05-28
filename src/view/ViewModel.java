@@ -1,10 +1,10 @@
 package view;
 
-import model.Bus;
-import model.BusStop;
+import mockup.MockupBus;
+import mockup.MockupBusStop;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mateusz on 27.05.14.
@@ -21,18 +21,18 @@ public class ViewModel {
         currentDetailView = null;
     }
 
-    public void udateBusStopList(List<BusStop> busStopList){
+    public void udateBusStopList(List<MockupBusStop> busStopList){
         busStopViewList = new ArrayList<BusStopView>(); //TODO:
-        for(BusStop busStop: busStopList){
+        for(MockupBusStop busStop: busStopList){
             //busStopViewList.add(new BusStopView(busStop));
         }
     }
 
-    public void updateBusList(List<Bus> busList){
+    public void updateBusList(List<MockupBus> busList){
         busViewList.clear();
         BusView busView;
         int i = 0;
-        for (Bus bus: busList) {
+        for (MockupBus bus: busList) {
             busView = new BusView(bus);
             busView.setMiniViewSize(BUS_WIDTH, BUS_HEIGHT);
             busView.setMiniViewPosition(10, i*(BUS_HEIGHT + 2));

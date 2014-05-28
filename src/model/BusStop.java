@@ -124,4 +124,8 @@ public class BusStop implements Serializable {
     public void setOccupied(boolean occupied) {
         this.occupied = occupied;
     }
+
+    public UUID getID() {
+        return ID;
+    }
 }

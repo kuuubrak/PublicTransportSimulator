@@ -1,31 +1,33 @@
 package mockup;
 
+import model.Bus;
 import model.Passenger;
 
+import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.UUID;
 
 /**
  * Created by ppeczek on 2014-05-28.
  */
 public class MockupBus {
-    private final ArrayList<Passenger> passengerMap;
-    private final MockupBusStop currentBusStop;
+    private final ArrayList<Passenger> passengerList;
+    private final String currentBusStop;
     private final int lengthPassed;
-    private final UUID ID;
+    private final Integer ID;
+    private RoundingMode passengerMap;
 
-    public MockupBus(ArrayList<Passenger> passengerMap, MockupBusStop currentBusStop, int lengthPassed, UUID id) {
-        this.passengerMap = passengerMap;
-        this.currentBusStop = currentBusStop;
-        this.lengthPassed = lengthPassed;
-        ID = id;
+    public MockupBus(final Bus bus) {
+        this.passengerList = new ArrayList<Passenger>(bus.getPassengerMap().values());
+        this.currentBusStop = bus.getCurrentBusStop().getNAME();
+        this.lengthPassed = bus.getCurrentBusStop().getRoute().getLength() - bus.getToNextStop().getValue();
+        this.ID = bus.getID();
     }
 
-    public ArrayList<Passenger> getPassengerMap() {
-        return passengerMap;
+    public ArrayList<Passenger> getPassengerList() {
+        return passengerList;
     }
 
-    public MockupBusStop getCurrentBusStop() {
+    public String getCurrentBusStop() {
         return currentBusStop;
     }
 
@@ -33,7 +35,11 @@ public class MockupBus {
         return lengthPassed;
     }
 
-    public UUID getID() {
+    public Integer getID() {
         return ID;
+    }
+
+    public RoundingMode getPassengerMap() {
+        return passengerMap;
     }
 }

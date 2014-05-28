@@ -47,7 +47,7 @@ public class ClientWrapper extends Thread {
                 while (!mockups.isEmpty()) {//przewijanie do ostatniej otrzymanej
                     mockup = mockups.poll(5, TimeUnit.SECONDS);
                 }
-                if(mockup != null) gun.newMockup(mockup.getMockup());
+                if(mockup != null) gun.newMockup(mockup);
             }
         }catch(InterruptedException e){
             if(runny) gun.connectionLost();

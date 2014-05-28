@@ -2,7 +2,6 @@ package mockup;
 
 import model.Bus;
 import model.BusStop;
-import view.SimulatorEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,34 +12,35 @@ import java.util.List;
  * <br>
  * Zawiera <b>rozkład jazdy</b> ( listę <b>Przystanków</b> ) oraz listę <b>Autobusów</b>.
  */
-public final class Mockup extends SimulatorEvent
+public final class Mockup
 {
-    private final ArrayList<Bus> schedule;
-    private final ArrayList<BusStop> busStops;
+    private ArrayList<MockupBus> schedule = new ArrayList<MockupBus>();
+    private ArrayList<MockupBusStop> busStops = new ArrayList<MockupBusStop>();
     private final long currentTime;
 
     public Mockup(final ArrayList<Bus> schedule, final ArrayList<BusStop> busStops, long currentTime) {
-        this.schedule = schedule;
-        this.busStops = busStops;
+        for (Bus b: schedule) {
+            this.schedule.add(new MockupBus(b));
+        }
+        for (BusStop bs: busStops) {
+            this.busStops.add(new MockupBusStop(bs));
+        }
         this.currentTime = currentTime;
     }
 
     /**
      * @return schedule
      */
-    public List<Bus> getBuses() {
+    public List<MockupBus> getBuses() {
         return schedule;
     }
 
     /**
      * @return busStops
      */
-    public List<BusStop> getBusStops() {
+    public List<MockupBusStop> getBusStops() {
         return busStops;
     }
-
-    @Override
-    public Mockup getMockup() { return this; }
 
     public long getCurrentTime()
     {

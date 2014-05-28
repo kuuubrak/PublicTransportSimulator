@@ -1,6 +1,6 @@
 package view;
 
-import model.Bus;
+import mockup.MockupBus;
 
 import java.awt.*;
 
@@ -10,12 +10,12 @@ import java.awt.*;
 public class BusView extends SimulationObjectView {
 
 
-    private Bus bus;
+    private MockupBus bus;
 
-    public BusView(Bus bus){
+    public BusView(MockupBus bus){
         super();
         this.bus = bus;
-        setPassengers(bus.getPassengerMap().values());
+        setPassengers(bus.getPassengerList());
     }
 
     @Override

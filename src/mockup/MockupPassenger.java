@@ -1,22 +1,22 @@
 package mockup;
 
-import java.util.UUID;
+import model.Passenger;
 
 /**
  * Created by ppeczek on 2014-05-28.
  */
 public class MockupPassenger {
-    private final UUID ID;
+    private final int ID;
     private Long TIMESTAMP;
-    private MockupBusStop destination;
+    private String destination;
 
-    public MockupPassenger(UUID id, Long timestamp, MockupBusStop destination) {
-        ID = id;
-        TIMESTAMP = timestamp;
-        this.destination = destination;
+    public MockupPassenger(Passenger passenger) {
+        this.ID = passenger.getID();
+        this.TIMESTAMP = passenger.getTIMESTAMP();
+        this.destination = passenger.getDestination().getNAME();
     }
 
-    public UUID getID() {
+    public int getID() {
         return ID;
     }
 
@@ -24,7 +24,7 @@ public class MockupPassenger {
         return TIMESTAMP;
     }
 
-    public MockupBusStop getDestination() {
+    public String getDestination() {
         return destination;
     }
 }
