@@ -1,5 +1,7 @@
 package view;
 
+import model.Passenger;
+
 import java.awt.*;
 import java.util.Random;
 
@@ -27,6 +29,10 @@ public class PassengerView {
 
     public PassengerView(int passengerSize) {
         this(0, 0, passengerSize);
+    }
+
+    public PassengerView(Passenger passenger) {
+
     }
 
     private Color convertIdToColor(int id) {

@@ -7,12 +7,11 @@ import java.awt.event.MouseListener;
 public class DetailViewender extends Canvas {
 
     private static final long serialVersionUID = -7824633740035921796L;
-    BusStopView busStopView;
+    DetailView detalilView;
 
     public DetailViewender(int x, int y, int width, int height) {
         setBounds(x, y, width, height);
-        busStopView = new BusStopView(width, height);
-        addMouseListener(busStopView);
+
         addMouseListener(new MouseListener() {
 
             @Override
@@ -39,11 +38,18 @@ public class DetailViewender extends Canvas {
         });
     }
 
+    public void setDetaliView(DetailView detalilView){
+        this.detalilView = detalilView;
+        //addMouseListener(detalilView);
+    }
 
     @Override
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        busStopView.paint(g2);
+        g2.setColor(new Color(2,133,4));
+        g2.fillRect(getX(), getY(), getWidth(), getHeight());
+
+        if(detalilView != null) detalilView.drawDetailView(g2);
     }
 
 

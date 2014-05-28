@@ -25,11 +25,11 @@ public class BusStopView implements DetailView, MouseListener {
         }
     }
 
-    @Override
+    //@Override
     public void paint(Graphics2D g2) {
         busStopBackground.paint(g2);
         busStopSign.paint(g2);
-        passengerContainer.paint(g2);
+        passengerContainer.draw(g2);
 
 
     }
@@ -60,6 +60,21 @@ public class BusStopView implements DetailView, MouseListener {
     @Override
     public void mouseReleased(MouseEvent e) {
         // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void drawDetailView(Graphics2D g2) {
+
+    }
+
+    @Override
+    public void setDetailViewSize(int width, int height) {
+
+    }
+
+    @Override
+    public void setDetailViewPosition(int x, int y) {
 
     }
 

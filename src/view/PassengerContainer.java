@@ -27,7 +27,7 @@ public class PassengerContainer {
         passengerViewList.add(passengerView);
     }
 
-    public void paint(Graphics2D g2) {
+    public void draw(Graphics2D g2) {
         for (PassengerView passenger : passengerViewList) {
             passenger.paint(g2);
         }

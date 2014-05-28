@@ -1,5 +1,7 @@
 package view;
 
+import mockup.Mockup;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -8,7 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame{
 
     /**
      *
@@ -19,11 +21,16 @@ public class MainWindow extends JFrame {
     private Canvas worldCanvas;
     private Canvas detailCanvas;
     private JPanel buttonsPanel;
+    private ClientWrapper clientWrapper;
+    private ViewModel viewModel;
 
     /**
      * Create the frame.
+     * @param clientWrapper
      */
-    public MainWindow() {
+    public MainWindow(ClientWrapper clientWrapper, ViewModel viewModel) {
+        this.clientWrapper = clientWrapper;
+        this.viewModel = viewModel;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(0, 0, minWindowWidth, minWindowWidth / 2);
         contentPane = new JPanel();
@@ -40,30 +47,12 @@ public class MainWindow extends JFrame {
         contentPane.add(worldCanvas);
 
         detailCanvas = new DetailViewender(820, 10, 360, 300);
+        ((DetailViewender)detailCanvas).setDetaliView(viewModel.getCurrentDetailView());
         contentPane.add(detailCanvas);
 
-        buttonsPanel = new JPanel();
-        buttonsPanel.setBounds(300, 10, 350, 250);
+        buttonsPanel = new ControlButtonsPanel(300, 10, 400, 250, clientWrapper);
         contentPane.add(buttonsPanel);
-        buttonsPanel.setLayout(null);
 
-        JToggleButton switchSimulationButton = new JToggleButton("Auto simulation");
-        switchSimulationButton.setBounds(12, 12, 192, 25);
-        buttonsPanel.add(switchSimulationButton);
-
-
-
-        JButton stepButton = new JButton("Next step");
-        stepButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-            }
-        });
-        stepButton.setBounds(12, 49, 117, 79);
-        buttonsPanel.add(stepButton);
-
-        JButton btnAddNewPassanger = new JButton("Add new passanger");
-        btnAddNewPassanger.setBounds(12, 153, 175, 46);
-        buttonsPanel.add(btnAddNewPassanger);
 
         this.addComponentListener(new ComponentListener() {
 
@@ -74,7 +63,7 @@ public class MainWindow extends JFrame {
 
             @Override
             public void componentResized(ComponentEvent arg0) {
-                resize();
+               // resize();
 
             }
 
@@ -93,21 +82,7 @@ public class MainWindow extends JFrame {
     }
 
 
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    MainWindow frame = new MainWindow();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+
 
     public void resize() {
 
