@@ -3,6 +3,7 @@ package view;
 import event.guievents.ContinuousSimulationEvent;
 import event.guievents.NewPassengerEvent;
 import event.guievents.PassengerGenerationInterval;
+import mockup.Mockup;
 import network.Client;
 
 import java.io.File;
@@ -14,8 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 
 public class ClientWrapper extends Thread{
-    private Client client = null;
-    private LinkedBlockingQueue<SimulatorEvent> evQueue = new LinkedBlockingQueue<SimulatorEvent>();
+    private Client<Mockup> client = null;
+    private LinkedBlockingQueue<Mockup> evQueue = new LinkedBlockingQueue<>();
     private GuiFunctionality gun=null;
     private boolean runny = true;
     private Properties config;
@@ -42,12 +43,12 @@ public class ClientWrapper extends Thread{
         connect();
         try {
             while (runny){
-                SimulatorEvent ev = null;
+                Mockup mockup = null;
                 do {//przewijanie do ostatniej otrzymanej
                     //ev = evQueue.poll(5, TimeUnit.SECONDS);
-                    ev = evQueue.take();
+                    mockup = evQueue.take();
                 }while (!evQueue.isEmpty());
-                gun.newMockup(ev.getMockup());
+                gun.newMockup(mockup);
             }
         }catch(InterruptedException e){
             if(runny) gun.connectionLost();

@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author Maciej Korpalski
  */
-public class Client {
+public class Client<ChujPodluzny> {
     /**
      * Socket dla serwera
      */
@@ -28,7 +28,7 @@ public class Client {
     /**
      * Kolejka, do ktorej sa wrzucane otrzymane rozkazy
      */
-    private LinkedBlockingQueue<SimulatorEvent> eventsBlockingQueue;
+    private LinkedBlockingQueue<ChujPodluzny> eventsBlockingQueue;
     private String serverAddress;
     private int serverPort;
     /**
@@ -51,7 +51,7 @@ public class Client {
                     ois = new ObjectInputStream(socket.getInputStream());
                     Object object = ois.readObject();
                     System.out.println("Dostalem: " + object.getClass());
-                    eventsBlockingQueue.add((SimulatorEvent) object);
+                    eventsBlockingQueue.add((ChujPodluzny) object);
                 } catch (IOException e) {
                     Logger.getLogger(Client.class.getName()).log(Level.SEVERE, "Błąd odbierania z serwera", e); // dodałem ~maciej168
                     reportConnectionProblem();
@@ -65,7 +65,7 @@ public class Client {
     };
 
     public Client(final String serverAddress, final int serverPort) {
-        this.eventsBlockingQueue = new LinkedBlockingQueue<SimulatorEvent>();
+        this.eventsBlockingQueue = new LinkedBlockingQueue<ChujPodluzny>();
         socket = new Socket();
         connectingProgress = new AtomicBoolean(false);
         this.serverAddress = serverAddress;
@@ -73,7 +73,7 @@ public class Client {
         executorService = Executors.newSingleThreadExecutor();
     }
 
-    public void setEventsBlockingQueue(LinkedBlockingQueue<SimulatorEvent> eventsBlockingQueue) {
+    public void setEventsBlockingQueue(LinkedBlockingQueue<ChujPodluzny> eventsBlockingQueue) {
         this.eventsBlockingQueue = eventsBlockingQueue;
     }
 
@@ -160,7 +160,7 @@ public class Client {
         }
     }
 
-    public LinkedBlockingQueue<SimulatorEvent> getEventsBlockingQueue() {
+    public LinkedBlockingQueue<ChujPodluzny> getEventsBlockingQueue() {
         return eventsBlockingQueue;
     }
 }
