@@ -18,10 +18,12 @@ public final class Mockup extends SimulatorEvent
 {
     private final ArrayList<Bus> schedule;
     private final ArrayList<BusStop> busStops;
+    private final long currentTime;
 
-    public Mockup(final ArrayList<Bus> schedule, final ArrayList<BusStop> busStops) {
+    public Mockup(final ArrayList<Bus> schedule, final ArrayList<BusStop> busStops, long currentTime) {
         this.schedule = schedule;
         this.busStops = busStops;
+        this.currentTime = currentTime;
     }
 
     /**
@@ -40,4 +42,9 @@ public final class Mockup extends SimulatorEvent
 
     @Override
     public Mockup getMockup() { return this; }
+
+    public long getCurrentTime()
+    {
+        return currentTime;
+    }
 }
