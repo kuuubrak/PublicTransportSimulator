@@ -121,7 +121,6 @@ public final class Bus implements EventListener, Serializable
                 blockingQueue.put(new BusPutOutPassengers(this));
             } catch (final InterruptedException e)
             {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -281,10 +280,16 @@ public final class Bus implements EventListener, Serializable
 
     public boolean isNextStopOccupied() { return getNextBusStop().isOccupied(); }
 
+    private boolean onTerminusAlready = false;// ugly fix
     public void terminusCheck() {
         if (getCurrentBusStop() instanceof BusTerminus) {
-            getLoopsToFinish().countdown();
+            if(!onTerminusAlready) {
+                getLoopsToFinish().countdown();
+                onTerminusAlready = true;
+            }
             System.out.println(this + ": To finish:" + getLoopsToFinish().getValue());
+        }else{
+            onTerminusAlready =false;
         }
     }
 

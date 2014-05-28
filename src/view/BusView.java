@@ -21,7 +21,18 @@ public class BusView extends SimulationObjectView {
     @Override
     public void drawDetailView(Graphics g){
         g.setColor(Color.WHITE);
-        g.drawString((new Integer(bus.getID()).toString()) ,10, 10);
+        g.drawString("Bus: "+(new Integer(bus.getID()).toString()) ,10, 10);
         super.drawDetailView(g);
     }
+
+    @Override
+    public void drawMiniView(Graphics g) {
+        g.setColor(Color.BLUE);
+        g.fillRect(getMiniViewXPosition(),getMiniViewYPosition(),getMiniViewWidth(), getMiniViewHeight());
+        g.setColor(Color.WHITE);
+        g.drawString("Bus: " + bus.getID(), getMiniViewXPosition() + getMiniViewWidth(),
+                                            getMiniViewYPosition() + getMiniViewHeight() );
+    }
+
+
 }
