@@ -24,8 +24,8 @@ public class PassengerView {
         textCloud = createCloud();
     }
 
-    private Color convertIdToColor(UUID id) {
-        return new Color(id.hashCode() & 255 , abs(~id.hashCode())  & 255, (id.hashCode()>>6)  & 256);
+    private Color convertIdToColor(int id) {
+        return new Color((id*37) & 255 , (id*67) & 255, (id*101) & 255);
     }
 
     public void paint(Graphics2D g2) {
@@ -35,7 +35,7 @@ public class PassengerView {
         g2.drawOval(x, y, passengerSize, passengerSize);
         g2.setColor(Color.RED);
         if (passenger.getTIMESTAMP() > 200) g2.drawString("!", x + passengerSize, y + passengerSize / 4);
-        //textCloud.paint(g2);
+        textCloud.paint(g2);
 
     }
 
@@ -61,8 +61,8 @@ public class PassengerView {
                 g2.drawString("Waiting:", getX() + 3, getY() + 56);
                 g2.setColor(Color.BLACK);
                 g2.setFont(new Font("Arial", Font.BOLD, 12));
-                g2.drawString(passenger.getID().toString(), getX() + 20, getY() + 14);
-                g2.drawString(passenger.getDestination().toString(), getX() + 3, getY() + 42);
+                g2.drawString(Integer.toString(passenger.getID()), getX() + 20, getY() + 14);
+                g2.drawString(passenger.getDestination().getNAME(), getX() + 3, getY() + 42);
                 g2.drawString(BigDecimal.valueOf(passenger.getTIMESTAMP()).toString(), getX() + 45, getY() + 56);
             }
         };

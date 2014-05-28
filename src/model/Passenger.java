@@ -15,7 +15,7 @@ public class Passenger implements Serializable
     /**
      * Unique id
      */
-    private final UUID ID;
+    private final int ID;
     /**
      * On which step the <b>Passenger</b> appeared at the <b>BusStop</b>
      */
@@ -23,6 +23,14 @@ public class Passenger implements Serializable
     /**
      * <b>Passengers'</b> designated <b>BusStop</b>.
      */
+
+    private static class IDGenerator{
+        private static int lastId = 0;
+
+        public static int getNextId(){
+            return lastId++;
+        }
+    }
     private BusStop destination;
 
     /**
@@ -31,7 +39,7 @@ public class Passenger implements Serializable
     public Passenger(final BusStop destination) {
         this.destination = destination;
         this.TIMESTAMP = SimulationTimer.getInstance().getTime();
-        this.ID = UUID.randomUUID();
+        this.ID = IDGenerator.getNextId();
     }
 
     //TODO: Nie wiem czy takie odwołanie do SimulationTimer jest poprawne
@@ -43,7 +51,7 @@ public class Passenger implements Serializable
     /**
      * @return the ID
      */
-    public final UUID getID() {
+    public final int getID() {
         return ID;
     }
 

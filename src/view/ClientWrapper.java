@@ -43,10 +43,11 @@ public class ClientWrapper extends Thread{
         try {
             while (runny){
                 SimulatorEvent ev = null;
-                while (!evQueue.isEmpty()) {//przewijanie do ostatniej otrzymanej
-                    ev = evQueue.poll(5, TimeUnit.SECONDS);
-                }
-                if(ev != null) gun.newMockup(ev.getMockup());
+                do {//przewijanie do ostatniej otrzymanej
+                    //ev = evQueue.poll(5, TimeUnit.SECONDS);
+                    ev = evQueue.take();
+                }while (!evQueue.isEmpty());
+                gun.newMockup(ev.getMockup());
             }
         }catch(InterruptedException e){
             if(runny) gun.connectionLost();
@@ -71,6 +72,7 @@ public class ClientWrapper extends Thread{
         client.closeConnection();
         client = null;
         runny = false;
+        this.interrupt();
     }
 
     private void connect(){

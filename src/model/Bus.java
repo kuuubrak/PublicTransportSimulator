@@ -41,8 +41,16 @@ public final class Bus implements EventListener, Serializable
     private LoopsCounter loopsToFinish;
     private BreakAfterFinishedCounter cooldownAfterLoops;
     private ReturnToDepotCooldown returnToDepotCooldown;
-    private final UUID ID;
+    private final int ID;
     private Map<BusState, BusBehaviorStrategy> busBehaviorStrategyMap = new HashMap<BusState, BusBehaviorStrategy>();
+
+    private static class IDGenerator{
+        private static int lastId = 0;
+
+        public static int getNextId(){
+            return lastId++;
+        }
+    }
 
     public Bus(BusStop startStation, LinkedBlockingQueue<SimulatorEvent> blockingQueue) {
         this.blockingQueue = blockingQueue;
@@ -53,7 +61,7 @@ public final class Bus implements EventListener, Serializable
         this.cooldownAfterLoops = new BreakAfterFinishedCounter(blockingQueue, SimulatorConstants.cooldownAfterLoops, this);
         this.returnToDepotCooldown = new ReturnToDepotCooldown(blockingQueue, SimulatorConstants.depotTerminusDistance, this);
         this.busBehaviorStrategyMap = getBusBehaviorStrategyMap();
-        ID = UUID.randomUUID();
+        ID = IDGenerator.getNextId();
     }
 
     private Map<BusState, BusBehaviorStrategy> getBusBehaviorStrategyMap() {
@@ -69,7 +77,7 @@ public final class Bus implements EventListener, Serializable
         return Collections.unmodifiableMap(resultMap);
     }
 
-    public UUID getID(){
+    public int getID(){
         return ID;
     }
 
