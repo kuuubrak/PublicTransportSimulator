@@ -30,7 +30,7 @@ public class BusStop implements Serializable {
 
     private Queue<Passenger> passengerQueue;
     private Route route;
-    private boolean occupied;
+    private Bus occupied;
     private NewPassengerCounter passengerCounter;
 
     public BusStop(final String name) {
@@ -38,7 +38,7 @@ public class BusStop implements Serializable {
         this.NAME = name;
         this.passengerQueue = new ConcurrentLinkedQueue<>();
         this.route = new Route();
-        this.occupied = false;
+        this.occupied = null;
     }
 
     public void createNewPassengerCounter(LinkedBlockingQueue<SimulatorEvent> blockingQueue, int value) {
@@ -119,9 +119,9 @@ public class BusStop implements Serializable {
         return passengerQueue;
     }
 
-    public final boolean isOccupied() { return occupied; }
+    public final Bus getOccupied() { return occupied; }
 
-    public void setOccupied(boolean occupied) {
+    public void setOccupied(Bus occupied) {
         this.occupied = occupied;
     }
 

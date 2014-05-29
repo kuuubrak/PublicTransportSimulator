@@ -1,6 +1,5 @@
 package model.counter;
 
-import event.busevents.BusComeBackSignal;
 import model.Bus;
 import view.SimulatorEvent;
 
@@ -14,14 +13,13 @@ public class LoopsCounter extends CyclicCounter {
         super(blockingQueue, value, bus);
     }
 
-    public void throwEvent() {
-        System.out.println("ZLICZONO");
-//        getBus().setFinishedLoops(true);
-        try {
-            getBlockingQueue().put(new BusComeBackSignal(getBus()));
-        } catch (final InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    public void throwEvent() {;
+        getBus().setFinishedLoops(true);
+//        try {
+//            getBlockingQueue().put(new BusComeBackSignal(getBus()));
+//        } catch (final InterruptedException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
     }
 }

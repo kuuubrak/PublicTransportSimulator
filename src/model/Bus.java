@@ -1,14 +1,17 @@
 package model;
 
-import event.busevents.BusPutOutAll;
-import event.busevents.BusPutOutPassengers;
-import event.busevents.BusTookInPassengers;
 import main.SimulatorConstants;
-import model.counter.*;
+import model.counter.BreakAfterFinishedCounter;
+import model.counter.LoopsCounter;
+import model.counter.ReturnToDepotCooldown;
+import model.counter.ToNextStopDistanceCounter;
 import view.SimulatorEvent;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collections;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -35,7 +38,7 @@ public final class Bus implements EventListener, Serializable
      * A container of currently held <b>Passengers</b>
      */
     public BlockingQueue<SimulatorEvent> blockingQueue;
-    private Map<BusStop, Passenger> passengerMap = new HashMap<BusStop, Passenger>();
+    private SuperHashMap passengerList = new SuperHashMap();
     private BusStop currentBusStop;
     private BusState state;
     private ToNextStopDistanceCounter toNextStop;
@@ -84,23 +87,26 @@ public final class Bus implements EventListener, Serializable
     }
 
     /**
-     * @return the passengerMap
+     * @return the passengerList
      */
-    public final Map<BusStop, Passenger> getPassengerMap() {
-        return passengerMap;
+    public final SuperHashMap getPassengerList() {
+        return passengerList;
     }
 
     public final void takeInPassengers() {
         takePassenger(getCurrentBusStop());
+        System.out.println("zajetosc busu: " + getPassengerList().size() + " zajetosc przystanku: " + getCurrentBusStop().getPassengerQueue().size());
         if (isFull() || getCurrentBusStop().isEmpty()) {
-            try
-            {
-                blockingQueue.put(new BusTookInPassengers(this));
-            } catch (final InterruptedException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            setState(BusState.RUNNING);
+            freeCurrentBusStop();
+//            try
+//            {
+//                blockingQueue.put(new BusTookInPassengers(this));
+//            } catch (final InterruptedException e)
+//            {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
         }
     }
 
@@ -110,7 +116,7 @@ public final class Bus implements EventListener, Serializable
 //        System.out.println("pasażer: " + passenger.getID());
 //        System.out.println("kolejka: " + busStop.getPassengerQueue().size());
         if (passenger != null) {
-            passengerMap.put(passenger.getDestination(), passenger);
+            passengerList.put(passenger.getDestination(), passenger);
         }
 
     }
@@ -118,49 +124,59 @@ public final class Bus implements EventListener, Serializable
     private final void putOutPassengers() {
         putOutPassenger(getCurrentBusStop());
         if (!isGetOffRequestNow()) {
-            try
-            {
-                blockingQueue.put(new BusPutOutPassengers(this));
-            } catch (final InterruptedException e)
-            {
-                e.printStackTrace();
+            if (isGetOnRequestNow()) {
+                setState(BusState.TAKE_IN);
             }
+            else {
+                freeCurrentBusStop();
+                setState(BusState.RUNNING);
+            }
+//            try
+//            {
+//                blockingQueue.put(new BusPutOutPassengers(this));
+//            } catch (final InterruptedException e)
+//            {
+//                e.printStackTrace();
+//            }
         }
     }
 
     private final Passenger putOutPassenger(BusStop busStop) {
-//        System.out.println("Liczba pasażerów:" + getPassengerMap().size());
-        Passenger passenger = getPassengerMap().remove(busStop);
+//        System.out.println("Liczba pasażerów:" + getPassengerList().size());
+        Passenger passenger = getPassengerList().poll(busStop);
+        System.out.println(busStop.getNAME() + ": " + getPassengerList().size());
 //        System.out.println("Wysiadający pasażer:" + passenger.getID());
-//        System.out.println("Liczba pasażerów:" + getPassengerMap().size());
+//        System.out.println("Liczba pasażerów:" + getPassengerList().size());
         return passenger;
     }
 
     private final void putOutAll() {
-        if (!isEmpty()) {
-            transferPassenger(getCurrentBusStop());
-        }
-//        System.out.println("Liczba pasażerów:" + getPassengerMap().size());
+//        if (!isEmpty()) {
+//        System.out.println("Liczba pasażerów:" + getPassengerList().size());
+        transferPassenger(getCurrentBusStop());
         if (isEmpty()) {
-            try {
-                blockingQueue.put(new BusPutOutAll(this));
-            } catch (final InterruptedException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            setState(BusState.FINISHED);
+            comeback();
+            freeCurrentBusStop();
         }
+//        }
+//        System.out.println("Liczba pasażerów:" + getPassengerList().size());
+//        if (isEmpty()) {
+//            try {
+//                blockingQueue.put(new BusPutOutAll(this));
+//            } catch (final InterruptedException e)
+//            {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     private final void transferPassenger(BusStop busStop) {
-        Passenger passenger = getPassengerMap().entrySet().iterator().next().getValue();
+        BusStop current = getPassengerList().keySet().iterator().next();
+        Passenger passenger = getPassengerList().poll(current);
         passenger.setTIMESTAMP(System.currentTimeMillis());
         busStop.getPassengerQueue().add(passenger);
-//        BusStop busStop1 = getCurrentBusStop();
-//        if (!currentBusStop.equals(busStop1)) {
-//            busStop1.getPassengerQueue().add(passenger);
-//        }
-
     }
 
     public final void comeback() {
@@ -172,10 +188,10 @@ public final class Bus implements EventListener, Serializable
      * @return true if the <b>Bus</b> is full.
      */
     public final boolean isFull() {
-        return (getPassengerMap().size() == MAX_SEATS);
+        return (getPassengerList().size() == MAX_SEATS);
     }
 
-    public final boolean isEmpty() { return getPassengerMap().isEmpty(); }
+    public final boolean isEmpty() { return getPassengerList().isEmpty(); }
 
     /**
      * <b>getNumberOfFreeSeats</b><br>
@@ -183,7 +199,7 @@ public final class Bus implements EventListener, Serializable
      * @return the number of free seats in the <b>Bus</b>
      */
     public final int getNumberOfFreeSeats() {
-        return MAX_SEATS - getPassengerMap().size();
+        return MAX_SEATS - getPassengerList().size();
     }
 
     /**
@@ -206,6 +222,7 @@ public final class Bus implements EventListener, Serializable
     }
 
     public void setState(BusState state) {
+        System.out.println("nowy stan: " + state);
         this.state = state;
     }
 
@@ -244,7 +261,7 @@ public final class Bus implements EventListener, Serializable
 
     public void reachStop(BusStop busStop)
     {
-//        System.out.println(this + " Liczba pasażerów:" + getPassengerMap().size());
+        System.out.println(this + " dojechał do " + busStop + " na " + this.getState() + " " +this.isFinishedLoops());
         setCurrentBusStop(busStop);
         setCounterToNextStop(getCurrentBusStop().getDistanceToNextStop());
     }
@@ -258,7 +275,7 @@ public final class Bus implements EventListener, Serializable
     }
     
     public boolean isGetOffRequest(BusStop busStop) {
-        return !getPassengerMap().isEmpty() && getPassengerMap().containsKey(busStop);
+        return getPassengerList().containsKey(busStop) && !getPassengerList().get(busStop).isEmpty();
     }
 
     public boolean isGetOnRequest(BusStop busStop) {
@@ -273,25 +290,32 @@ public final class Bus implements EventListener, Serializable
         return isGetOnRequest(getCurrentBusStop());
     }
 
-    private void occupyBusStop(BusStop busStop) { busStop.setOccupied(true); }
+    private void occupyBusStop(BusStop busStop) { busStop.setOccupied(this); }
 
-    private void freeBusStop(BusStop busStop) { busStop.setOccupied(false); }
+    private void freeBusStop(BusStop busStop) { busStop.setOccupied(null); }
 
     public void occupyCurrentBusStop() {
-        if (this.getCurrentBusStop() instanceof BusTerminus) {
-            System.out.println(this + " zajmuje petle" + this.getState());
-        }
+//        if (this.getCurrentBusStop() instanceof BusTerminus) {
+            System.out.println(this + " zajmuje " + this.getCurrentBusStop() + " stan: " + this.getState());
+//        }
+        /***
+         * Semafor (zajmuję przystanek).
+         */
         occupyBusStop(getCurrentBusStop());
+        /***
+         * Dojeżdża na przystanek.
+         */
+        reachNextStop();
     }
 
     public void freeCurrentBusStop() {
-        if (this.getCurrentBusStop() instanceof BusTerminus) {
-            System.out.println(this + " zwalnia petle" + this.getState());
-        }
+//        if (this.getCurrentBusStop() instanceof BusTerminus) {
+        System.out.println(this + " zwalnia " + this.getCurrentBusStop() + " stan: " + this.getState());
+//        }
         freeBusStop(getCurrentBusStop());
     }
 
-    public boolean isNextStopOccupied() { return getNextBusStop().isOccupied(); }
+    public boolean isNextStopOccupied() { return getNextBusStop().getOccupied()!=null; }
 
     private boolean onTerminusAlready = false;// ugly fix
 
@@ -358,6 +382,11 @@ public final class Bus implements EventListener, Serializable
     private final class BusWaitingForBusStopStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
+            System.out.println(Bus.this + " w stanie: " + Bus.this.getState() + " na: " + Bus.this.getNextBusStop() + " zajęty przez: " + Bus.this.getNextBusStop().getOccupied());
+            if (Bus.this.getNextBusStop().getOccupied() != null) {
+                Bus chuj = Bus.this.getNextBusStop().getOccupied();
+                System.out.println("przez: " + chuj + " w stanie: " + chuj.getState() + " w pełni: " + chuj.getPassengerList().size() + " na przystanku: " + chuj.getCurrentBusStop() + " aa dupa: " + chuj.getCurrentBusStop().getPassengerQueue().size());
+            }
             if (!Bus.this.isNextStopOccupied()) {
                 reachNextStop();
                 occupyCurrentBusStop();
@@ -384,6 +413,7 @@ public final class Bus implements EventListener, Serializable
         @Override
         void execute() {
             returnToDepotCooldown.countdown();
+            System.out.println(this.getClass());
         }
     }
 

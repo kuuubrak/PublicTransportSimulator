@@ -49,7 +49,6 @@ public class Controller  extends  Thread implements ActionListener {
         networkClient = new Client<>(host, port);
         networkClient.connect();
         networkClient.setEventsBlockingQueue(eventsBlockingQueue);
-        eventsBlockingQueue.add(new BusStartSignal());
     }
 
     public static Controller getInstance() {
@@ -164,19 +163,20 @@ public class Controller  extends  Thread implements ActionListener {
         void execute(SimulatorEvent busEvent) {
             Bus bus = busEvent.getBus();
             bus.terminusCheck();
-            System.out.println(bus.isFinishedLoops());
+//            System.out.println(bus.isFinishedLoops());
             if (bus.isFinishedLoops()) {
                 if (bus.isEmpty()) {
                     System.out.println(bus + " nie zatrzymuje się na: " + bus.getCurrentBusStop().getNAME());
-                    bus.reachNextStop();
+//                    bus.reachNextStop();
+//                    bus.setCurrentBusStop(bus.ge);
                     bus.setState(BusState.FINISHED);
                     bus.comeback();
                 } else {
                     if (bus.isNextStopOccupied()) {
+                        System.out.println(bus + " czeka na " + bus.getCurrentBusStop().getNAME());
                         bus.setState(BusState.WAITING);
                     } else {
-                        bus.reachNextStop();
-                        System.out.println(bus + ": " + bus.getCurrentBusStop().getNAME());
+                        System.out.println(bus + " wyrzuca wszystkich na: " + bus.getCurrentBusStop().getNAME());
                         bus.setState(BusState.PUT_OUT_ALL);
                         bus.occupyCurrentBusStop();
                     }
@@ -186,21 +186,20 @@ public class Controller  extends  Thread implements ActionListener {
                  * Jeśli autobus jest pełny i nikt na danym przystanku nie wysiada, przystanek jest pomijany.
                  */
                 if (bus.isFull() && !bus.isGetOffRequestNow()) {
-                    System.out.println(bus + " nie zatrzymuje się na: " + bus.getCurrentBusStop().getNAME());
+//                    System.out.println(bus + " nie zatrzymuje się na: " + bus.getCurrentBusStop().getNAME());
                     bus.reachNextStop();
                 }
                 /**
                  * Jeśli nikt na danym przystanku nie czeka i nie chce wysiadać, przystanek jest pomijany.
                  */
                 else if (bus.isEmpty() && !bus.isGetOnRequestNow()) {
-                    System.out.println(bus + " nie zatrzymuje się na: " + bus.getCurrentBusStop().getNAME());
+//                    System.out.println(bus + " nie zatrzymuje się na: " + bus.getCurrentBusStop().getNAME());
                     bus.reachNextStop();
                 } else {
                     if (bus.isNextStopOccupied()) {
                         bus.setState(BusState.WAITING);
                     } else {
-                        bus.reachNextStop();
-                        System.out.println(bus + ": " + bus.getCurrentBusStop().getNAME());
+//                        System.out.println(bus + ": " + bus.getCurrentBusStop().getNAME());
                         /**
                          * Po zatrzymaniu się autobusu na przystanku najpierw opuszczają go pasażerowie,
                          * dla których jest to przystanek docelowy, a następnie wsiadają do niego
@@ -215,7 +214,7 @@ public class Controller  extends  Thread implements ActionListener {
                         }
                     }
                 }
-                System.out.println(bus + " " + bus.getState());
+//                System.out.println(bus + " " + bus.getState());
             }
         }
     }
@@ -288,6 +287,7 @@ public class Controller  extends  Thread implements ActionListener {
     /**
      * <b>Obsługa zdarzenia powrotu do zajezdni.</b>
      * Autobus, który wrócił do zajezdni ma przerwę.
+     * TODO: niewyjebane
      */
     private final class BusReturnedToDepotStrategy extends MyStrategy {
         @Override
@@ -297,6 +297,7 @@ public class Controller  extends  Thread implements ActionListener {
             busDepot.getBusQueue().add(bus);
             bus.reachDepot();
             bus.setState(BusState.HAVING_BREAK);
+            System.out.println(bus + "returned to depot" + bus.getCurrentBusStop().getNAME());
 //            System.out.println(bus + ": " + bus.getCurrentBusStop().getNAME());
         }
     }
@@ -308,7 +309,6 @@ public class Controller  extends  Thread implements ActionListener {
     private final class BusTookInPassengersStrategy extends MyStrategy {
         @Override
         void execute(SimulatorEvent busEvent) {
-//            System.out.println(this.getClass());
             Bus bus = busEvent.getBus();
             bus.setState(BusState.RUNNING);
             bus.freeCurrentBusStop();

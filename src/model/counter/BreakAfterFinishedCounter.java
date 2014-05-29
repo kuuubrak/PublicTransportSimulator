@@ -1,7 +1,8 @@
 package model.counter;
 
-import event.busevents.BusReadyToGo;
 import model.Bus;
+import model.BusDepot;
+import model.BusState;
 import view.SimulatorEvent;
 
 import java.io.Serializable;
@@ -17,13 +18,17 @@ public class BreakAfterFinishedCounter extends CyclicCounter implements Serializ
     }
 
     public void throwEvent() {
-        try
-        {
-            getBlockingQueue().put(new BusReadyToGo(getBus()));
-        } catch (final InterruptedException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        Bus bus = getBus();
+        BusDepot.getInstance().getBusQueue().add(bus);
+        bus.setState(BusState.READY_TO_GO);
+        bus.setFinishedLoops(false);
+//        try
+//        {
+//            getBlockingQueue().put(new BusReadyToGo(getBus()));
+//        } catch (final InterruptedException e)
+//        {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
     }
 }

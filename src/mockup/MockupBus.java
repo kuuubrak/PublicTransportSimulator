@@ -5,6 +5,7 @@ import model.Passenger;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Created by ppeczek on 2014-05-28.
@@ -16,7 +17,10 @@ public class MockupBus implements Serializable{
     private final Integer ID;
 
     public MockupBus(final Bus bus) {
-        this.passengerList = new ArrayList<>(bus.getPassengerMap().values());
+        this.passengerList = new ArrayList<>();
+        for(LinkedList<Passenger> linkedList: bus.getPassengerList().values()) {
+            passengerList.addAll(linkedList);
+        }
         this.currentBusStop = bus.getCurrentBusStop().getNAME();
         this.lengthPassed = bus.getCurrentBusStop().getRoute().getLength() - bus.getToNextStop().getValue();
         this.ID = bus.getID();

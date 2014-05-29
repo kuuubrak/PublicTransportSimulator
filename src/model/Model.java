@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import static main.SimulatorConstants.N;
+import static main.SimulatorConstants.NumberOfBuses;
 
 /**
  * Created by ppeczek on 2014-05-21.
@@ -24,7 +24,7 @@ public class Model {
     public Model(LinkedBlockingQueue<SimulatorEvent> blockingQueue) {
         BusDepot busDepot = BusDepot.getInstance();
         busReleaseCounter = new BusReleaseCounter(blockingQueue, SimulatorConstants.defaultBusReleaseCooldown);
-        for (int i=0; i<N; ++i) {
+        for (int i=0; i< NumberOfBuses; ++i) {
             Bus bus = new Bus(busDepot, blockingQueue);
             busContainer.add(bus);
             BusDepot.getInstance().getBusQueue().add(bus);
@@ -48,7 +48,7 @@ public class Model {
             busStop.getPassengerCounter().countdown();
         }
         //generatePassengers();
-//        busReleaseCounter.countdown();
+        busReleaseCounter.countdown();
 
         simulationTimer.go();
 
