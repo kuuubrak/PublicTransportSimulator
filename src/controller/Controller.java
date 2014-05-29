@@ -2,7 +2,6 @@ package controller;
 
 import event.BusReleasingFrequency;
 import event.BusStartSignal;
-import event.TrapBus;
 import event.busevents.*;
 import event.guievents.ContinuousSimulationEvent;
 import event.guievents.NewPassengerEvent;
@@ -79,7 +78,6 @@ public class Controller  extends  Thread implements ActionListener {
             resultMap.put(PassengerGenerationInterval.class, new PassengerGenerationIntervalStrategy());
             resultMap.put(ContinuousSimulationEvent.class, new ContinousSimulationStrategy());
             resultMap.put(BusReleasingFrequency.class, new BusReleasingFrequencyStrategy());
-            resultMap.put(TrapBus.class, new TrapBusStrategy());
             resultMap = Collections.unmodifiableMap(resultMap);
         }
         return resultMap;
@@ -360,13 +358,6 @@ public class Controller  extends  Thread implements ActionListener {
                 model.busReleaseCounterState(true);
                 model.setBusReleaseCounterValue(event.getFrequency());
             }
-        }
-    }
-
-    private final class TrapBusStrategy extends MyStrategy {
-        @Override
-        void execute(SimulatorEvent simulatorEvent) {
-            //TODO zmniejszanie liczby okrążeń autobusu, który jest najbliżej zajezdni
         }
     }
 

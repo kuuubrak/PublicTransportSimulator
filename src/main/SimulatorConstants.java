@@ -24,7 +24,6 @@ public final class SimulatorConstants {
     public final static String terminusName = "Pętla";
     public final static int loops = 3;
 
-
     public final static String ratuszStopName = "Ratusz Arsenał";
     public final static String centrumStopName = "Wiatrowa";
     public final static String SGHStopName = "Radom";
