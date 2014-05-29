@@ -12,9 +12,13 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class Schedule {
     private static Schedule ourInstance = new Schedule();
+    private int minPassengerGenerationValue;
+    private int maxPassengerGenerationValue;
     private static ArrayList<BusStop> busStops;
 
     private Schedule() {
+        minPassengerGenerationValue = SimulatorConstants.defaultMinGenerationTime;
+        maxPassengerGenerationValue = SimulatorConstants.defaultMaxGenerationTime;
         busStops = new ArrayList<>();
         BusStop lastStop, currentStop;
         BusDepot busDepot = BusDepot.getInstance();
@@ -44,9 +48,8 @@ public class Schedule {
 
     private int randomPassengerGenerationInterval() {
         Random randomGenerator = new Random();
-        int newMaxValue = randomGenerator.nextInt(SimulatorConstants.defaultMaxGenerationTime - SimulatorConstants.defaultMinGenerationTime) +
-                SimulatorConstants.defaultMinGenerationTime + SimulatorConstants.randomTimeGenerationShift;
-        return newMaxValue;
+        return randomGenerator.nextInt(getMaxPassengerGenerationValue() - getMinPassengerGenerationValue()) +
+                getMinPassengerGenerationValue() + SimulatorConstants.randomTimeGenerationShift;
     }
 
     public static ArrayList<BusStop> getBusStops() {
@@ -54,7 +57,7 @@ public class Schedule {
     }
 
     public ArrayList<BusStop> getPassengersStops() {
-        ArrayList<BusStop> passengersStops = new ArrayList<BusStop>();
+        ArrayList<BusStop> passengersStops = new ArrayList<>();
         for (BusStop bs : busStops) {
             if (!(bs instanceof BusDepot)) {
                 passengersStops.add(bs);
@@ -72,7 +75,18 @@ public class Schedule {
         return null;
     }
 
-//    public void addStop(BusStop busStop) {
-//        getBusStops().put(busStop.getNAME(), busStop);
-//    }
+    public int getMinPassengerGenerationValue() {
+        return minPassengerGenerationValue;
+    }
+
+    public int getMaxPassengerGenerationValue() {
+        return maxPassengerGenerationValue;
+    }
+
+    public void setCounterBounds(int minValue, int maxValue) {
+        minPassengerGenerationValue = minValue;
+        maxPassengerGenerationValue = maxValue;
+    }
+
+
 }

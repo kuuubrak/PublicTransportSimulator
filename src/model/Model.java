@@ -6,7 +6,6 @@ import model.counter.BusReleaseCounter;
 import view.SimulatorEvent;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static main.SimulatorConstants.NumberOfBuses;
@@ -33,7 +32,7 @@ public class Model {
     }
 
     public Mockup createMockup() {
-        return new Mockup(getBusContainer(), schedule.getBusStops(), simulationTimer.getTime());
+        return new Mockup(getBusContainer(), schedule, simulationTimer.getTime());
     }
 
     public ArrayList<Bus> getBusContainer() {
@@ -44,44 +43,12 @@ public class Model {
         for (Bus bus : busContainer) {
             bus.move();
         }
-        for (BusStop busStop : new ArrayList<BusStop>(schedule.getPassengersStops())) {
+        for (BusStop busStop : new ArrayList<>(schedule.getPassengersStops())) {
             busStop.getPassengerCounter().countdown();
         }
-        //generatePassengers();
         busReleaseCounter.countdown();
-
         simulationTimer.go();
 
-//        System.out.println("Zajętość przystanków:");
-//        for (BusStop busStop : schedule.getPassengersStops()) {
-//            System.out.println(busStop.getNAME() + ": " + busStop.getPassengerQueue().size());
-//        }
-    }
-
-    /**
-     * <b>generatePassengers</b>
-     * Adds new <b>Passengers</b> to <b>BusStops</b>.
-     */
-    public final void generatePassengers(final double intensity) {
-        double numberOfPassengersToGenerate = (Math.random() * intensity);
-
-        for (double i = 0; i < numberOfPassengersToGenerate; i++) {
-            generateRandomPassenger();
-        }
-    }
-
-    public final void generateRandomPassenger()
-    {
-        ArrayList<BusStop> passengersStops = schedule.getPassengersStops();
-
-        Random rand = new Random();
-        int index;
-        index = rand.nextInt(passengersStops.size());
-        BusStop location = passengersStops.get(index);
-
-        index = (rand.nextInt(passengersStops.size() - 1) + index)%passengersStops.size();
-        BusStop destination = passengersStops.get(index);
-        location.queuePush(new Passenger(destination));
     }
 
     public final void generateSpecificPassenger(BusStop busStopStart, BusStop busStopStop)
@@ -101,8 +68,10 @@ public class Model {
 
     public final void setNewPassengerCountersBound(int minValue, int maxValue)
     {
-        for (BusStop busStop : new ArrayList<BusStop>(schedule.getPassengersStops())) {
+        for (BusStop busStop : new ArrayList<>(schedule.getPassengersStops())) {
             busStop.getPassengerCounter().setCounterBounds(minValue, maxValue);
+            Schedule.getInstance().setCounterBounds(minValue, maxValue);
         }
     }
+
 }

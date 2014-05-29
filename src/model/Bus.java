@@ -98,7 +98,7 @@ public final class Bus implements EventListener, Serializable
 
     public final void takeInPassengers() {
         takePassenger(getCurrentBusStop());
-        System.out.println("zajetosc busu: " + getPassengerList().size() + " zajetosc przystanku: " + getCurrentBusStop().getPassengerQueue().size());
+//        System.out.println("zajetosc busu: " + getPassengerList().size() + " zajetosc przystanku: " + getCurrentBusStop().getPassengerQueue().size());
         if (isFull() || getCurrentBusStop().isEmpty()) {
 //            setState(BusState.RUNNING);
 //            freeCurrentBusStop();
@@ -225,7 +225,7 @@ public final class Bus implements EventListener, Serializable
     }
 
     public void setState(BusState state) {
-        System.out.println("nowy stan: " + state);
+//        System.out.println("nowy stan: " + state);
         this.state = state;
     }
 
@@ -385,11 +385,11 @@ public final class Bus implements EventListener, Serializable
     private final class BusWaitingForBusStopStrategy extends BusBehaviorStrategy {
         @Override
         void execute() {
-            System.out.println(Bus.this + " w stanie: " + Bus.this.getState() + " na: " + Bus.this.getNextBusStop() + " zajęty przez: " + Bus.this.getNextBusStop().getOccupied());
-            if (Bus.this.getNextBusStop().getOccupied() != null) {
-                Bus chuj = Bus.this.getNextBusStop().getOccupied();
-                System.out.println("przez: " + chuj + " w stanie: " + chuj.getState() + " w pełni: " + chuj.getPassengerList().size() + " na przystanku: " + chuj.getCurrentBusStop() + " aa dupa: " + chuj.getCurrentBusStop().getPassengerQueue().size());
-            }
+//            System.out.println(Bus.this + " w stanie: " + Bus.this.getState() + " na: " + Bus.this.getNextBusStop() + " zajęty przez: " + Bus.this.getNextBusStop().getOccupied());
+//            if (Bus.this.getNextBusStop().getOccupied() != null) {
+//                Bus chuj = Bus.this.getNextBusStop().getOccupied();
+//                System.out.println("przez: " + chuj + " w stanie: " + chuj.getState() + " w pełni: " + chuj.getPassengerList().size() + " na przystanku: " + chuj.getCurrentBusStop() + " aa dupa: " + chuj.getCurrentBusStop().getPassengerQueue().size());
+//            }
             if (!Bus.this.isNextStopOccupied()) {
                 reachNextStop();
                 occupyCurrentBusStop();

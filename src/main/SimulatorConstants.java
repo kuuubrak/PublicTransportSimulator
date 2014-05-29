@@ -28,16 +28,16 @@ public final class SimulatorConstants {
     public final static String ratuszStopName = "Ratusz ArsenaL";
     public final static String centrumStopName = "DZendruM";
     public final static String SGHStopName = "SGHuj";
-//    public final static String westStopName = "Łest stejszn";
-//    public final static String tomaszKnapik = "czytał Tomasz Knapik";
+    public final static String westStopName = "Łest stejszn";
+    public final static String tomaszKnapik = "czytał Tomasz Knapik";
 
     public final static int NumberOfBuses = 10;
     public final static ArrayList<Pair<String, Integer>> busStopSettings = new ArrayList<Pair<String, Integer>>() {{
         add(new Pair<>(ratuszStopName, 3));
         add(new Pair<>(centrumStopName, 5));
         add(new Pair<>(SGHStopName, 3));
-//        add(new Pair<>(westStopName, 2));
-//        add(new Pair<>(tomaszKnapik, 4));
+        add(new Pair<>(westStopName, 2));
+        add(new Pair<>(tomaszKnapik, 4));
     }};
 
 }
