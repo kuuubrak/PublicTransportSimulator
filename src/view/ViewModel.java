@@ -24,7 +24,7 @@ public class ViewModel {
 
     public void udateBusStopList(List<MockupBusStop> busStopList){
         List<BusStopView> busStopViewListOld = this.busStopViewList;
-        this.busViewList = new ArrayList<>();
+        this.busStopViewList = new ArrayList<>();
         BusStopView busStopView;
         int i = 0;
         for (MockupBusStop busStop: busStopList) {
@@ -55,6 +55,7 @@ public class ViewModel {
 
     public void updateBusList(List<MockupBus> busList){
         List<BusView> busViewListOld = this.busViewList;
+        System.out.println("ile" + busViewListOld.size());
         this.busViewList = new ArrayList<>();
         BusView busView;
         int i = 0;
@@ -62,8 +63,11 @@ public class ViewModel {
             busView = findBusView(busViewListOld, bus);
             if(busView == null){
                 busView = new BusView(bus);
+
+                System.out.println("nie Zna go");
             }else{
                 busView.updateView(bus);
+                System.out.println("Zna go");
             }
             busView.setMiniViewSize(BUS_WIDTH, BUS_HEIGHT);
             busView.setMiniViewPosition(10, i * (BUS_HEIGHT + 2));
@@ -76,7 +80,7 @@ public class ViewModel {
 
     private BusView findBusView(List<BusView> busViewList, MockupBus bus) {
         for(BusView busView : busViewList){
-            if(busView.ifViewOf(bus)){
+            if(busView.isViewOf(bus)){
                 return busView;
             }
         }
