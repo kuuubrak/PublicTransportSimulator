@@ -15,6 +15,7 @@ public class MockupBus implements Serializable{
     private final String currentBusStop;
     private final int lengthPassed;
     private final Integer ID;
+    private final MockupBusState busState;
 
     public MockupBus(final Bus bus) {
         this.passengerList = new ArrayList<>();
@@ -26,6 +27,34 @@ public class MockupBus implements Serializable{
         this.currentBusStop = bus.getCurrentBusStop().getNAME();
         this.lengthPassed = bus.getCurrentBusStop().getRoute().getLength() - bus.getToNextStop().getValue();
         this.ID = bus.getID();
+        switch(bus.getState()) {
+            case READY_TO_GO:
+                this.busState = MockupBusState.ON_BUS_STOP;
+                break;
+            case RUNNING:
+                this.busState = MockupBusState.RUNNING;
+                break;
+            case WAITING:
+                this.busState = MockupBusState.WAITING;
+                break;
+            case PUT_OUT_ALL:
+                this.busState = MockupBusState.ON_BUS_STOP;
+                break;
+            case PUT_OUT:
+                this.busState = MockupBusState.ON_BUS_STOP;
+                break;
+            case TAKE_IN:
+                this.busState = MockupBusState.ON_BUS_STOP;
+                break;
+            case FINISHED:
+                this.busState = MockupBusState.RUNNING;
+                break;
+            case HAVING_BREAK:
+                this.busState = MockupBusState.ON_BUS_STOP;
+                break;
+            default:
+                this.busState = MockupBusState.ON_BUS_STOP;
+        }
     }
 
     public ArrayList<MockupPassenger> getPassengerList() {
