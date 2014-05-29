@@ -295,17 +295,17 @@ public final class Bus implements EventListener, Serializable
     private void freeBusStop(BusStop busStop) { busStop.setOccupied(null); }
 
     public void occupyCurrentBusStop() {
+        /***
+         * Dojeżdża na przystanek.
+         */
+        reachNextStop();
 //        if (this.getCurrentBusStop() instanceof BusTerminus) {
-            System.out.println(this + " zajmuje " + this.getCurrentBusStop() + " stan: " + this.getState());
+        System.out.println(this + " zajmuje " + this.getCurrentBusStop() + " stan: " + this.getState());
 //        }
         /***
          * Semafor (zajmuję przystanek).
          */
         occupyBusStop(getCurrentBusStop());
-        /***
-         * Dojeżdża na przystanek.
-         */
-        reachNextStop();
     }
 
     public void freeCurrentBusStop() {

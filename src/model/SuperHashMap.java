@@ -16,11 +16,14 @@ public class SuperHashMap extends HashMap<BusStop, LinkedList<Passenger>> {
     }
 
     public Passenger poll(BusStop busStop) {
-        Passenger passenger = get(busStop).poll();
-        if (get(busStop).isEmpty()) {
-            remove(busStop);
+        if (get(busStop) != null) {
+            Passenger passenger = get(busStop).poll();
+            if (get(busStop).isEmpty()) {
+                remove(busStop);
+            }
+            return passenger;
         }
-        return passenger;
+        return null;
     }
 
     @Override
