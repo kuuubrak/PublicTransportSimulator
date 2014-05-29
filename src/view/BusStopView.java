@@ -46,8 +46,8 @@ public class BusStopView extends SimulationObjectView {
         g.setColor(Color.CYAN);
         g.fillRect(getMiniViewXPosition(),getMiniViewYPosition(),getMiniViewWidth(), getMiniViewHeight());
         g.setColor(Color.WHITE);
-        g.drawString("Bus Stop: " + busStop.getNAME(), getMiniViewXPosition() + getMiniViewWidth(),
-                getMiniViewYPosition() + getMiniViewHeight() );
+        g.drawString("Bus Stop: " + busStop.getNAME(), getMiniViewXPosition() + getMiniViewWidth() + 4,
+                getMiniViewYPosition() + getMiniViewHeight() - 4);
     }
 
 

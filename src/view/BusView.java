@@ -64,8 +64,8 @@ public class BusView extends SimulationObjectView {
         g.setColor(Color.WHITE);
         g.drawString("Bus: " + bus.getID() +
                      " progress: "+ (int)(((float)bus.getLengthPassed() / (bus.getLengthPassed() + bus.getBusStopDistace()))*100) + '%' +
-                     " to " + bus.getCurrentBusStop(), getMiniViewXPosition() + getMiniViewWidth(),
-                                            getMiniViewYPosition() + getMiniViewHeight() );
+                     " to " + bus.getCurrentBusStop() , getMiniViewXPosition() + getMiniViewWidth() + 4,
+                                            getMiniViewYPosition() + getMiniViewHeight() - 4);
     }
 
 
