@@ -11,7 +11,7 @@ import java.util.LinkedList;
  * Created by ppeczek on 2014-05-28.
  */
 public class MockupBus implements Serializable{
-    private final ArrayList<Passenger> passengerList;
+    private final ArrayList<MockupPassenger> passengerList;
     private final String currentBusStop;
     private final int lengthPassed;
     private final Integer ID;
@@ -19,14 +19,16 @@ public class MockupBus implements Serializable{
     public MockupBus(final Bus bus) {
         this.passengerList = new ArrayList<>();
         for(LinkedList<Passenger> linkedList: bus.getPassengerList().values()) {
-            passengerList.addAll(linkedList);
+            for(Passenger passenger: linkedList){
+                this.passengerList.add(new MockupPassenger(passenger));
+            }
         }
         this.currentBusStop = bus.getCurrentBusStop().getNAME();
         this.lengthPassed = bus.getCurrentBusStop().getRoute().getLength() - bus.getToNextStop().getValue();
         this.ID = bus.getID();
     }
 
-    public ArrayList<Passenger> getPassengerList() {
+    public ArrayList<MockupPassenger> getPassengerList() {
         return passengerList;
     }
 

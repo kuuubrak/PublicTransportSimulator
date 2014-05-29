@@ -1,5 +1,7 @@
 package view;
 
+import mockup.MockupPassenger;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,10 @@ public class PassengerContainer {
         this.rowsNumber = rowsNumber;
         this.columnsNumber = columnsNumber;
         this.cellResolution = cellResolution;
+    }
+
+    public PassengerContainer(PassengerContainer container){
+        this(container.x, container.y, container.columnsNumber, container.rowsNumber, container.cellResolution);
     }
 
     public void addPassengerView(PassengerView passengerView) {
@@ -47,6 +53,13 @@ public class PassengerContainer {
         }
 
     }
-
+    public PassengerView findViewOf(MockupPassenger mockupPassenger){
+        for(PassengerView passengerView: passengerViewList){
+            if(passengerView.isViewOf(mockupPassenger)){
+                return passengerView;
+            }
+        }
+        return null;
+    }
 
 }

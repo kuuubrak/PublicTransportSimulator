@@ -21,7 +21,7 @@ public class BusView extends SimulationObjectView {
     @Override
     public void drawDetailView(Graphics g){
         g.setColor(Color.WHITE);
-        g.drawString("Bus: "+(new Integer(bus.getID()).toString()) ,10, 10);
+        g.drawString("Bus: "+(new Integer(bus.getID()).toString()),10, 10);
         super.drawDetailView(g);
     }
 
@@ -30,9 +30,19 @@ public class BusView extends SimulationObjectView {
         g.setColor(Color.BLUE);
         g.fillRect(getMiniViewXPosition(),getMiniViewYPosition(),getMiniViewWidth(), getMiniViewHeight());
         g.setColor(Color.WHITE);
-        g.drawString("Bus: " + bus.getID(), getMiniViewXPosition() + getMiniViewWidth(),
+        g.drawString("Bus: " + bus.getID() +
+                     " progress: "+ bus.getLengthPassed() +
+                     " to " + bus.getCurrentBusStop(), getMiniViewXPosition() + getMiniViewWidth(),
                                             getMiniViewYPosition() + getMiniViewHeight() );
     }
 
 
+    public void updateView(MockupBus bus) {
+        this.bus = bus;
+        setPassengers(bus.getPassengerList());
+    }
+
+    public boolean ifViewOf(MockupBus bus) {
+        return (this.bus.getID() == bus.getID());
+    }
 }

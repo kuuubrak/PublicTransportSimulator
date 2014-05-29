@@ -15,7 +15,7 @@ public class MockupBusStop implements Serializable{
     private final UUID ID;
     private final String NAME;
     private Queue<MockupPassenger> passengerQueue = new LinkedList<MockupPassenger>();
-    private final int toNextStop;
+    private final int distanceToNextStop;
     private final MockupBusStopType busStopType;
 
     public MockupBusStop(final BusStop busStop) {
@@ -25,7 +25,7 @@ public class MockupBusStop implements Serializable{
         for(Passenger p: busStop.getPassengerQueue()) {
             this.passengerQueue.add(new MockupPassenger(p));
         }
-        this.toNextStop = busStop.getRoute().getLength();
+        this.distanceToNextStop = busStop.getRoute().getLength();
         if (busStop instanceof BusDepot) {
             this.busStopType = MockupBusStopType.DEPOT;
         }
@@ -49,8 +49,8 @@ public class MockupBusStop implements Serializable{
         return passengerQueue;
     }
 
-    public int getToNextStop() {
-        return toNextStop;
+    public int getDistanceToNextStop() {
+        return distanceToNextStop;
     }
 
     public MockupBusStopType getBusStopType() {

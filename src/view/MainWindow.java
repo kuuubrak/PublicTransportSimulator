@@ -35,12 +35,12 @@ public class MainWindow extends JFrame implements ViewUpdater{
         contentPane.setLayout(null);
 
         worldCanvas = new WorldView(viewModel, this);
-        worldCanvas.setBounds(10,10,100,100);
+        worldCanvas.setBounds(0,0,0,0);
         contentPane.add(worldCanvas);
 
 
-        detailCanvas = new DetailViewer(0, 0, 0, 0);
-        detailCanvas.setViewModel(viewModel);
+        detailCanvas = new DetailViewer(viewModel, this);
+        worldCanvas.setBounds(0,0,0,0);
         contentPane.add(detailCanvas);
 
         buttonsPanel = new ControlButtonsPanel(300, 10, 400, 250, clientWrapper);
@@ -93,11 +93,15 @@ public class MainWindow extends JFrame implements ViewUpdater{
     }
 
     public void updateViewModel(ViewModel viewModel) {
-        contentPane.remove(detailCanvas);
-        detailCanvas = new DetailViewer(0,0,0,0);
         detailCanvas.setViewModel(viewModel);
         worldCanvas.updateViewModel(viewModel);
-        contentPane.add(detailCanvas);
-        resize();
+        updateView();
+    }
+
+    @Override
+    public void updateView() {
+        revalidate();
+        detailCanvas.repaint();
+        worldCanvas.repaint();
     }
 }
