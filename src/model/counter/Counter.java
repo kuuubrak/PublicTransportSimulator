@@ -36,7 +36,8 @@ abstract public class Counter implements Serializable
         if (value > 0) {
             value--;
         }
-        else {
+//        else {
+        if (value == 0) {
             setCounted(true);
             finishedCounting();
         }

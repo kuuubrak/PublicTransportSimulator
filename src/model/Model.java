@@ -48,7 +48,7 @@ public class Model {
             busStop.getPassengerCounter().countdown();
         }
         //generatePassengers();
-        busReleaseCounter.countdown();
+//        busReleaseCounter.countdown();
 
         simulationTimer.go();
 

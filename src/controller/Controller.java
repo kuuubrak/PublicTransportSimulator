@@ -48,6 +48,7 @@ public class Controller implements ActionListener {
         networkClient = new Client<>(host, port);
         networkClient.connect();
         networkClient.setEventsBlockingQueue(eventsBlockingQueue);
+        eventsBlockingQueue.add(new BusStartSignal());
     }
 
     public static Controller getInstance() {
@@ -164,25 +165,24 @@ public class Controller implements ActionListener {
         void execute(SimulatorEvent busEvent) {
             Bus bus = busEvent.getBus();
             bus.terminusCheck();
-//            System.out.println(this.getClass());
-//            System.out.println(bus.getState());
-            if (bus.isFinished()) {
+            System.out.println(bus.isFinishedLoops());
+            if (bus.isFinishedLoops()) {
                 if (bus.isEmpty()) {
                     System.out.println(bus + " nie zatrzymuje się na: " + bus.getCurrentBusStop().getNAME());
                     bus.reachNextStop();
-                }
-                else {
+                    bus.setState(BusState.FINISHED);
+                    bus.comeback();
+                } else {
                     if (bus.isNextStopOccupied()) {
                         bus.setState(BusState.WAITING);
                     } else {
                         bus.reachNextStop();
                         System.out.println(bus + ": " + bus.getCurrentBusStop().getNAME());
-                        bus.occupyCurrentBusStop();
                         bus.setState(BusState.PUT_OUT_ALL);
+                        bus.occupyCurrentBusStop();
                     }
                 }
-            }
-            if (!bus.isFinished()) {
+            } else {
                 /**
                  * Jeśli autobus jest pełny i nikt na danym przystanku nie wysiada, przystanek jest pomijany.
                  */
@@ -196,8 +196,7 @@ public class Controller implements ActionListener {
                 else if (bus.isEmpty() && !bus.isGetOnRequestNow()) {
                     System.out.println(bus + " nie zatrzymuje się na: " + bus.getCurrentBusStop().getNAME());
                     bus.reachNextStop();
-                }
-                else {
+                } else {
                     if (bus.isNextStopOccupied()) {
                         bus.setState(BusState.WAITING);
                     } else {
@@ -208,17 +207,16 @@ public class Controller implements ActionListener {
                          * dla których jest to przystanek docelowy, a następnie wsiadają do niego
                          * kolejne osoby w miarę wolnych miejsc.
                          */
-                        if (!bus.isFinished()) {
-                            if (bus.isGetOffRequestNow()) {
-                                bus.occupyCurrentBusStop();
-                                bus.setState(BusState.PUT_OUT);
-                            } else if (bus.isGetOnRequestNow()) {
-                                bus.occupyCurrentBusStop();
-                                bus.setState(BusState.TAKE_IN);
-                            }
+                        if (bus.isGetOffRequestNow()) {
+                            bus.setState(BusState.PUT_OUT);
+                            bus.occupyCurrentBusStop();
+                        } else if (bus.isGetOnRequestNow()) {
+                            bus.setState(BusState.TAKE_IN);
+                            bus.occupyCurrentBusStop();
                         }
                     }
                 }
+                System.out.println(bus + " " + bus.getState());
             }
         }
     }
@@ -231,9 +229,9 @@ public class Controller implements ActionListener {
     private final class BusComeBackSignalStrategy extends MyStrategy {
         @Override
         void execute(SimulatorEvent busEvent) {
-            System.out.println(this.getClass());
+//            System.out.println(this.getClass());
             Bus bus = busEvent.getBus();
-            bus.comeback();
+            bus.setFinishedLoops(true);
         }
     }
 
@@ -244,11 +242,12 @@ public class Controller implements ActionListener {
     private final class BusPutOutAllStrategy extends MyStrategy {
         @Override
         void execute(SimulatorEvent busEvent) {
-            System.out.println(this.getClass());
+//            System.out.println(this.getClass());
             Bus bus = busEvent.getBus();
-            bus.freeCurrentBusStop();
+            bus.setState(BusState.FINISHED);
             bus.comeback();
-            System.out.println("Następny:" + bus.getToNextStop().getValue());
+            bus.freeCurrentBusStop();
+//            System.out.println("Następny:" + bus.getToNextStop().getValue());
         }
     }
 
@@ -261,13 +260,13 @@ public class Controller implements ActionListener {
         @Override
         void execute(SimulatorEvent busEvent) {
             Bus bus = busEvent.getBus();
-            System.out.println(this.getClass());
+//            System.out.println(this.getClass());
             if (bus.isGetOnRequestNow()) {
                 bus.setState(BusState.TAKE_IN);
             }
             else {
-                bus.freeCurrentBusStop();
                 bus.setState(BusState.RUNNING);
+                bus.freeCurrentBusStop();
             }
         }
     }
@@ -279,10 +278,11 @@ public class Controller implements ActionListener {
     private final class BusReadyToGoStrategy extends MyStrategy {
         @Override
         void execute(SimulatorEvent busEvent) {
-            System.out.println(this.getClass());
+//            System.out.println(this.getClass());
             Bus bus = busEvent.getBus();
             BusDepot.getInstance().getBusQueue().add(bus);
             bus.setState(BusState.READY_TO_GO);
+            bus.setFinishedLoops(false);
         }
     }
 
@@ -298,7 +298,7 @@ public class Controller implements ActionListener {
             busDepot.getBusQueue().add(bus);
             bus.reachDepot();
             bus.setState(BusState.HAVING_BREAK);
-            System.out.println(bus + ": " + bus.getCurrentBusStop().getNAME());
+//            System.out.println(bus + ": " + bus.getCurrentBusStop().getNAME());
         }
     }
 
@@ -309,10 +309,10 @@ public class Controller implements ActionListener {
     private final class BusTookInPassengersStrategy extends MyStrategy {
         @Override
         void execute(SimulatorEvent busEvent) {
-            System.out.println(this.getClass());
+//            System.out.println(this.getClass());
             Bus bus = busEvent.getBus();
-            bus.freeCurrentBusStop();
             bus.setState(BusState.RUNNING);
+            bus.freeCurrentBusStop();
         }
     }
 

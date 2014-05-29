@@ -20,6 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * Z <b>Pętli</b> wyrusza na <b>Linię</b>, odwiedza <b>M Przystanków</b> i wraca na <b>Pętlę</b>.<br>
  * Z <b>Pętli</b> według polecenia <b>Modułu Zarządzającego Komunikacją Miejską</b>, może zjechać do <b>Zajezdni</b>.<br>
  * Mieści <b>P Pasażerów</b>.<br>
+
  * Pomija <b>Przystanek</b>, jeśli żaden <b>Pasażer</b> nie chce wsiąść i wysiąść lub <b>Autobus</b> jest pełny i żaden <b>Pasażer</b> nie che wysiaść.<br>
  *
  * @author dan.krasniak
@@ -43,6 +44,7 @@ public final class Bus implements EventListener, Serializable
     private ReturnToDepotCooldown returnToDepotCooldown;
     private final int ID;
     private Map<BusState, BusBehaviorStrategy> busBehaviorStrategyMap = new HashMap<BusState, BusBehaviorStrategy>();
+    private boolean finishedLoops;
 
     private static class IDGenerator{
         private static int lastId = 0;
@@ -135,7 +137,9 @@ public final class Bus implements EventListener, Serializable
     }
 
     private final void putOutAll() {
-        transferPassenger(getCurrentBusStop());
+        if (!isEmpty()) {
+            transferPassenger(getCurrentBusStop());
+        }
 //        System.out.println("Liczba pasażerów:" + getPassengerMap().size());
         if (isEmpty()) {
             try {
@@ -151,17 +155,16 @@ public final class Bus implements EventListener, Serializable
     private final void transferPassenger(BusStop busStop) {
         Passenger passenger = getPassengerMap().entrySet().iterator().next().getValue();
         passenger.setTIMESTAMP(System.currentTimeMillis());
-     //   getPassengerMap().remove(passenger.getDestination(), passenger); // czemu to ciagle rzuca errora?
-        BusStop busStop1 = getCurrentBusStop();
-        if (!currentBusStop.equals(busStop1)) {
-            busStop1.getPassengerQueue().add(passenger);
-        }
+        busStop.getPassengerQueue().add(passenger);
+//        BusStop busStop1 = getCurrentBusStop();
+//        if (!currentBusStop.equals(busStop1)) {
+//            busStop1.getPassengerQueue().add(passenger);
+//        }
 
     }
 
     public final void comeback() {
         setCounterToNextStop(SimulatorConstants.depotTerminusDistance);
-        setState(BusState.FINISHED);
     }
     /**
      * <b>isFull</b><br>
@@ -241,7 +244,7 @@ public final class Bus implements EventListener, Serializable
 
     public void reachStop(BusStop busStop)
     {
-        System.out.println(this + " Liczba pasażerów:" + getPassengerMap().size());
+//        System.out.println(this + " Liczba pasażerów:" + getPassengerMap().size());
         setCurrentBusStop(busStop);
         setCounterToNextStop(getCurrentBusStop().getDistanceToNextStop());
     }
@@ -274,27 +277,46 @@ public final class Bus implements EventListener, Serializable
 
     private void freeBusStop(BusStop busStop) { busStop.setOccupied(false); }
 
-    public void occupyCurrentBusStop() { occupyBusStop(getCurrentBusStop()); }
+    public void occupyCurrentBusStop() {
+        if (this.getCurrentBusStop() instanceof BusTerminus) {
+            System.out.println(this + " zajmuje petle" + this.getState());
+        }
+        occupyBusStop(getCurrentBusStop());
+    }
 
-    public void freeCurrentBusStop() { freeBusStop(getCurrentBusStop()); }
+    public void freeCurrentBusStop() {
+        if (this.getCurrentBusStop() instanceof BusTerminus) {
+            System.out.println(this + " zwalnia petle" + this.getState());
+        }
+        freeBusStop(getCurrentBusStop());
+    }
 
     public boolean isNextStopOccupied() { return getNextBusStop().isOccupied(); }
 
     private boolean onTerminusAlready = false;// ugly fix
+
+    /***
+     *
+     * @return
+     */
     public void terminusCheck() {
-        if (getCurrentBusStop() instanceof BusTerminus) {
+        if (getCurrentBusStop().getNextBusStop() instanceof BusTerminus) {
             if(!onTerminusAlready) {
                 getLoopsToFinish().countdown();
+                System.out.println(this + getCurrentBusStop().getNextBusStop().getNAME() + ": To finish:" + getLoopsToFinish().getValue());
                 onTerminusAlready = true;
             }
-            System.out.println(this + ": To finish:" + getLoopsToFinish().getValue());
         }else{
             onTerminusAlready = false;
         }
     }
 
-    public boolean isFinished() {
-        return getLoopsToFinish().isDownCounted();
+    public boolean isFinishedLoops() {
+        return finishedLoops;
+    }
+
+    public void setFinishedLoops(boolean finishedLoops) {
+        this.finishedLoops = finishedLoops;
     }
 
     abstract private class BusBehaviorStrategy implements Serializable {
@@ -339,7 +361,7 @@ public final class Bus implements EventListener, Serializable
             if (!Bus.this.isNextStopOccupied()) {
                 reachNextStop();
                 occupyCurrentBusStop();
-                if (isFinished()) {
+                if (isFinishedLoops()) {
                     setState(BusState.PUT_OUT_ALL);
                 }
                 else {

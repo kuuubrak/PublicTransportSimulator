@@ -25,8 +25,8 @@ public class MainFrame extends JFrame {
     final static private Integer textFieldHeight = 30;
     final static private Integer textFieldWidth = 100;
     private static final String[] stops = {SimulatorConstants.ratuszStopName, SimulatorConstants.centrumStopName,
-                                            SimulatorConstants.SGHStopName, SimulatorConstants.westStopName,
-                                            SimulatorConstants.tomaszKnapik
+                                            SimulatorConstants.SGHStopName, /*SimulatorConstants.westStopName,
+                                            SimulatorConstants.tomaszKnapik*/
     };
 
     private JPanel buttonPanel;

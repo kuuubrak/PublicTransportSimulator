@@ -15,7 +15,8 @@ public class LoopsCounter extends CyclicCounter {
     }
 
     public void throwEvent() {
-//        System.out.println("ZLICZONO");
+        System.out.println("ZLICZONO");
+//        getBus().setFinishedLoops(true);
         try {
             getBlockingQueue().put(new BusComeBackSignal(getBus()));
         } catch (final InterruptedException e) {
