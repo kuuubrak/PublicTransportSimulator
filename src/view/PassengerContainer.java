@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PassengerContainer {
-    private final int cellResolution;
+    private int cellResolution;
     private ArrayList<PassengerView> passengerViewList;
     private PassengerView moreDetailes = null;
     private int columnsNumber;
@@ -36,9 +36,16 @@ public class PassengerContainer {
     public void draw(Graphics g) {
         PassengerView passenger;
         for (int i = 0; i < passengerViewList.size(); i++) {
+
+            if(i>=columnsNumber*rowsNumber) break;
+
             passenger = passengerViewList.get(i);
-            passenger.setXY(i%columnsNumber*cellResolution,100 + i/columnsNumber*cellResolution);
+            passenger.setXY(x + i%columnsNumber*cellResolution, y + i/columnsNumber*cellResolution);
+            passenger.setResolution(cellResolution - 2);
             passenger.paint(g);
+
+
+
         }
         if (moreDetailes != null) moreDetailes.paintCloud(g);
     }
@@ -62,4 +69,15 @@ public class PassengerContainer {
         return null;
     }
 
+    public int getPassengersNum() {
+        return passengerViewList.size();
+    }
+
+    public void setPassengerContainerParameters(int x, int y, int columnsNum, int rowsNum, int resolution) {
+        this.x = x;
+        this.y = y;
+        this.rowsNumber = rowsNum;
+        this.columnsNumber = columnsNum;
+        this.cellResolution = resolution;
+    }
 }

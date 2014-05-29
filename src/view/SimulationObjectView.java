@@ -34,6 +34,10 @@ public abstract class SimulationObjectView implements DoubleView {
         passengerContainer = new PassengerContainer(0,0,PASSENGER_COLUMN_NUM, PASSENGER_ROW_NUM,CELL_RESOLUTION);
     }
 
+    public void setPassengerContainerParameters(int x, int y, int columnsNum, int rowsNum, int resolution){
+        passengerContainer.setPassengerContainerParameters(x, y, columnsNum, rowsNum, resolution);
+    }
+
     public void setPassengers(Collection<MockupPassenger> passengersList){
         PassengerContainer passengerContainerOld = this.passengerContainer;
         PassengerView passengerView;
@@ -48,6 +52,10 @@ public abstract class SimulationObjectView implements DoubleView {
             passengerContainer.addPassengerView(passengerView);
         }
 
+    }
+
+    public int getPassengersNum() {
+        return passengerContainer.getPassengersNum() ;
     }
 
     public void setPassengers(List<MockupPassenger> passengersList){

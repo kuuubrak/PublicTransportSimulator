@@ -52,6 +52,7 @@ public final class Bus implements EventListener, Serializable
     private Map<BusState, BusBehaviorStrategy> busBehaviorStrategyMap = new HashMap<>();
     private boolean finishedLoops;
 
+
     private static class IDGenerator{
         private static int lastId = 0;
 

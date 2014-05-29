@@ -76,4 +76,8 @@ public class PassengerView {
     public void updateView(MockupPassenger passenger) {
         this.passenger = passenger;
     }
+
+    public void setResolution(int resolution) {
+        this.passengerSize = resolution;
+    }
 }

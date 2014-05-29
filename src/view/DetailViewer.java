@@ -22,8 +22,6 @@ public class DetailViewer extends Canvas{
     @Override
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g.setColor(new Color(2, 133, 4));
-        g.fillRect(0, 0, getWidth(), getHeight());
 
         if(viewModel != null && viewModel.getCurrentDetailView() != null) {
             viewModel.getCurrentDetailView().setDetailViewSize(getWidth(),getHeight());

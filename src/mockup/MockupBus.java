@@ -14,8 +14,9 @@ public class MockupBus implements Serializable{
     private final ArrayList<MockupPassenger> passengerList;
     private final String currentBusStop;
     private final int lengthPassed;
-    private final Integer ID;
+    private final int ID;
     private final MockupBusState busState;
+    private final int busStopDistace;
 
     public MockupBus(final Bus bus) {
         this.passengerList = new ArrayList<MockupPassenger>();
@@ -25,6 +26,7 @@ public class MockupBus implements Serializable{
             }
         }
         this.currentBusStop = bus.getCurrentBusStop().getNAME();
+        this.busStopDistace = bus.getToNextStop().getValue();
         this.lengthPassed = bus.getCurrentBusStop().getRoute().getLength() - bus.getToNextStop().getValue();
         this.ID = bus.getID();
         switch(bus.getState()) {
@@ -69,7 +71,16 @@ public class MockupBus implements Serializable{
         return lengthPassed;
     }
 
-    public Integer getID() {
+    public int getBusStopDistace() {
+        return busStopDistace;
+    }
+
+    public MockupBusState getState(){
+        return busState;
+    }
+
+
+    public int getID() {
         return ID;
     }
 }

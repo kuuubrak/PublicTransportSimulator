@@ -19,14 +19,25 @@ public class BusStopView extends SimulationObjectView {
         super();
         this.busStop = busStop;
         setPassengers(busStop.getPassengerQueue());
+        setPassengerContainerParameters(20, 50, 12, 6, 24);
     }
 
     @Override
     public void drawDetailView(Graphics g){
+        final int firstLine = 40;
+        final int secoundLine = 200;
         g.setColor(new Color(230, 230, 180));
-        g.fillRect(0,0,getDetailViewWidth(), 30);
+        g.fillRect(0,0,getDetailViewWidth(), firstLine);
+
+        g.setColor(new Color(100, 100, 120));
+        g.fillRect(0,firstLine,getDetailViewWidth(), secoundLine);
+
+        g.setColor(new Color(50, 50, 50));
+        g.fillRect(0,secoundLine,getDetailViewWidth(), getDetailViewWidth());
+
         g.setColor(Color.BLACK);
-        g.drawString("Bus Stop: "+busStop.getNAME()+' ' + busStop.getPassengerQueue().size() +" passengers",10, 10);
+        g.drawString("Bus Stop: "+busStop.getNAME(),10, 15);
+        g.drawString("Waiting passengers: " + busStop.getPassengerQueue().size(),10, 30);
         super.drawDetailView(g);
     }
 
