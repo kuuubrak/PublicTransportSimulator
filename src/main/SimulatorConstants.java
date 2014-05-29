@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Created by ppeczek on 2014-05-20.
  */
 public final class SimulatorConstants {
-    public final static int simulationSpeed = 10;
+    public final static int simulationSpeed = 250;
     public final static String simulatorHostAddress = "127.0.0.1";
     public final static int simulatorPort = 8124;
     public final static int connectingTimeout = 5000;
@@ -25,11 +25,11 @@ public final class SimulatorConstants {
     public final static int loops = 3;
 
 
-    public final static String ratuszStopName = "Ratusz ArsenaL";
-    public final static String centrumStopName = "DZendruM";
-    public final static String SGHStopName = "SGHuj";
+    public final static String ratuszStopName = "Ratusz Arsenał";
+    public final static String centrumStopName = "Wiatrowa";
+    public final static String SGHStopName = "Radom";
     public final static String westStopName = "Łest stejszn";
-    public final static String tomaszKnapik = "czytał Tomasz Knapik";
+    public final static String tomaszKnapik = "Druga strefa";
 
     public final static int NumberOfBuses = 10;
     public final static ArrayList<Pair<String, Integer>> busStopSettings = new ArrayList<Pair<String, Integer>>() {{

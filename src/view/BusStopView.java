@@ -19,13 +19,13 @@ public class BusStopView extends SimulationObjectView {
         super();
         this.busStop = busStop;
         setPassengers(busStop.getPassengerQueue());
-        setPassengerContainerParameters(20, 50, 12, 6, 24);
+        setPassengerContainerParameters(20, 90, 12, 6, 24);
     }
 
     @Override
     public void drawDetailView(Graphics g){
         final int firstLine = 40;
-        final int secoundLine = 200;
+        final int secoundLine = 240;
         g.setColor(new Color(230, 230, 180));
         g.fillRect(0,0,getDetailViewWidth(), firstLine);
 

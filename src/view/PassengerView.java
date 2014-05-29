@@ -36,7 +36,6 @@ public class PassengerView {
         g.drawOval(x, y, passengerSize, passengerSize);
         g.setColor(Color.RED);
         if (passenger.getTIMESTAMP() > 200) g.drawString("!", x + passengerSize, y + passengerSize / 4);
-        //textCloud.paint(g);
 
     }
 

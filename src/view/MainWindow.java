@@ -74,9 +74,6 @@ public class MainWindow extends JFrame implements ViewUpdater{
         });
     }
 
-
-
-
     public void resize() {
 
         if (getWidth() < minWindowWidth) {

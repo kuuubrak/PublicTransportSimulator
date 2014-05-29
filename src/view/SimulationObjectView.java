@@ -38,6 +38,11 @@ public abstract class SimulationObjectView implements DoubleView {
         passengerContainer.setPassengerContainerParameters(x, y, columnsNum, rowsNum, resolution);
     }
 
+    @Override
+    public void pressOn(int x, int y){
+        passengerContainer.onMouseClick(x, y);
+    }
+
     public void setPassengers(Collection<MockupPassenger> passengersList){
         PassengerContainer passengerContainerOld = this.passengerContainer;
         PassengerView passengerView;
@@ -51,7 +56,7 @@ public abstract class SimulationObjectView implements DoubleView {
             }
             passengerContainer.addPassengerView(passengerView);
         }
-
+        this.passengerContainer.setMoreDetailes(passengerContainerOld.getMoreDetailes());
     }
 
     public int getPassengersNum() {
@@ -59,8 +64,18 @@ public abstract class SimulationObjectView implements DoubleView {
     }
 
     public void setPassengers(List<MockupPassenger> passengersList){
+        PassengerContainer passengerContainerOld = this.passengerContainer;
+        PassengerView passengerView;
+        this.passengerContainer = new PassengerContainer(passengerContainerOld);
         for(MockupPassenger passenger: passengersList){
-            passengerContainer.addPassengerView(new PassengerView(passenger, PASSENGER_RESOLUTION));
+            passengerView = passengerContainerOld.findViewOf(passenger);
+            if(passengerView == null){
+                passengerView = new PassengerView(passenger, PASSENGER_RESOLUTION);
+            }else{
+                passengerView.updateView(passenger);
+            }
+            passengerContainer.addPassengerView(passengerView);
+            this.passengerContainer.setMoreDetailes(passengerContainerOld.getMoreDetailes());
         }
 
     }

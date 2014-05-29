@@ -49,7 +49,7 @@ public class BusView extends SimulationObjectView {
         g.drawString("Progress: "
                 + (int)(((float)bus.getLengthPassed() / (bus.getLengthPassed() + bus.getBusStopDistace()))*100) + '%',
                 10, 42);
-        g.drawString("Passenger number: " + bus.getPassengerList().size() + ' ' + getPassengersNum(),10, 58);
+        g.drawString("Passenger number: " + getPassengersNum(),10, 58);
         g.drawString("State: " + bus.getState(),10, 74);
 
         super.drawDetailView(g);
@@ -63,7 +63,7 @@ public class BusView extends SimulationObjectView {
         g.fillRect(getMiniViewXPosition(),getMiniViewYPosition(),getMiniViewWidth(), getMiniViewHeight());
         g.setColor(Color.WHITE);
         g.drawString("Bus: " + bus.getID() +
-                     " progress: "+ bus.getLengthPassed() +
+                     " progress: "+ (int)(((float)bus.getLengthPassed() / (bus.getLengthPassed() + bus.getBusStopDistace()))*100) + '%' +
                      " to " + bus.getCurrentBusStop(), getMiniViewXPosition() + getMiniViewWidth(),
                                             getMiniViewYPosition() + getMiniViewHeight() );
     }
