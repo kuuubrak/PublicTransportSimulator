@@ -40,12 +40,7 @@ public class Passenger implements Serializable
         this.destination = destination;
         this.TIMESTAMP = SimulationTimer.getInstance().getTime();
         this.ID = IDGenerator.getNextId();
-    }
-
-    //TODO: Nie wiem czy takie odwołanie do SimulationTimer jest poprawne
-    public final Long getWaitingTime()
-    {
-        return SimulationTimer.getInstance().getTime() - TIMESTAMP;
+        //System.out.println("TIMESTAMP: " + this.TIMESTAMP + "; Passenger: " + this.ID);
     }
 
     /**

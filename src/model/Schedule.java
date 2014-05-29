@@ -15,7 +15,7 @@ public class Schedule {
     private static ArrayList<BusStop> busStops;
 
     private Schedule() {
-        busStops = new ArrayList<>();
+        busStops = new ArrayList<BusStop>();
         BusStop lastStop, currentStop;
         BusDepot busDepot = BusDepot.getInstance();
         BusTerminus busTerminus = BusTerminus.getInstance();

@@ -2,6 +2,9 @@ package model;
 
 import main.SimulatorConstants;
 import mockup.Mockup;
+import mockup.MockupBus;
+import mockup.MockupBusStop;
+import mockup.MockupPassenger;
 import model.counter.BusReleaseCounter;
 import view.SimulatorEvent;
 
@@ -33,7 +36,17 @@ public class Model {
     }
 
     public Mockup createMockup() {
-        return new Mockup(getBusContainer(), schedule.getBusStops(), simulationTimer.getTime());
+/*
+        for (Bus bus : getBusContainer())
+            System.out.println("Real: Pasażerów w autobusie: " + bus.getPassengerList().size());
+        for (BusStop busStop : schedule.getBusStops())
+            for (Passenger passenger : busStop.getPassengerQueue())
+                System.out.println("Real: time: " + simulationTimer.getTime() + "; Passenger timestamp: " + passenger.getTIMESTAMP() +
+                "; Passenger: " + passenger.getID());
+*/
+
+        Mockup mockup = new Mockup(getBusContainer(), schedule.getBusStops(), simulationTimer.getTime());
+        return mockup;
     }
 
     public ArrayList<Bus> getBusContainer() {
