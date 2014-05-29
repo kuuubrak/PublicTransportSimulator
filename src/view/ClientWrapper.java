@@ -48,7 +48,6 @@ public class ClientWrapper extends Thread {
                     mockup = mockups.take();
                 }while (!mockups.isEmpty());
                 gun.newMockup(mockup);
-                sleep(1000);
             }
         }catch(InterruptedException e){
             if(runny) gun.connectionLost();

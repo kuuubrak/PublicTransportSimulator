@@ -24,12 +24,13 @@ public class PassengerContainer {
         this.cellResolution = cellResolution;
     }
 
+
     public PassengerContainer(PassengerContainer container){
         this(container.x, container.y, container.columnsNumber, container.rowsNumber, container.cellResolution);
     }
 
     public void addPassengerView(PassengerView passengerView) {
-        passengerView.setXY(x - cellResolution * (passengerViewList.size() % columnsNumber), y - cellResolution * (passengerViewList.size() / columnsNumber));
+        passengerView.setXY(cellResolution * (passengerViewList.size() % columnsNumber), cellResolution * (passengerViewList.size() / columnsNumber));
         passengerViewList.add(passengerView);
     }
 
@@ -52,8 +53,8 @@ public class PassengerContainer {
 
     public void onMouseClick(int x, int y) {
 
-        int place = (this.x - x + cellResolution) / cellResolution + ((this.y - y + cellResolution) / cellResolution) * columnsNumber;
-        if (x < this.x + cellResolution && x > this.x - cellResolution * columnsNumber && y < this.y + cellResolution && place < passengerViewList.size()) {
+        int place = (x - this.x) / cellResolution + ((y -this.y) / cellResolution) * columnsNumber;
+        if (place < passengerViewList.size()) {
             moreDetailes = passengerViewList.get(place);
         } else {
             moreDetailes = null;
@@ -79,5 +80,13 @@ public class PassengerContainer {
         this.rowsNumber = rowsNum;
         this.columnsNumber = columnsNum;
         this.cellResolution = resolution;
+    }
+
+    public PassengerView getMoreDetailes() {
+        return moreDetailes;
+    }
+
+    public void setMoreDetailes(PassengerView moremoreDetailes) {
+        this.moreDetailes = moremoreDetailes;
     }
 }

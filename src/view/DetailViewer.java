@@ -1,8 +1,10 @@
 package view;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class DetailViewer extends Canvas{
+public class DetailViewer extends Canvas implements MouseListener{
 
     private static final long serialVersionUID = -7824633740035921796L;
     private ViewModel viewModel;
@@ -12,11 +14,11 @@ public class DetailViewer extends Canvas{
         super();
         this.viewModel = viewModel;
         this.viewUpdater = viewUpdater;
+        this.addMouseListener(this);
     }
 
     public void setViewModel(ViewModel viewModel){
         this.viewModel = viewModel;
-        //addMouseListener(detalilView);
     }
 
     @Override
@@ -30,4 +32,28 @@ public class DetailViewer extends Canvas{
     }
 
 
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+        viewModel.getCurrentDetailView().pressOn(mouseEvent.getX(), mouseEvent.getY());
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {
+
+    }
 }
