@@ -2,7 +2,6 @@ package model;
 
 import event.busevents.BusPutOutAll;
 import event.busevents.BusPutOutPassengers;
-import event.busevents.BusTookInPassengers;
 import main.SimulatorConstants;
 import model.counter.BreakAfterFinishedCounter;
 import model.counter.LoopsCounter;
@@ -49,7 +48,7 @@ public final class Bus implements EventListener, Serializable
     private BreakAfterFinishedCounter cooldownAfterLoops;
     private ReturnToDepotCooldown returnToDepotCooldown;
     private final int ID;
-    private Map<BusState, BusBehaviorStrategy> busBehaviorStrategyMap = new HashMap<BusState, BusBehaviorStrategy>();
+    private Map<BusState, BusBehaviorStrategy> busBehaviorStrategyMap = new HashMap<>();
     private boolean finishedLoops;
 
 
@@ -74,7 +73,7 @@ public final class Bus implements EventListener, Serializable
     }
 
     private Map<BusState, BusBehaviorStrategy> getBusBehaviorStrategyMap() {
-        final Map<BusState, BusBehaviorStrategy> resultMap = new HashMap<BusState, BusBehaviorStrategy>();
+        final Map<BusState, BusBehaviorStrategy> resultMap = new HashMap<>();
         resultMap.put(BusState.READY_TO_GO, new BusIdleStrategy());
         resultMap.put(BusState.RUNNING, new BusOnRunStrategy());
         resultMap.put(BusState.WAITING, new BusWaitingForBusStopStrategy());
@@ -101,16 +100,16 @@ public final class Bus implements EventListener, Serializable
         takePassenger(getCurrentBusStop());
 //        System.out.println("zajetosc busu: " + getPassengerList().size() + " zajetosc przystanku: " + getCurrentBusStop().getPassengerQueue().size());
         if (isFull() || getCurrentBusStop().isEmpty()) {
-//            setState(BusState.RUNNING);
-//            freeCurrentBusStop();
-            try
-            {
-                blockingQueue.put(new BusTookInPassengers(this));
-            } catch (final InterruptedException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            setState(BusState.RUNNING);
+            freeCurrentBusStop();
+//            try
+//            {
+//                blockingQueue.put(new BusTookInPassengers(this));
+//            } catch (final InterruptedException e)
+//            {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
         }
     }
 

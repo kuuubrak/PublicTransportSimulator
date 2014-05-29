@@ -15,7 +15,7 @@ import static main.SimulatorConstants.NumberOfBuses;
  */
 public class Model {
 
-    private ArrayList<Bus> busContainer = new ArrayList<Bus>();
+    private ArrayList<Bus> busContainer = new ArrayList<>();
     private Schedule schedule = Schedule.getInstance();
     private SimulationTimer simulationTimer = SimulationTimer.getInstance();
     private BusReleaseCounter busReleaseCounter;
