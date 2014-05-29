@@ -10,7 +10,7 @@ import java.util.Queue;
  */
 public class BusDepot extends BusStop {
     private static BusDepot ourInstance = new BusDepot();
-    private Queue<Bus> busQueue = new LinkedList<>();
+    private Queue<Bus> busQueue = new LinkedList<Bus>();
 
     private BusDepot() {
         super(SimulatorConstants.depotName);

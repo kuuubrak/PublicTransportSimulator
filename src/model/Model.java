@@ -43,7 +43,7 @@ public class Model {
         for (Bus bus : busContainer) {
             bus.move();
         }
-        for (BusStop busStop : new ArrayList<>(schedule.getPassengersStops())) {
+        for (BusStop busStop : new ArrayList<BusStop>(schedule.getPassengersStops())) {
             busStop.getPassengerCounter().countdown();
         }
         busReleaseCounter.countdown();
@@ -68,7 +68,7 @@ public class Model {
 
     public final void setNewPassengerCountersBound(int minValue, int maxValue)
     {
-        for (BusStop busStop : new ArrayList<>(schedule.getPassengersStops())) {
+        for (BusStop busStop : new ArrayList<BusStop>(schedule.getPassengersStops())) {
             busStop.getPassengerCounter().setCounterBounds(minValue, maxValue);
             Schedule.getInstance().setCounterBounds(minValue, maxValue);
         }

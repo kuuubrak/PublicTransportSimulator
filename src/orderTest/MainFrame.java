@@ -183,7 +183,7 @@ public class MainFrame extends JFrame {
     }
 
     private void initNetworkClient() {
-        networkClient = new Client<>("127.0.0.1", testGuiServerSocket);
+        networkClient = new Client<SimulatorEvent>("127.0.0.1", testGuiServerSocket);
         networkClient.connect();
     }
 

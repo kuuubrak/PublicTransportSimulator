@@ -16,8 +16,8 @@ import java.util.List;
  */
 public final class Mockup implements Serializable
 {
-    private ArrayList<MockupBus> schedule = new ArrayList<>();
-    private ArrayList<MockupBusStop> busStops = new ArrayList<>();
+    private ArrayList<MockupBus> schedule = new ArrayList<MockupBus>();
+    private ArrayList<MockupBusStop> busStops = new ArrayList<MockupBusStop>();
     private final long currentTime;
     private final int minPassengerGenerationTime;
     private final int maxPassengerGenerationTime;

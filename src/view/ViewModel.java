@@ -55,7 +55,6 @@ public class ViewModel {
 
     public void updateBusList(List<MockupBus> busList){
         List<BusView> busViewListOld = this.busViewList;
-        System.out.println("ile" + busViewListOld.size());
         this.busViewList = new ArrayList<>();
         BusView busView;
         int i = 0;
@@ -63,11 +62,8 @@ public class ViewModel {
             busView = findBusView(busViewListOld, bus);
             if(busView == null){
                 busView = new BusView(bus);
-
-                System.out.println("nie Zna go");
             }else{
                 busView.updateView(bus);
-                System.out.println("Zna go");
             }
             busView.setMiniViewSize(BUS_WIDTH, BUS_HEIGHT);
             busView.setMiniViewPosition(10, i * (BUS_HEIGHT + 2));
