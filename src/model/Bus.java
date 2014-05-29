@@ -2,7 +2,6 @@ package model;
 
 import event.busevents.BusPutOutAll;
 import event.busevents.BusPutOutPassengers;
-import event.busevents.BusTookInPassengers;
 import main.SimulatorConstants;
 import model.counter.BreakAfterFinishedCounter;
 import model.counter.LoopsCounter;
@@ -100,16 +99,16 @@ public final class Bus implements EventListener, Serializable
         takePassenger(getCurrentBusStop());
 //        System.out.println("zajetosc busu: " + getPassengerList().size() + " zajetosc przystanku: " + getCurrentBusStop().getPassengerQueue().size());
         if (isFull() || getCurrentBusStop().isEmpty()) {
-//            setState(BusState.RUNNING);
-//            freeCurrentBusStop();
-            try
-            {
-                blockingQueue.put(new BusTookInPassengers(this));
-            } catch (final InterruptedException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            setState(BusState.RUNNING);
+            freeCurrentBusStop();
+//            try
+//            {
+//                blockingQueue.put(new BusTookInPassengers(this));
+//            } catch (final InterruptedException e)
+//            {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
         }
     }
 
