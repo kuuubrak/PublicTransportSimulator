@@ -1,5 +1,8 @@
 package view;
 
+import mockup.MockupBus;
+import mockup.MockupBusStop;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -7,7 +10,49 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 
-public class BusStopView implements DetailView, MouseListener {
+public class BusStopView extends SimulationObjectView {
+
+
+    private MockupBusStop busStop;
+
+    public BusStopView(MockupBusStop busStop){
+        super();
+        this.busStop = busStop;
+        setPassengers(busStop.getPassengerQueue());
+    }
+
+    @Override
+    public void drawDetailView(Graphics g){
+        g.setColor(new Color(230, 230, 180));
+        g.fillRect(0,0,getDetailViewWidth(), 30);
+        g.setColor(Color.BLACK);
+        g.drawString("Bus Stop: "+busStop.getNAME()+' ' + busStop.getPassengerQueue().size() +" passengers",10, 10);
+        super.drawDetailView(g);
+    }
+
+    @Override
+    public void drawMiniView(Graphics g) {
+        g.setColor(Color.CYAN);
+        g.fillRect(getMiniViewXPosition(),getMiniViewYPosition(),getMiniViewWidth(), getMiniViewHeight());
+        g.setColor(Color.WHITE);
+        g.drawString("Bus Stop: " + busStop.getNAME(), getMiniViewXPosition() + getMiniViewWidth(),
+                getMiniViewYPosition() + getMiniViewHeight() );
+    }
+
+
+    public void updateView(MockupBusStop busStop) {
+        this.busStop = busStop;
+        this.setPassengers(busStop.getPassengerQueue());
+    }
+
+    public boolean isViewOf(MockupBusStop mockupBusStop) {
+        return this.busStop.getID().equals(mockupBusStop.getID());
+    }
+}
+
+
+/*
+public class BusStopView2 implements DetailView, MouseListener {
 
     private final static int columnNumber = 15;
     private final static int rowNumber = 4;
@@ -141,3 +186,4 @@ public class BusStopView implements DetailView, MouseListener {
     }
 
 }
+*/

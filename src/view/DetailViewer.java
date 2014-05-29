@@ -6,10 +6,12 @@ public class DetailViewer extends Canvas{
 
     private static final long serialVersionUID = -7824633740035921796L;
     private ViewModel viewModel;
+    private ViewUpdater viewUpdater;
 
-    public DetailViewer(int x, int y, int width, int height) {
+    public DetailViewer(ViewModel viewModel, ViewUpdater viewUpdater) {
         super();
-        setBounds(x, y, width, height);
+        this.viewModel = viewModel;
+        this.viewUpdater = viewUpdater;
     }
 
     public void setViewModel(ViewModel viewModel){
@@ -24,6 +26,7 @@ public class DetailViewer extends Canvas{
         g.fillRect(0, 0, getWidth(), getHeight());
 
         if(viewModel != null && viewModel.getCurrentDetailView() != null) {
+            viewModel.getCurrentDetailView().setDetailViewSize(getWidth(),getHeight());
             viewModel.getCurrentDetailView().drawDetailView(g2);
         }
     }

@@ -29,6 +29,11 @@ public class WorldView extends Canvas implements MouseListener {
         for(BusView busView: viewModel.getBusViewList()){
             busView.drawMiniView(g);
         }
+        for(BusStopView busStopView: viewModel.getBusStopViewList()){
+            busStopView.drawMiniView(g);
+        }
+        g.setColor(Color.BLUE);
+        g.drawString(Integer.toString(viewModel.getVersion()), 20, 300);
     }
 
     @Override
@@ -43,7 +48,12 @@ public class WorldView extends Canvas implements MouseListener {
                 viewModel.setCurrentDetailView(busView);
             };
         }
-        viewUpdater.repaint();
+        for(BusStopView busStopView: viewModel.getBusStopViewList()){
+            if(busStopView.isMiniViewPressed(mouseEvent.getX(), mouseEvent.getY())){
+                viewModel.setCurrentDetailView(busStopView);
+            };
+        }
+        viewUpdater.updateView();
     }
 
     @Override

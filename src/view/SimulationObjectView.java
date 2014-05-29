@@ -1,9 +1,12 @@
 package view;
 
+import mockup.MockupBusStop;
+import mockup.MockupPassenger;
 import model.Passenger;
 
 import java.awt.*;
-import java.util.Collection;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by mateusz on 28.05.14.
@@ -31,8 +34,24 @@ public abstract class SimulationObjectView implements DoubleView {
         passengerContainer = new PassengerContainer(0,0,PASSENGER_COLUMN_NUM, PASSENGER_ROW_NUM,CELL_RESOLUTION);
     }
 
-    public void setPassengers(Collection<Passenger> passengersList){
-        for(Passenger passenger: passengersList){
+    public void setPassengers(Collection<MockupPassenger> passengersList){
+        PassengerContainer passengerContainerOld = this.passengerContainer;
+        PassengerView passengerView;
+        this.passengerContainer = new PassengerContainer(passengerContainerOld);
+        for(MockupPassenger passenger: passengersList){
+            passengerView = passengerContainerOld.findViewOf(passenger);
+            if(passengerView == null){
+                passengerView = new PassengerView(passenger, PASSENGER_RESOLUTION);
+            }else{
+                passengerView.updateView(passenger);
+            }
+            passengerContainer.addPassengerView(passengerView);
+        }
+
+    }
+
+    public void setPassengers(List<MockupPassenger> passengersList){
+        for(MockupPassenger passenger: passengersList){
             passengerContainer.addPassengerView(new PassengerView(passenger, PASSENGER_RESOLUTION));
         }
 
@@ -125,4 +144,5 @@ public abstract class SimulationObjectView implements DoubleView {
     public boolean isMiniViewPressed(int x, int y) {
         return x >= miniViewXPosition && x <= miniViewXPosition + miniViewWidth && y >= miniViewYPosition && y <= miniViewYPosition + miniViewHeight;
     }
+
 }

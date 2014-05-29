@@ -1,5 +1,6 @@
 package view;
 
+import mockup.MockupPassenger;
 import model.Passenger;
 
 import java.awt.*;
@@ -16,9 +17,9 @@ public class PassengerView {
     private int y;
     private int passengerSize;
     private TextCloud textCloud;
-    private Passenger passenger;
+    private MockupPassenger passenger;
 
-    public PassengerView(Passenger passenger, int passengerSize) {
+    public PassengerView(MockupPassenger passenger, int passengerSize) {
         this.passenger = passenger;
         this.passengerSize = passengerSize;
         textCloud = createCloud();
@@ -35,7 +36,7 @@ public class PassengerView {
         g.drawOval(x, y, passengerSize, passengerSize);
         g.setColor(Color.RED);
         if (passenger.getTIMESTAMP() > 200) g.drawString("!", x + passengerSize, y + passengerSize / 4);
-        textCloud.paint(g);
+        //textCloud.paint(g);
 
     }
 
@@ -62,10 +63,17 @@ public class PassengerView {
                 g.setColor(Color.BLACK);
                 g.setFont(new Font("Arial", Font.BOLD, 12));
                 g.drawString(Integer.toString(passenger.getID()), getX() + 20, getY() + 14);
-                g.drawString(passenger.getDestination().getNAME(), getX() + 3, getY() + 42);
+                g.drawString(passenger.getDestination(), getX() + 3, getY() + 42);
                 g.drawString(BigDecimal.valueOf(passenger.getTIMESTAMP()).toString(), getX() + 45, getY() + 56);
             }
         };
     }
 
+    public boolean isViewOf(MockupPassenger mockupPassenger) {
+        return (this.passenger.getID() == mockupPassenger.getID());
+    }
+
+    public void updateView(MockupPassenger passenger) {
+        this.passenger = passenger;
+    }
 }
