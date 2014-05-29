@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Logger;
 
 /**
  * Created by ppeczek on 2014-05-21.
@@ -321,7 +322,11 @@ public class Controller implements ActionListener {
         void execute(SimulatorEvent simulatorEvent) {
             BusStop from = Schedule.getInstance().findBusStop(simulatorEvent.getFrom());
             BusStop to = Schedule.getInstance().findBusStop(simulatorEvent.getTo());
-            model.generateSpecificPassenger(from, to);
+            if(from != null && to != null) {
+                model.generateSpecificPassenger(from, to);
+            }else{
+                Logger.getLogger(Controller.class.getName()).warning("Invalid passenger data, ignoring  "+simulatorEvent.getFrom() +" -> "+ simulatorEvent.getTo());
+            }
         }
     }
 
@@ -337,19 +342,8 @@ public class Controller implements ActionListener {
     private final class ContinousSimulationStrategy extends MyStrategy {
         @Override
         void execute(SimulatorEvent simulatorEvent) {
-            /**
-             * TODO: włączyć obsługę guzika GUI
-             */
-            System.out.println("abc");
-            if (simulatorEvent.isContinuous()) {
-                timer.setRepeats(true);
-                timer.start();
-
-            } else {
-                timer.stop();
-                timer.setRepeats(false);
-                timer.start();
-            }
+            timer.setRepeats(simulatorEvent.isContinuous());
+            timer.restart();
         }
     }
 

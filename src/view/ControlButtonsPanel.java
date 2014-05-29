@@ -46,8 +46,8 @@ public class ControlButtonsPanel extends JPanel implements CreatePassengerEvent{
 
     private void initStepButton(){
         stepButton = new JButton("Next step");
-        stepButton.setEnabled(false);
         stepButton.setBounds(120, 30, 160, 80);
+        stepButton.setEnabled(false);
         add(stepButton);
         stepButton.addActionListener(new ActionListener() {
             @Override
@@ -58,7 +58,8 @@ public class ControlButtonsPanel extends JPanel implements CreatePassengerEvent{
     }
 
     private void initSwitchSimulationButton(){
-        switchSimulationButton = new JToggleButton("Manual simulation");
+        switchSimulationButton = new JToggleButton("Auto simulation");
+        switchSimulationButton.setSelected(true);
         switchSimulationButton.setBounds(10, 120, 180, 25);
         add(switchSimulationButton);
         switchSimulationButton.addActionListener(new ActionListener() {
