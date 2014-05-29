@@ -10,7 +10,7 @@ import java.util.List;
  * Created by mateusz on 27.05.14.
  */
 public class ViewModel {
-    private List<BusStopView> busStopViewList = new ArrayList<>();
+    private List<BusStopView> busStopViewList = new ArrayList<BusStopView>();
     private List<BusView> busViewList = new ArrayList<BusView>();
     private DetailView currentDetailView;
     private final int BUS_WIDTH = 40;
@@ -24,7 +24,7 @@ public class ViewModel {
 
     public void udateBusStopList(List<MockupBusStop> busStopList){
         List<BusStopView> busStopViewListOld = this.busStopViewList;
-        this.busViewList = new ArrayList<>();
+        this.busViewList = new ArrayList<BusView>();
         BusStopView busStopView;
         int i = 0;
         for (MockupBusStop busStop: busStopList) {
@@ -55,7 +55,7 @@ public class ViewModel {
 
     public void updateBusList(List<MockupBus> busList){
         List<BusView> busViewListOld = this.busViewList;
-        this.busViewList = new ArrayList<>();
+        this.busViewList = new ArrayList<BusView>();
         BusView busView;
         int i = 0;
         for (MockupBus bus: busList) {

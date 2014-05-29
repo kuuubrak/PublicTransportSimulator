@@ -33,11 +33,11 @@ public final class SimulatorConstants {
 
     public final static int NumberOfBuses = 10;
     public final static ArrayList<Pair<String, Integer>> busStopSettings = new ArrayList<Pair<String, Integer>>() {{
-        add(new Pair<>(ratuszStopName, 3));
-        add(new Pair<>(centrumStopName, 5));
-        add(new Pair<>(SGHStopName, 3));
-        add(new Pair<>(westStopName, 2));
-        add(new Pair<>(tomaszKnapik, 4));
+        add(new Pair<String, Integer>(ratuszStopName, 3));
+        add(new Pair<String, Integer>(centrumStopName, 5));
+        add(new Pair<String, Integer>(SGHStopName, 3));
+        add(new Pair<String, Integer>(westStopName, 2));
+        add(new Pair<String, Integer>(tomaszKnapik, 4));
     }};
 
 }

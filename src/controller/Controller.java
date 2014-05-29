@@ -40,13 +40,13 @@ public class Controller  extends  Thread implements ActionListener {
 
     private Controller() {
         setNetData(SimulatorConstants.simulatorHostAddress, SimulatorConstants.simulatorPort);
-        this.eventsBlockingQueue = new LinkedBlockingQueue<>();
+        this.eventsBlockingQueue = new LinkedBlockingQueue<SimulatorEvent>();
         this.model = new Model(eventsBlockingQueue);
         this.mockup = createMockup();
 //        this.view = new View(eventsBlockingQueue, mockup);
         this.timer = new Timer(SimulatorConstants.simulationSpeed, this);
         timer.start();
-        networkClient = new Client<>(host, port);
+        networkClient = new Client<SimulatorEvent>(host, port);
         networkClient.connect();
         networkClient.setEventsBlockingQueue(eventsBlockingQueue);
     }
@@ -57,7 +57,7 @@ public class Controller  extends  Thread implements ActionListener {
 
     private Map<Class<? extends SimulatorEvent>, MyStrategy> getEventDictionaryMap() {
         if(resultMap==null) {
-            resultMap = new HashMap<>();
+            resultMap = new HashMap<Class<? extends SimulatorEvent>, MyStrategy>();
             /**
              * Zdarzenia generowane cyklicznie przez symulator
              */

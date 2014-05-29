@@ -18,7 +18,7 @@ public class MockupBus implements Serializable{
     private final MockupBusState busState;
 
     public MockupBus(final Bus bus) {
-        this.passengerList = new ArrayList<>();
+        this.passengerList = new ArrayList<MockupPassenger>();
         for(LinkedList<Passenger> linkedList: bus.getPassengerList().values()) {
             for(Passenger passenger: linkedList){
                 this.passengerList.add(new MockupPassenger(passenger));

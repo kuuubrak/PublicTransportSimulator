@@ -36,7 +36,7 @@ public class BusStop implements Serializable {
     public BusStop(final String name) {
         this.ID = UUID.randomUUID();
         this.NAME = name;
-        this.passengerQueue = new ConcurrentLinkedQueue<>();
+        this.passengerQueue = new ConcurrentLinkedQueue<Passenger>();
         this.route = new Route();
         this.occupied = null;
     }

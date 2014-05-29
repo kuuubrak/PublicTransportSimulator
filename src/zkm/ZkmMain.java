@@ -2,14 +2,14 @@ package zkm;
 
 import event.BusReleasingFrequency;
 import main.SimulatorConstants;
-import mockup.Mockup;
-import mockup.ZkmMockup;
+import mockup.*;
 import model.*;
 import network.Client;
 import view.SimulatorEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -20,7 +20,7 @@ public class ZkmMain extends Thread {
 
     private String host = ZkmConstants.host;
     private int port = ZkmConstants.port;
-    private Client<SimulatorEvent> sc = new Client<>(host, port);
+    private Client<Mockup> sc = new Client<Mockup>(host, port);
     /** zmienna przechowująca ilość kroków potrzebną do jednokrotnego przejazdu trasy
      * (nie zlicza czasu potrzebnego na wsiadanie i wysiadanie pasażerów)
      */
@@ -80,12 +80,12 @@ public class ZkmMain extends Thread {
 
         System.out.println("Press enter key to stop.");
 
-        ZkmMockup mockup;
+        Mockup mockup;
         while(true) {// wyjdzie na twardo jak sie klawiaturnie
             //Odbieranie makiety
             mockup = receiveMockup();
-            ArrayList<Bus> buses = (ArrayList<Bus>) mockup.getBuses();
-            ArrayList<BusStop> busStops = (ArrayList<BusStop>) mockup.getBusStops();
+            List<MockupBus> buses = mockup.getBuses();
+            List<MockupBusStop> busStops = mockup.getBusStops();
 
             //Wyliczanie współczynników
             Integer noOfBuses = 0;
@@ -93,21 +93,22 @@ public class ZkmMain extends Thread {
             Integer generalPeopleWaitingNr = 0;
             Long generalSumOfWaitingTime = 0L;
 
-            for (Bus bus : buses) {
-                System.out.println(bus.getState());
-                if (!bus.getState().equals(BusState.READY_TO_GO) && !bus.getState().equals(BusState.HAVING_BREAK))
+            for (MockupBus bus : buses) {
+                if (!bus.getCurrentBusStop().equals(SimulatorConstants.depotName))
                 //tylko autobusy nie będące w zajezdni
                 {
                     noOfBuses += 1;
-                    freeSeatsNr += bus.getNumberOfFreeSeats();
+                    freeSeatsNr += SimulatorConstants.noOfSeatsInBus - bus.getPassengerList().size();
+                    System.out.println("Pasażerów w autobusie: " + bus.getPassengerList().size());
                 }
             }
 
-            for (BusStop busStop : busStops) {
-                generalPeopleWaitingNr += busStop.getNumberOfPassengersWaiting();
+            for (MockupBusStop busStop : busStops) {
+                generalPeopleWaitingNr += busStop.getPassengerQueue().size();
 
-                for(Passenger passenger : busStop.getPassengerQueue())
+                for(MockupPassenger passenger : busStop.getPassengerQueue())
                 {
+                    System.out.println("Mockup time: " + mockup.getCurrentTime() + "; Passenger timestamp: " + passenger.getTIMESTAMP());
                     generalSumOfWaitingTime += mockup.getCurrentTime() - passenger.getTIMESTAMP();
                 }
             }
@@ -125,12 +126,12 @@ public class ZkmMain extends Thread {
      * (taka sytuacja może nastąpić, gdy zostanie utracone połączenie).
      * @return Zwracanym obiektem jest makieta nadana na serwerze.
      */
-    private ZkmMockup receiveMockup() {
-        SimulatorEvent event = null;
-        LinkedBlockingQueue<SimulatorEvent> queueOfOrders = sc.getEventsBlockingQueue();
+    private Mockup receiveMockup() {
+        Mockup mockup = null;
+        LinkedBlockingQueue<Mockup> queueOfOrders = sc.getEventsBlockingQueue();
             try{
                 do{
-                    event = queueOfOrders.take();
+                    mockup = queueOfOrders.take();
                 }while (!queueOfOrders.isEmpty()); // przewijanie do ostatniej odebranej makiety
             }
             catch (InterruptedException e){//wyjątek tylko jak Thread.interrupt()
@@ -139,7 +140,7 @@ public class ZkmMain extends Thread {
                 System.exit(0);
             }
 
-        return event.getZkmMockup();
+        return mockup;
     }
 
     /**

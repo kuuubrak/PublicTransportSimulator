@@ -19,7 +19,7 @@ public class Schedule {
     private Schedule() {
         minPassengerGenerationValue = SimulatorConstants.defaultMinGenerationTime;
         maxPassengerGenerationValue = SimulatorConstants.defaultMaxGenerationTime;
-        busStops = new ArrayList<>();
+        busStops = new ArrayList<BusStop>();
         BusStop lastStop, currentStop;
         BusDepot busDepot = BusDepot.getInstance();
         BusTerminus busTerminus = BusTerminus.getInstance();
@@ -57,7 +57,7 @@ public class Schedule {
     }
 
     public ArrayList<BusStop> getPassengersStops() {
-        ArrayList<BusStop> passengersStops = new ArrayList<>();
+        ArrayList<BusStop> passengersStops = new ArrayList<BusStop>();
         for (BusStop bs : busStops) {
             if (!(bs instanceof BusDepot)) {
                 passengersStops.add(bs);
