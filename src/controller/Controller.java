@@ -20,11 +20,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Logger;
 
 /**
  * Created by ppeczek on 2014-05-21.
  */
-public class Controller implements ActionListener {
+public class Controller  extends  Thread implements ActionListener {
     private static Controller ourInstance = new Controller();
 
     private final Model model;
@@ -89,20 +90,18 @@ public class Controller implements ActionListener {
         return model.createMockup();
     }
 
-    public void work() {
-//        view.showGUI();
-        while (true)
-        {
-            SimulatorEvent simulatorEvent = null;
-            try
-            {
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                SimulatorEvent simulatorEvent = null;
                 simulatorEvent = eventsBlockingQueue.take();
 //                System.out.println(simulatorEvent.getClass());
-            } catch (final InterruptedException e){
-                e.printStackTrace();
+                final MyStrategy myStrategy = getEventDictionaryMap().get(simulatorEvent.getClass());
+                myStrategy.execute(simulatorEvent);
             }
-            final MyStrategy myStrategy = getEventDictionaryMap().get(simulatorEvent.getClass());
-            myStrategy.execute(simulatorEvent);
+        } catch (final InterruptedException e) {
+            System.out.printf("Controller died.");
         }
     }
 
@@ -321,7 +320,11 @@ public class Controller implements ActionListener {
         void execute(SimulatorEvent simulatorEvent) {
             BusStop from = Schedule.getInstance().findBusStop(simulatorEvent.getFrom());
             BusStop to = Schedule.getInstance().findBusStop(simulatorEvent.getTo());
-            model.generateSpecificPassenger(from, to);
+            if(from != null && to != null) {
+                model.generateSpecificPassenger(from, to);
+            }else{
+                Logger.getLogger(Controller.class.getName()).warning("Invalid passenger data, ignoring  "+simulatorEvent.getFrom() +" -> "+ simulatorEvent.getTo());
+            }
         }
     }
 
@@ -337,19 +340,8 @@ public class Controller implements ActionListener {
     private final class ContinousSimulationStrategy extends MyStrategy {
         @Override
         void execute(SimulatorEvent simulatorEvent) {
-            /**
-             * TODO: włączyć obsługę guzika GUI
-             */
-            System.out.println("abc");
-            if (simulatorEvent.isContinuous()) {
-                timer.setRepeats(true);
-                timer.start();
-
-            } else {
-                timer.stop();
-                timer.setRepeats(false);
-                timer.start();
-            }
+            timer.setRepeats(simulatorEvent.isContinuous());
+            timer.restart();
         }
     }
 

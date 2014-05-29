@@ -44,10 +44,10 @@ public class ClientWrapper extends Thread {
         try {
             while(runny) {
                 Mockup mockup = null;
-                while (!mockups.isEmpty()) {//przewijanie do ostatniej otrzymanej
-                    mockup = mockups.poll(5, TimeUnit.SECONDS);
-                }
-                if(mockup != null) gun.newMockup(mockup);
+                do{//przewijanie do ostatniej otrzymanej
+                    mockup = mockups.take();
+                }while (!mockups.isEmpty());
+                gun.newMockup(mockup);
             }
         }catch(InterruptedException e){
             if(runny) gun.connectionLost();
@@ -86,5 +86,9 @@ public class ClientWrapper extends Thread {
         }else{
             gun.connectionLost();
         }
+    }
+
+    public String getPrettyAddress(){
+        return config.getProperty("ip","127.0.0.1")+":"+config.getProperty("port", "8123");
     }
 }

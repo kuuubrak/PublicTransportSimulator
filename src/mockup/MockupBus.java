@@ -3,12 +3,13 @@ package mockup;
 import model.Bus;
 import model.Passenger;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by ppeczek on 2014-05-28.
  */
-public class MockupBus {
+public class MockupBus implements Serializable{
     private final ArrayList<Passenger> passengerList;
     private final String currentBusStop;
     private final int lengthPassed;

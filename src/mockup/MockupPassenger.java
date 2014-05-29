@@ -2,10 +2,12 @@ package mockup;
 
 import model.Passenger;
 
+import java.io.Serializable;
+
 /**
  * Created by ppeczek on 2014-05-28.
  */
-public class MockupPassenger {
+public class MockupPassenger implements Serializable{
     private final int ID;
     private Long TIMESTAMP;
     private String destination;

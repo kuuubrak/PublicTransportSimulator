@@ -19,20 +19,20 @@ public class PublicTransportSimulatorGUI implements GuiFunctionality{
     public static void main(String[] args) {
         simulatorGUI = new PublicTransportSimulatorGUI();
         simulatorGUI.clientWrapper = new ClientWrapper(simulatorGUI);
-        simulatorGUI.clientWrapper.start();
         simulatorGUI.viewModel = new ViewModel();
         simulatorGUI.mainWindow = new MainWindow(simulatorGUI.clientWrapper, simulatorGUI.viewModel);
         simulatorGUI.mainWindow.setVisible(true);
+        simulatorGUI.clientWrapper.start();//miało być łączone przy starcie, więc ma być po zrobieniu, karwasz, okna dopiero
     }
 
     @Override
     public void connectionEstablished() {
-
+        mainWindow.setTitle("Connected to "+clientWrapper.getPrettyAddress());
     }
 
     @Override
     public void connectionLost() {
-
+        mainWindow.setTitle("Not connected!");
     }
 
     @Override

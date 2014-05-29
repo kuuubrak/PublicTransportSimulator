@@ -43,6 +43,8 @@ public class CreatePassengerDialog extends JDialog {
                 onCancel();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        this.pack();
     }
 
     private void onOK() {
@@ -62,6 +64,5 @@ public class CreatePassengerDialog extends JDialog {
     public String getTo(){
         return to.getText();
     }
-
 
 }

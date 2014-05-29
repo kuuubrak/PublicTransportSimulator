@@ -123,11 +123,6 @@ public abstract class SimulationObjectView implements DoubleView {
     }
 
     public boolean isMiniViewPressed(int x, int y) {
-        if(x>=miniViewXPosition&&x<=miniViewXPosition+miniViewWidth
-                &&y>=miniViewYPosition&&y<=miniViewYPosition+miniViewHeight){
-            return true;
-        }else{
-            return false;
-        }
+        return x >= miniViewXPosition && x <= miniViewXPosition + miniViewWidth && y >= miniViewYPosition && y <= miniViewYPosition + miniViewHeight;
     }
 }

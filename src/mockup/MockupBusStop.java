@@ -5,12 +5,13 @@ import model.BusStop;
 import model.BusTerminus;
 import model.Passenger;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Created by ppeczek on 2014-05-28.
  */
-public class MockupBusStop {
+public class MockupBusStop implements Serializable{
     private final UUID ID;
     private final String NAME;
     private Queue<MockupPassenger> passengerQueue = new LinkedList<MockupPassenger>();

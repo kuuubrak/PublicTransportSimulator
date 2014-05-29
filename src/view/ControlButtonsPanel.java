@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 /**
  * Created by mateusz on 28.05.14.
  */
-public class ControlButtonsPanel extends JPanel {
+public class ControlButtonsPanel extends JPanel implements CreatePassengerEvent{
 
     private JButton stepButton;
     private JToggleButton switchSimulationButton;
@@ -46,8 +46,8 @@ public class ControlButtonsPanel extends JPanel {
 
     private void initStepButton(){
         stepButton = new JButton("Next step");
-        stepButton.setEnabled(false);
         stepButton.setBounds(120, 30, 160, 80);
+        stepButton.setEnabled(false);
         add(stepButton);
         stepButton.addActionListener(new ActionListener() {
             @Override
@@ -58,7 +58,8 @@ public class ControlButtonsPanel extends JPanel {
     }
 
     private void initSwitchSimulationButton(){
-        switchSimulationButton = new JToggleButton("Manual simulation");
+        switchSimulationButton = new JToggleButton("Auto simulation");
+        switchSimulationButton.setSelected(true);
         switchSimulationButton.setBounds(10, 120, 180, 25);
         add(switchSimulationButton);
         switchSimulationButton.addActionListener(new ActionListener() {
@@ -72,6 +73,7 @@ public class ControlButtonsPanel extends JPanel {
         });
     }
 
+    private CreatePassengerDialog oTemporaOMores = null;
     private void initNewPassengerButton(){
         newPassengerButton = new JButton("New passenger");
         newPassengerButton.setBounds(10, 150, 180, 45);
@@ -79,11 +81,17 @@ public class ControlButtonsPanel extends JPanel {
         newPassengerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                clientWrapper.createPassenger("Z tąd", "Do tąd"); //TODO:
+                oTemporaOMores=new CreatePassengerDialog(ControlButtonsPanel.this);
+                oTemporaOMores.setVisible(true);
             }
         });
     }
 
 
-
+    @Override
+    public void createPassengerActionPerformed() {
+        clientWrapper.createPassenger(oTemporaOMores.getFrom(), oTemporaOMores.getTo());
+        oTemporaOMores.dispose();
+        oTemporaOMores = null;
+    }
 }
