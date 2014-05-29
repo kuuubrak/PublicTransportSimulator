@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 /**
  * Created by ppeczek on 2014-05-21.
  */
-public class Controller implements ActionListener {
+public class Controller  extends  Thread implements ActionListener {
     private static Controller ourInstance = new Controller();
 
     private final Model model;
@@ -89,20 +89,18 @@ public class Controller implements ActionListener {
         return model.createMockup();
     }
 
-    public void work() {
-//        view.showGUI();
-        while (true)
-        {
-            SimulatorEvent simulatorEvent = null;
-            try
-            {
+    @Override
+    public void run() {
+        try {
+            while (true) {
+                SimulatorEvent simulatorEvent = null;
                 simulatorEvent = eventsBlockingQueue.take();
 //                System.out.println(simulatorEvent.getClass());
-            } catch (final InterruptedException e){
-                e.printStackTrace();
+                final MyStrategy myStrategy = getEventDictionaryMap().get(simulatorEvent.getClass());
+                myStrategy.execute(simulatorEvent);
             }
-            final MyStrategy myStrategy = getEventDictionaryMap().get(simulatorEvent.getClass());
-            myStrategy.execute(simulatorEvent);
+        } catch (final InterruptedException e) {
+            System.out.printf("Controller died.");
         }
     }
 
