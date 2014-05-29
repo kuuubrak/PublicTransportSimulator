@@ -49,7 +49,7 @@ public final class Bus implements EventListener, Serializable
     private BreakAfterFinishedCounter cooldownAfterLoops;
     private ReturnToDepotCooldown returnToDepotCooldown;
     private final int ID;
-    private Map<BusState, BusBehaviorStrategy> busBehaviorStrategyMap = new HashMap<BusState, BusBehaviorStrategy>();
+    private Map<BusState, BusBehaviorStrategy> busBehaviorStrategyMap = new HashMap<>();
     private boolean finishedLoops;
 
     private static class IDGenerator{
@@ -73,7 +73,7 @@ public final class Bus implements EventListener, Serializable
     }
 
     private Map<BusState, BusBehaviorStrategy> getBusBehaviorStrategyMap() {
-        final Map<BusState, BusBehaviorStrategy> resultMap = new HashMap<BusState, BusBehaviorStrategy>();
+        final Map<BusState, BusBehaviorStrategy> resultMap = new HashMap<>();
         resultMap.put(BusState.READY_TO_GO, new BusIdleStrategy());
         resultMap.put(BusState.RUNNING, new BusOnRunStrategy());
         resultMap.put(BusState.WAITING, new BusWaitingForBusStopStrategy());
