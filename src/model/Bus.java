@@ -2,6 +2,7 @@ package model;
 
 import event.busevents.BusPutOutAll;
 import event.busevents.BusPutOutPassengers;
+import event.busevents.BusTookInPassengers;
 import main.SimulatorConstants;
 import model.counter.BreakAfterFinishedCounter;
 import model.counter.LoopsCounter;
@@ -97,19 +98,21 @@ public final class Bus implements EventListener, Serializable
     }
 
     public final void takeInPassengers() {
-        takePassenger(getCurrentBusStop());
+        if (!isFull() && !getCurrentBusStop().isEmpty()) {
+            takePassenger(getCurrentBusStop());
+        }
 //        System.out.println("zajetosc busu: " + getPassengerList().size() + " zajetosc przystanku: " + getCurrentBusStop().getPassengerQueue().size());
         if (isFull() || getCurrentBusStop().isEmpty()) {
-            setState(BusState.RUNNING);
-            freeCurrentBusStop();
-//            try
-//            {
-//                blockingQueue.put(new BusTookInPassengers(this));
-//            } catch (final InterruptedException e)
-//            {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
+//            setState(BusState.RUNNING);
+//            freeCurrentBusStop();
+            try
+            {
+                blockingQueue.put(new BusTookInPassengers(this));
+            } catch (final InterruptedException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 
@@ -313,7 +316,7 @@ public final class Bus implements EventListener, Serializable
 
     public void freeCurrentBusStop() {
 //        if (this.getCurrentBusStop() instanceof BusTerminus) {
-        System.out.println(this + " zwalnia " + this.getCurrentBusStop() + " stan: " + this.getState());
+        System.out.println(this + " zwalnia " + this.getCurrentBusStop() + " stan: " + this.getState() + " zajęty: " + this.getPassengerList().size());
 //        }
         freeBusStop(getCurrentBusStop());
     }
