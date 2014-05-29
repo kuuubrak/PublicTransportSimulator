@@ -49,11 +49,13 @@ public class BusView extends SimulationObjectView {
         g.drawString("Progress: "
                 + (int)(((float)bus.getLengthPassed() / (bus.getLengthPassed() + bus.getBusStopDistace()))*100) + '%',
                 10, 42);
-        g.drawString("Passenger number: " + bus.getPassengerList().size(),10, 58);
+        g.drawString("Passenger number: " + bus.getPassengerList().size() + ' ' + getPassengersNum(),10, 58);
         g.drawString("State: " + bus.getState(),10, 74);
 
         super.drawDetailView(g);
     }
+
+
 
     @Override
     public void drawMiniView(Graphics g) {

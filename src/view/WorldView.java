@@ -24,7 +24,7 @@ public class WorldView extends Canvas implements MouseListener {
     }
 
     public void paint(Graphics g){
-        g.setColor(Color.GREEN);
+        g.setColor(new Color(100, 180, 22));
         g.fillRect(0, 0, getWidth(), getHeight());
         for(BusView busView: viewModel.getBusViewList()){
             busView.drawMiniView(g);
@@ -32,8 +32,6 @@ public class WorldView extends Canvas implements MouseListener {
         for(BusStopView busStopView: viewModel.getBusStopViewList()){
             busStopView.drawMiniView(g);
         }
-        g.setColor(Color.BLUE);
-        g.drawString(Integer.toString(viewModel.getVersion()), 20, 300);
     }
 
     @Override

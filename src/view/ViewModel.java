@@ -71,7 +71,6 @@ public class ViewModel {
             i++;
         }
         version = prevVersion++;
-        System.out.println(" wersja " + version);
     }
 
     private BusView findBusView(List<BusView> busViewList, MockupBus bus) {

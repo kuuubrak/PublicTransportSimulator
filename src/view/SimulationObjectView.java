@@ -54,6 +54,10 @@ public abstract class SimulationObjectView implements DoubleView {
 
     }
 
+    public int getPassengersNum() {
+        return passengerContainer.getPassengersNum() ;
+    }
+
     public void setPassengers(List<MockupPassenger> passengersList){
         for(MockupPassenger passenger: passengersList){
             passengerContainer.addPassengerView(new PassengerView(passenger, PASSENGER_RESOLUTION));

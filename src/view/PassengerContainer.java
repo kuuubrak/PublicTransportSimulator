@@ -69,6 +69,10 @@ public class PassengerContainer {
         return null;
     }
 
+    public int getPassengersNum() {
+        return passengerViewList.size();
+    }
+
     public void setPassengerContainerParameters(int x, int y, int columnsNum, int rowsNum, int resolution) {
         this.x = x;
         this.y = y;
