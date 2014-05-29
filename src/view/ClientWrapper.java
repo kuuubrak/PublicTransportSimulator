@@ -87,4 +87,8 @@ public class ClientWrapper extends Thread {
             gun.connectionLost();
         }
     }
+
+    public String getPrettyAddress(){
+        return config.getProperty("ip","127.0.0.1")+":"+config.getProperty("port", "8123");
+    }
 }

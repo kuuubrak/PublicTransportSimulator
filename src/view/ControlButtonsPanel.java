@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 /**
  * Created by mateusz on 28.05.14.
  */
-public class ControlButtonsPanel extends JPanel {
+public class ControlButtonsPanel extends JPanel implements CreatePassengerEvent{
 
     private JButton stepButton;
     private JToggleButton switchSimulationButton;
@@ -72,6 +72,7 @@ public class ControlButtonsPanel extends JPanel {
         });
     }
 
+    private CreatePassengerDialog oTemporaOMores = null;
     private void initNewPassengerButton(){
         newPassengerButton = new JButton("New passenger");
         newPassengerButton.setBounds(10, 150, 180, 45);
@@ -79,11 +80,17 @@ public class ControlButtonsPanel extends JPanel {
         newPassengerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                clientWrapper.createPassenger("Z tąd", "Do tąd"); //TODO:
+                oTemporaOMores=new CreatePassengerDialog(ControlButtonsPanel.this);
+                oTemporaOMores.setVisible(true);
             }
         });
     }
 
 
-
+    @Override
+    public void createPassengerActionPerformed() {
+        clientWrapper.createPassenger(oTemporaOMores.getFrom(), oTemporaOMores.getTo());
+        oTemporaOMores.dispose();
+        oTemporaOMores = null;
+    }
 }
